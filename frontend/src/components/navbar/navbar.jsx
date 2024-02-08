@@ -8,6 +8,7 @@ import { useState } from "react"
 
 const Navbar = () => {
     const { isAuth } = useSelector((state) => state.auth)
+    const role = useSelector(state => state.auth.role);
     const [error, setError] = useState(false)
     const dispatch = useDispatch()
 
@@ -17,7 +18,7 @@ const Navbar = () => {
             await onLogout()
             dispatch(unauthenticateUser())
 
-            localStorage.setItem('isAuth', 'false')
+            localStorage.setItem('authData', JSON.stringify({ isAuth: false, role: null }));
         } catch (error) {
             console.log(error);
             // setError(error.response.data.errors[0].msg)
@@ -25,19 +26,17 @@ const Navbar = () => {
     }
     return (
         <nav className='navbar navbar-light bg-light'>
-            <div className='container'>
+            <div className='flex flex-row justify-between items-center'>
                 <div>
-                    <NavLink to='/'>
+                    <NavLink to='/' className="m-2">
                         Home
                     </NavLink>
                 </div>
 
                 {isAuth ? (
-                    <div>
-                        <NavLink to='/dashboard' className='mx-3'>
-                            Dashboard
-                        </NavLink>
-                        <Button onClick={logoutUser}> Logout</Button>
+                    <div className="flex  flex-row items-center">
+                        currentUser = {role}
+                        <Button onClick={logoutUser} className="m-2"> Logout</Button>
                     </div>
                 ) : (
                     <div>
