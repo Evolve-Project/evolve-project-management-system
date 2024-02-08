@@ -26,20 +26,17 @@ const Navbar = () => {
     }
     return (
         <nav className='navbar navbar-light bg-light'>
-            <div className='container'>
+            <div className='flex flex-row justify-between items-center'>
                 <div>
-                    <NavLink to='/'>
+                    <NavLink to='/' className="m-2">
                         Home
                     </NavLink>
                 </div>
 
                 {isAuth ? (
-                    <div>
-                        {console.log(role)}
-                        <NavLink to='/dashboard' className='mx-3'>
-                            Dashboard
-                        </NavLink>
-                        <Button onClick={logoutUser}> Logout</Button>
+                    <div className="flex  flex-row items-center">
+                        currentUser = {role}
+                        <Button onClick={logoutUser} className="m-2"> Logout</Button>
                     </div>
                 ) : (
                     <div>

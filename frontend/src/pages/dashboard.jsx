@@ -1,6 +1,6 @@
-import DashboardAdmin from "@/components/Admin/Dashboard";
-import DashboardMentee from "@/components/Mentee/Dashboard";
-import DashboardMentor from "@/components/Mentor/Dashboard";
+import DashboardAdmin from "@/pages/Admin/Dashboard";
+import DashboardMentee from "@/pages/Mentee/Dashboard";
+import DashboardMentor from "@/pages/Mentor/Dashboard";
 import Layout from "@/components/layout/layout"
 import { useSelector } from "react-redux";
 
