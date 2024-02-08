@@ -3,6 +3,7 @@ import { onLogin } from '../api/authApi'
 import Layout from '../components/layout/layout'
 import { useDispatch } from 'react-redux'
 import { authenticateUser } from './../redux/slices/authslice'
+import { Navigate } from 'react-router-dom'
 
 const Login = () => {
     const [values, setValues] = useState({
@@ -20,13 +21,12 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            await onLogin(values)
-            dispatch(authenticateUser())
-
-            localStorage.setItem('isAuth', 'true')
+            const { data } = await onLogin(values);
+            const role = data.role;
+            dispatch(authenticateUser({ role }));
+            localStorage.setItem('authData', JSON.stringify({ isAuth: true, role: role }));
         } catch (error) {
-            console.log(error.response.data.errors[0].msg)
-            setError(error.response.data.errors[0].msg)
+            console.log(error)
         }
     }
 

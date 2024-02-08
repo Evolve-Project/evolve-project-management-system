@@ -8,6 +8,7 @@ import { useState } from "react"
 
 const Navbar = () => {
     const { isAuth } = useSelector((state) => state.auth)
+    const role = useSelector(state => state.auth.role);
     const [error, setError] = useState(false)
     const dispatch = useDispatch()
 
@@ -17,7 +18,7 @@ const Navbar = () => {
             await onLogout()
             dispatch(unauthenticateUser())
 
-            localStorage.setItem('isAuth', 'false')
+            localStorage.setItem('authData', JSON.stringify({ isAuth: false, role: null }));
         } catch (error) {
             console.log(error);
             // setError(error.response.data.errors[0].msg)
@@ -34,6 +35,7 @@ const Navbar = () => {
 
                 {isAuth ? (
                     <div>
+                        {console.log(role)}
                         <NavLink to='/dashboard' className='mx-3'>
                             Dashboard
                         </NavLink>
