@@ -25,26 +25,28 @@ const Navbar = () => {
         }
     }
     return (
-        <nav className='navbar navbar-light bg-light'>
-            <div className='flex flex-row justify-between items-center'>
-                <div>
-                    <NavLink to='/' className="m-2">
-                        Home
+        <nav className='bg-custom-purple'>
+            <div className="container mx-auto flex justify-between items-center">
+                <div className="flex items-center flex-shrink-0 text-white">
+                    <NavLink to='/' className="m-2 font-semibold text-xl tracking-tight">
+                        Evolve
                     </NavLink>
                 </div>
 
                 {isAuth ? (
-                    <div className="flex  flex-row items-center">
-                        currentUser = {role}
-                        <Button onClick={logoutUser} className="m-2"> Logout</Button>
+                    <div className="flex items-center">
+                        <span className="text-white">
+                        currentUser = {role}</span>
+                        <Button onClick={logoutUser} className="m-2 bg-custom-black
+                         text-white "> Logout</Button>
                     </div>
                 ) : (
                     <div>
-                        <NavLink to='/login'>
+                        <NavLink to='/login'className="text-gray-300 hover:text-white mr-4">
                             <span>Login</span>
                         </NavLink>
 
-                        <NavLink to='/register' className='mx-3'>
+                        <NavLink to='/register' className="text-gray-300 hover:text-white">
                             <span>Register</span>
                         </NavLink>
                     </div>
