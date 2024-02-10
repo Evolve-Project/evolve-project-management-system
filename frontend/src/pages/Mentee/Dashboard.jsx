@@ -8,3 +8,4 @@ const DashboardMentee = () => {
     </>)
 }
 export default DashboardMentee
+
