@@ -1,6 +1,10 @@
 const DashboardMentee = () => {
     return (<>
-        <h1>This is the Mentee Dashboard</h1>
+        <div className='container'>
+            <div className="py-4">
+                <h1>Home Page</h1>
+            </div>
+        </div>
     </>)
 }
 export default DashboardMentee
