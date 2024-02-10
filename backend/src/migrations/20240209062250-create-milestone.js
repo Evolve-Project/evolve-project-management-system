@@ -27,7 +27,7 @@ module.exports = {
       },
       status: {
         type: DataTypes.BOOLEAN,
-        defaultValue: 0
+        defaultValue: false,
       },
       milestone_completion_datetime: {
         type: DataTypes.DATE,
