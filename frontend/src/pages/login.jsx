@@ -3,6 +3,7 @@ import { onLogin } from '../api/authApi'
 import Layout from '../components/layout/layout'
 import { useDispatch } from 'react-redux'
 import { authenticateUser } from './../redux/slices/authslice'
+import { Button } from '@/components/ui/Button'
 
 const Login = () => {
     const [values, setValues] = useState({
@@ -69,9 +70,9 @@ const Login = () => {
 
                 <div style={{ color: 'red', margin: '10px 0' }}>{error}</div>
 
-                <button type='submit' className='btn btn-primary'>
+                <Button type='submit' className='btn btn-primary'>
                     Submit
-                </button>
+                </Button>
             </form>
         </Layout>
     )
