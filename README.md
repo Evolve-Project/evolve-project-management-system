@@ -60,3 +60,18 @@ and for that we can migrate each file individually also using:
 ```javascript
 npx sequelize-cli db:migrate npx sequelize-cli db:migrate --name migration_file_name.js
 ```
+
+
+### Seeders
+Seeders are scripts that populate your database with initial data. They're often used in development environments to provide a set of data that helps test the application. Seeders can also be used in production to insert necessary data into the database, such as admin users or default settings.
+
+In Sequelize, seeders are JavaScript files that export an object with two methods: up and down. The up method is used to insert data into the database, and the down method is used to undo the changes made by the up method.
+
+#### Running Seeders
+To run your seeders, you can use the Sequelize CLI's db:seed:all command:
+
+This command will run all the seeders in your seeders directory, in the order they are listed.
+
+To undo the seeders, you can use the db:seed:undo:all command:
+
+This command will undo all your seeders, in the reverse order they are listed.

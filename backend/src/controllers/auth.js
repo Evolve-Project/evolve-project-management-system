@@ -1,15 +1,19 @@
-const db = require('../db');
+
 const { hash } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const { SECRET } = require('../constants');
+const User = require('../models/user');
 
 exports.getUsers = async (req, res) => {
     try {
-        const response = await db.query('select user_id,email,role from users')
-        console.log(response.rows);
+        const users = await User.findAll({
+            attributes: ['id', 'email', 'role']
+        });
+
+        console.log(users);
         return res.status(200).json({
             success: true,
-            users: response.rows,
+            users: users,
         });
     } catch (error) {
         console.log("Error in getUsers, auth controller ", error);
@@ -21,17 +25,23 @@ exports.register = async (req, res) => {
     try {
         const hashedPassword = await hash(password, 10);
 
-        await db.query('insert into users(email, password, role) values ($1,$2,$3)', [email, hashedPassword, role]);
+        await User.create({
+            email: email,
+            password: hashedPassword,
+            role: role,
+            is_active: true
+        });
+
         return res.status(201).json({
             success: true,
             message: 'register complete',
-        })
+        });
 
     } catch (error) {
-        console.log("Error in login, auth controller ", error);
+        console.log("Error in registering user, auth controller ", error);
         return res.status(500).json({
             error: error.message
-        })
+        });
     }
 };
 
