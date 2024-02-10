@@ -1,33 +1,39 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable('attendance', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
       mentor_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'mentors',
+          key: 'id',
+        },
+        allowNull: false
       },
       mentee_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'mentees',
+          key: 'id',
+        },
+        allowNull: false
       },
       date_of_meet: {
-        type: Sequelize.DATE
+        type: DataTypes.DATEONLY,
+        allowNull: false
       },
       attendance: {
-        type: Sequelize.BOOLEAN
+        type: DataTypes.ENUM('Present', 'Absent'),
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       }
     });
   },

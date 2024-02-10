@@ -3,25 +3,46 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class attendance extends Model {
+  class Attendance extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Mentor, { foreignKey: 'mentor_id' }); //this is the mentor_id in attendance table. Each Attendance belongs to one Mentor
+      this.belongsTo(models.Mentee, { foreignKey: 'mentee_id' }); // this is the mentee_id in attendance table. Each Attendance belongs to one Mentee
     }
   }
-  attendance.init({
-    mentor_id: DataTypes.INTEGER,
-    mentee_id: DataTypes.INTEGER,
-    date_of_meet: DataTypes.DATE,
-    attendance: DataTypes.BOOLEAN
+  Attendance.init({
+    mentor_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'mentors',
+        key: 'id',
+      },
+      allowNull: false
+    },
+    mentee_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'mentees',
+        key: 'id',
+      },
+      allowNull: false
+    },
+    date_of_meet: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    attendance: {
+      type: DataTypes.ENUM('Present', 'Absent'),
+      allowNull: false
+    }
   }, {
     sequelize,
-    modelName: 'attendance',
+    modelName: 'Attendance',
     tableName: 'attendance'
   });
-  return attendance;
+  return Attendance;
 };

@@ -10,16 +10,32 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       description: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       start_date: {
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       end_date: {
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       createdAt: {
         allowNull: false,

@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Mentee, { foreignKey: 'project_id'});
+      this.hasMany(models.Mentee, { foreignKey: 'project_id'}); // this is the project_id in mentee table. Each Project has many Mentees
+      this.hasMany(models.Mentor, { foreignKey: 'project_id'}); // this is the project_id in mentor table. Each Project has many Mentors
+      this.hasMany(models.Milestone, { foreignKey: 'project_id'}); // this is the project_id in milestone table. Each Project has many Milestones
+      this.hasMany(models.Task, { foreignKey: 'project_id'}); // this is the project_id in task table. Each Project has many Tasks
     }
   }
   Project.init({

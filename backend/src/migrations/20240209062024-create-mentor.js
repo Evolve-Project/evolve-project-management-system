@@ -1,36 +1,50 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable('mentors', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER
       },
       user_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        allowNull: false,
+        unique: true
       },
       first_name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING(100),
+        allowNull: false
       },
       last_name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING(100),
+        allowNull: true
       },
       Experience: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       project_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'projects',
+          key: 'id',
+        },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       }
     });
   },

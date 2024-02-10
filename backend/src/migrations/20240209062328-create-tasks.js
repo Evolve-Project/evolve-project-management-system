@@ -1,42 +1,62 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable('tasks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER
       },
       task_name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       task_desc: {
-        type: Sequelize.STRING
+        type: DataTypes.TEXT,
+        allowNull: false
       },
       milestone_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'milestones',
+          key: 'id'
+        }
       },
       project_id: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        references: { 
+          model: 'projects',
+          key: 'id'
+        },
+        allowNull: false
       },
-      mentee_id: {
-        type: Sequelize.INTEGER
+      mentee_id: { // to be filled only when a mentee assigns a task to himself/herself
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'mentees',
+          key: 'id'
+        },
+        allowNull: false
       },
       status: {
-        type: Sequelize.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       task_completion_datetime: {
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       }
     });
   },
