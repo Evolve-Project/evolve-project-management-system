@@ -75,3 +75,13 @@ This command will run all the seeders in your seeders directory, in the order th
 To undo the seeders, you can use the db:seed:undo:all command:
 
 This command will undo all your seeders, in the reverse order they are listed.
+
+
+# quick way to setup database
+enter these commands one by one in terminal
+
+```js
+npx sequelize-cli db:create
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
+```
