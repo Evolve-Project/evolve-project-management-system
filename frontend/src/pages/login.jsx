@@ -3,7 +3,19 @@ import { onLogin } from '../api/authApi'
 import Layout from '../components/layout/layout'
 import { useDispatch } from 'react-redux'
 import { authenticateUser } from './../redux/slices/authslice'
-import { Button } from '@/components/ui/Button'
+import { Navigate } from 'react-router-dom'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from '@/components/ui/button'
+
 
 const Login = () => {
     const [values, setValues] = useState({
@@ -21,13 +33,12 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            await onLogin(values)
-            dispatch(authenticateUser())
-
-            localStorage.setItem('isAuth', 'true')
+            const { data } = await onLogin(values);
+            const role = data.role;
+            dispatch(authenticateUser({ role }));
+            localStorage.setItem('authData', JSON.stringify({ isAuth: true, role: role }));
         } catch (error) {
-            console.log(error.response.data.errors[0].msg)
-            setError(error.response.data.errors[0].msg)
+            console.log(error)
         }
     }
 
@@ -70,9 +81,9 @@ const Login = () => {
 
                 <div style={{ color: 'red', margin: '10px 0' }}>{error}</div>
 
-                <Button type='submit' className='btn btn-primary'>
+                <button type='submit' className='btn btn-primary'>
                     Submit
-                </Button>
+                </button>
             </form>
         </Layout>
     )

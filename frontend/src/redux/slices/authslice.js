@@ -1,28 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const userAuthFromLocalStorage = () => {
-  const isAuth = localStorage.getItem('isAuth')
+  const authData = localStorage.getItem('authData')
 
-  if (isAuth && JSON.parse(isAuth) === true) {
-    return true
+  if (authData) {
+    console.log(authData);
+    const { isAuth, role } = JSON.parse(authData)
+    console.log(role);
+    return { isAuth, role }
   }
-
-  return false
+  return { isAuth: false, role: null }
 }
 
 const initialState = {
-  isAuth: userAuthFromLocalStorage(),
+  isAuth: userAuthFromLocalStorage().isAuth,
+  role: userAuthFromLocalStorage().role,
 }
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    authenticateUser: (state) => {
+    authenticateUser: (state, action) => {
       state.isAuth = true
+      state.role = action.payload.role
     },
     unauthenticateUser: (state) => {
       state.isAuth = false
+      state.role = null
     },
   },
 })
