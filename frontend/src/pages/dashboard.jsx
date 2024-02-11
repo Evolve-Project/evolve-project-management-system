@@ -19,13 +19,13 @@ const Dashboard = () => {
     const role = useSelector(state => state.auth.role);
 
     switch (role) {
-        case 'admin':
+        case 'Admin':
             return (
                 <Layout>
                     <DashboardAdmin />
                 </Layout>
             );
-        case 'mentor':
+        case 'Mentor':
             return (
                 <Layout>
                   
@@ -34,7 +34,7 @@ const Dashboard = () => {
                   
                 </Layout>
             );
-        case 'mentee':
+        case 'Mentee':
             return (
                 <Layout>
                    
