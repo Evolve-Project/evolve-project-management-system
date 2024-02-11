@@ -10,7 +10,11 @@ import Home from './pages/home'
 import Login from './pages/login'
 import Register from './pages/register'
 import { useSelector } from 'react-redux'
+import AddQuery from './pages/Mentee/AddQuery'
+import Attendance from './pages/Mentee/Attendance'
+import Projects from './pages/Mentee/Projects'
 import Feedback from './pages/feedback'
+
 
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
@@ -30,6 +34,11 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
+
+        <Route path='/add_query' element={<AddQuery/>} />
+        <Route path='/attendance' element={<Attendance/>} />
+        <Route path='/projects' element={<Projects/>} />
+        {/* <Route path='/feedback' element={<Feedback/>} /> */}
 
         <Route element={<PrivateRoutes />}>
           <Route path='/dashboard' element={<Dashboard />} />

@@ -8,19 +8,19 @@ const Feedback = () => {
     const role = useSelector(state => state.auth.role);
 
     switch (role) {
-        case 'admin':
+        case 'Admin':
             return (
                 <Layout>
                     Admin page feedback
                 </Layout>
             );
-        case 'mentor':
+        case 'Mentor':
             return (
                 <Layout>
                     <MentorFeedback/>
                 </Layout>
             );
-        case 'mentee':
+        case 'Mentee':
             return (
                 <Layout>
                     <MenteeFeedback/>
