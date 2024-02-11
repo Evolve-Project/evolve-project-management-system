@@ -1,6 +1,8 @@
 import React, { useImperativeHandle } from "react";
-import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
+import DashboardMentee from "./Dashboard";
+import Layout from "@/components/layout/layout"
 import Navbar from "@/components/navbar/navbar";
+import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import {
   BrowserRouter,
   Navigate,
@@ -10,18 +12,13 @@ import {
 } from 'react-router-dom'
 import "../.././index.css";
 import { Link } from "react-router-dom";
-import AddQuery from './AddQuery'
-import Attendance from "./Attendance";
-import Feedback from "./Feedback";
-import Projects from "./Projects";
 
-
-
-
-const DashboardMentee = () => {
-  return (
-    <>
+const AddQuery = () => {
+    return (
         
+        <>
+        
+        <Layout>
         <div className="navbar-made">
         <nav class="bg-000000">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,18 +64,11 @@ const DashboardMentee = () => {
               </div>
             </div>
           </nav>
-          
-          <h1>This is the mentee Dashboard</h1>
-          <div className="grid-container">
-            <div className="grid-item">Milestone Completed</div>
-            <div className="grid-item">Project</div>
-            <div className="grid-item">Team Members</div>
           </div>
-          <br />
-          <div className="grid-item2">Notifications</div>
-        </div>
-      
-    </>
-  );
-};
-export default DashboardMentee;
+
+          </Layout>
+        </>
+    )
+}
+
+export default AddQuery;
