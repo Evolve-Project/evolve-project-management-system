@@ -50,6 +50,7 @@ So far, we have created the following tables:
 
 ### Migrations
 We have added corresponding migrations for each table. To run the migrations, use the following command:
+### make sure to run these commands in the /backend/src folder
 ```javascript
 npx sequelize-cli db:migrate
 ```
