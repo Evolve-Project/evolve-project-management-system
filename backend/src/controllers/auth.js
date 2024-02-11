@@ -42,6 +42,13 @@ exports.login = async (req, res) => {
         id: user.user_id,
         email: user.email,
     }
+
+
+    console.log("hi");
+    console.log(payload);
+
+
+    
     try {
         const token = sign(payload, SECRET)
 
