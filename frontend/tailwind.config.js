@@ -68,16 +68,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-
-  theme: {
-    extend: {
-      colors: {
-        // Add your custom colors here
-        'custom-black': '#000000',
-        'custom-purple': '#7B76F1',
-        'custom-grey':'#808080',
-        // Add more custom colors as needed
-      },
-    },
-  },
 }
