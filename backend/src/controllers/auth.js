@@ -2,7 +2,7 @@
 const { hash } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const { SECRET } = require('../constants');
-const User = require('../models/user');
+const { User } = require('../models/');
 
 exports.getUsers = async (req, res) => {
     try {

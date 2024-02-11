@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Sdlc, { foreignKey: 'sdlc_id' }); // this is the sdlc_id in milestone table. Each Milestone belongs to one Sdlc
+      //this.belongsTo(models.Sdlc, { foreignKey: 'sdlc_id' }); // this is the sdlc_id in milestone table. Each Milestone belongs to one Sdlc
       this.belongsTo(models.Project, { foreignKey: 'project_id' }); // this is the project_id in milestone table. Each Milestone belongs to one Project
       this.hasMany(models.Task, { foreignKey: 'milestone_id' }); // this is the milestone_id in task table. Each Milestone has many Tasks
     }

@@ -1,6 +1,6 @@
 const { check } = require('express-validator');
-const User = require('../models/user');
 const { compare } = require('bcryptjs');
+const { User } = require('../models/');
 
 const password = check('password').isLength({ min: 6, max: 15 }).withMessage('password not the corrent length');
 
@@ -16,7 +16,9 @@ const emailExists = check('email').custom(async (value) => {
 });
 
 const loginFieldsCheck = check('email').custom(async (value, { req }) => {
+    console.log("called");
     const user = await User.findOne({ where: { email: value } });
+    console.log(user);
     if (!user) {
         throw new Error('Email Does not exist');
     }

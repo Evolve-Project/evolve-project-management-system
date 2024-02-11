@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,33 +10,32 @@ module.exports = (sequelize, DataTypes) => {
 
     static associate(models) {
       // define association here
-      this.hasOne(models.Mentee, { foreignKey: 'user_id'});
-      this.hasOne(models.Mentor, { foreignKey: 'user_id'});
-
+      this.hasOne(models.Mentee, { foreignKey: 'user_id' });
+      this.hasOne(models.Mentor, { foreignKey: 'user_id' });
     }
   }
   User.init({
-    email:{
-      type:DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
         isEmail: true
-      }   
-         
+      }
+
     },
     password: {
-      type:DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     role: {
       type: DataTypes.ENUM('Admin', 'Mentor', 'Mentee'),
-      allowNull:false,
+      allowNull: false,
       defaultValue: 'Mentee'
 
     },
     is_active: {
-      type:DataTypes.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       defaultValue: true
     }
   }, {
