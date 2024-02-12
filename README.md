@@ -77,7 +77,7 @@ To undo the seeders, you can use the db:seed:undo:all command:
 This command will undo all your seeders, in the reverse order they are listed.
 
 
-# quick way to setup database
+# quick way to setup database and add dummy data
 enter these commands one by one in terminal
 
 ```js
