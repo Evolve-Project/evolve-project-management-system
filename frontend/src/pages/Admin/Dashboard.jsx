@@ -6,10 +6,41 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
-
+  import { useMemo } from 'react'
+  import {COLUMNS} from '@/components/Components/Columns'
+  import MOCK_DATA from '@/components/Components/MOCK_DATA.json'
+  import {useTable ,useGlobalFilter ,usePagination} from "react-table"
+  import "@/components/Components/table.css"
+  import GlobalFilter from '@/components/Components/GlobalFilter'
+import { Button } from "@/components/ui/button"
 const DashboardAdmin = () => {
+  let columns = useMemo(()=>COLUMNS,[]);
+    let data = useMemo(()=>MOCK_DATA,[]);
+   const tableInstance= useTable({
+        columns,
+        data,
+        initialState: { pageIndex: 0, pageSize: 5}
+    },useGlobalFilter,usePagination);
+    const{
+        getTableBodyProps,
+        getTableProps,
+        headerGroups,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        gotoPage,
+        pageCount,
+        setPageSize,
+        prepareRow,
+        state,
+        setGlobalFilter
+    }=tableInstance;
+    const {globalfilter , pageIndex,  pageSize} = state;
     return (<>
-    <div className="flex text-center">
+    <div className="flex text-center pb-3">
     <Card className="w-60 mr-20 ml-20">
   <CardHeader >
     <CardTitle>Total Mentor</CardTitle>
@@ -50,6 +81,68 @@ const DashboardAdmin = () => {
   </CardFooter>
 </Card> 
     </div>
+    <>
+    <GlobalFilter filter={globalfilter} setfilter={setGlobalFilter} className="global-filter-container"/>
+    <table {...getTableProps()}>
+        <thead>
+        {
+            headerGroups.map((headerGroups)=>(
+                <tr {...headerGroups.getHeaderGroupProps()}>
+                    {headerGroups.headers.map((column)=>(
+                    <th {...column.getHeaderProps()}>
+                        {column.render('Header')}
+                    </th>
+                    ))}
+                 </tr>
+            ))
+        }
+        
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {page.map((rows)=>{
+            prepareRow(rows);
+            return(
+            <tr {...rows.getRowProps()}>
+                {rows.cells.map((cell)=>{
+                    return(
+                    <td  {...cell.getCellProps()}>
+                       {cell.render('Cell')}
+                    </td>
+                    )
+                })}
+               
+            </tr>
+            )
+        })}
+      
+      </tbody>
+    </table>
+    <div className="pagination-container">
+          <span>
+            Page{" "}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{" "}
+          </span>
+          <Button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            className="pagination-button"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            className="pagination-button"
+          >
+            Next
+          </Button>
+        </div>
+    </>
     </>)
 }
 export default DashboardAdmin
+
+
+
