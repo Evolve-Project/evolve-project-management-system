@@ -1,0 +1,125 @@
+
+.chat-app {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.query-box {
+    margin-bottom: 20px;
+}
+
+.query-box button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    /* Adjust button background color as needed */
+    color: #fff;
+    /* Adjust button text color as needed */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.query-box button:hover {
+    background-color: #0056b3;
+    /* Adjust hover background color as needed */
+}
+
+.query-box form {
+    margin-top: 10px;
+}
+
+.query-box input[type="text"] {
+    width: 40vh;
+    height: 20px;
+    /* Adjust input width as needed */
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    /* Adjust input border color as needed */
+    border-radius: 4px;
+}
+
+.query-box button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #28a745;
+    /* Adjust button background color as needed */
+    color: #fff;
+    /* Adjust button text color as needed */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.query-box button[type="submit"]:hover {
+    background-color: #218838;
+    /* Adjust hover background color as needed */
+}
+
+/* Styles for individual queries */
+.query {
+    margin-bottom: 20px;
+}
+
+.query p {
+    margin-bottom: 10px;
+}
+
+.query button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    /* Adjust button background color as needed */
+    color: #fff;
+    /* Adjust button text color as needed */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.query button:hover {
+    background-color: #0056b3;
+    /* Adjust hover background color as needed */
+}
+
+.query form {
+    margin-top: 10px;
+}
+
+.query input[type="text"] {
+    width: 40vh;
+    height: 20px;
+    /* Adjust input width as needed */
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    /* Adjust input border color as needed */
+    border-radius: 4px;
+}
+
+.query button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #28a745;
+    /* Adjust button background color as needed */
+    color: #fff;
+    /* Adjust button text color as needed */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.query button[type="submit"]:hover {
+    background-color: #218838;
+    /* Adjust hover background color as needed */
+}
+
+/* Styles for individual replies */
+.query li {
+    padding: 5px 10px;
+    background-color: #f9f9f9;
+    /* Adjust reply background color as needed */
+    border: 1px solid #ccc;
+    /* Adjust reply border color as needed */
+    border-radius: 4px;
+    margin-top: 5px;
+}
