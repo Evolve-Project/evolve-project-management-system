@@ -10,10 +10,7 @@ import {
 } from 'react-router-dom'
 import "../.././index.css";
 import { Link } from "react-router-dom";
-import AddQuery from './AddQuery'
-import Attendance from "./Attendance";
-import Feedback from "./Feedback";
-import Projects from "./Projects";
+
 
 
 
@@ -67,7 +64,7 @@ const DashboardMentee = () => {
             </div>
           </div>
         </nav>
-
+         
         <h1>This is the mentee Dashboard</h1>
         <div className="grid-container">
           <div className="grid-item">Milestone Completed</div>

@@ -1,22 +1,22 @@
   {
     "development": {
       "username": "postgres",
-      "password": "postgres",
+      "password": "Mylove123",
       "database": "evolve_application",
       "host": "localhost",
       "dialect": "postgres"
     },
     "test": {
       "username": "postgres",
-      "password": "12345678",
-      "database": "evolve_application",
+      "password": "Mylove123",
+      "database": "evolve_applicatio",
       "host": "localhost",
       "dialect": "postgres"
     },
     "production": {
       "username": "postgres",
-      "password": "12345678",
-      "database": "evolve_application",
+      "password": "Mylove123",
+      "database": "evolve_applicatio",
       "host": "localhost",
       "dialect": "postgres"
     }
