@@ -25,43 +25,43 @@ module.exports = {
         },
         allowNull: false
       },
-      metric1_rating: {
+      performance_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      metric1_feedback: {
+      performance_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric2_rating: {
+      team_work_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      metric2_feedback: {
+      team_work_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric3_rating: {
+      interaction_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      metric3_feedback: {
+      interaction_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric4_rating: {
+      problem_solving_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      metric4_feedback: {
+      problem_solving_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric5_rating: {
+      punctuality_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      metric5_feedback: {
+      punctuality_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },

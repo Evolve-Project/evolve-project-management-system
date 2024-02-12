@@ -3,17 +3,17 @@ import "@/styles/feedback.css";
 import { Rating } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { mentor, mentor_metrics } from "@/dummyData";
+import { mentee, mentee_metrics } from "@/dummyData";
 
-const MenteeFeedback = () => {
+const MentorFeedback = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const handleDropDown = (e, mentor) => {
+  const handleDropDown = (e, mentee) => {
     e.preventDefault();
-    if (mentor.user_id === activeDropdown) 
+    if (mentee.user_id === activeDropdown) 
       setActiveDropdown(null);
     else
-      setActiveDropdown(mentor.user_id);
+      setActiveDropdown(mentee.user_id);
   };
 
   return (
@@ -21,12 +21,12 @@ const MenteeFeedback = () => {
       <div className="container">
         <div className="title"> Feedback </div>
         <div className="component">
-          {mentor.map((mentor) => {
+          {mentee.map((mentee) => {
             return (
               <>
                 <div className="box">
                   <span className="name">
-                    {mentor.first_name + " " + mentor.last_name}
+                    {mentee.first_name + " " + mentee.last_name}
                   </span>
                   <span className="rating">
                     <Rating
@@ -39,16 +39,16 @@ const MenteeFeedback = () => {
                   <span className="drop-down">
                     <span
                       className={"drop-down-icon"}
-                      onClick={(e) => handleDropDown(e, mentor)}
+                      onClick={(e) => handleDropDown(e, mentee)}
                     >
-                      {(activeDropdown === mentor.user_id) ? (<ArrowDropUpIcon/>) : (<ArrowDropDownIcon />)}
+                      {(activeDropdown === mentee.user_id) ? (<ArrowDropUpIcon/>) : (<ArrowDropDownIcon />)}
                     </span>
                   </span>
                 </div>
 
-                {activeDropdown === mentor.user_id && (
+                {activeDropdown === mentee.user_id && (
                   <div className="content">
-                    {mentor_metrics.map((metric) => {
+                    {mentee_metrics.map((metric) => {
                       return (
                         <div className="metric-box">
                           <span className="name">{metric}</span>
@@ -79,4 +79,4 @@ const MenteeFeedback = () => {
   );
 };
 
-export default MenteeFeedback;
+export default MentorFeedback;

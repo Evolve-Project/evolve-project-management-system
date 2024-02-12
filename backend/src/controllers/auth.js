@@ -52,6 +52,7 @@ exports.login = async (req, res) => {
         id: user.user_id,
         email: user.email,
     }
+
     try {
         const token = sign(payload, SECRET)
 
