@@ -19,3 +19,11 @@ export async function onLogout() {
 export async function fetchProtectedInfo() {
     return await axios.get('http://localhost:8000/api/protected')
 }
+
+export async function requestResetPassword(userEmail) {
+    return await axios.post('http://localhost:8000/api/reset-password', userEmail);
+}
+
+export async function requestUserByToken(userToken) {
+    return await axios.post('http://localhost:8000/api/get-user-by-token', { token: userToken });
+}

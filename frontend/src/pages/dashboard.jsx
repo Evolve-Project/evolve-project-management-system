@@ -4,8 +4,8 @@ import {
     Routes,
     Route,
     Outlet,
-  } from 'react-router-dom'
-  import React, { useImperativeHandle } from 'react';
+} from 'react-router-dom'
+import React, { useImperativeHandle } from 'react';
 import DashboardAdmin from "@/pages/Admin/Dashboard";
 import DashboardMentee from "@/pages/Mentee/Dashboard";
 import DashboardMentor from "@/pages/Mentor/Dashboard";
@@ -28,18 +28,17 @@ const Dashboard = () => {
         case 'Mentor':
             return (
                 <Layout>
-                  
+
                     <DashboardMentor />
-                    
-                  
+
                 </Layout>
             );
         case 'Mentee':
             return (
                 <Layout>
-                   
-                   <DashboardMentee/>
-          
+
+                    <DashboardMentee />
+
                 </Layout>
             );
         default:

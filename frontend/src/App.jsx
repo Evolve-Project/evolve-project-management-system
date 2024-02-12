@@ -14,11 +14,12 @@ import AddQuery from './pages/Mentee/AddQuery'
 import Attendance from './pages/Mentee/Attendance'
 import Feedback from './pages/Mentee/Feedback'
 import Projects from './pages/Mentee/Projects'
+import ResetPassword from './pages/resetPassword'
+import ResetForm from './pages/resetForm'
 
 
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
-  const checkLogin = isAuth.isAuth;
 
   return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
 }
@@ -35,10 +36,12 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
 
-        <Route path='/add_query' element={<AddQuery/>} />
-        <Route path='/attendance' element={<Attendance/>} />
-        <Route path='/projects' element={<Projects/>} />
-        <Route path='/feedback' element={<Feedback/>} />
+        <Route path='/add_query' element={<AddQuery />} />
+        <Route path='/attendance' element={<Attendance />} />
+        <Route path='/projects' element={<Projects />} />
+        <Route path='/feedback' element={<Feedback />} />
+        <Route path='/reset/' element={<ResetForm />} />
+        <Route path='/reset-password/:id' element={<ResetPassword />} />
 
         <Route element={<PrivateRoutes />}>
           <Route path='/dashboard' element={<Dashboard />} />

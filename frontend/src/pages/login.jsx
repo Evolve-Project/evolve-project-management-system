@@ -3,7 +3,8 @@ import { onLogin } from '../api/authApi'
 import Layout from '../components/layout/layout'
 import { useDispatch } from 'react-redux'
 import { authenticateUser } from './../redux/slices/authslice'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import {
     Card,
     CardContent,
@@ -39,9 +40,14 @@ const Login = () => {
             localStorage.setItem('authData', JSON.stringify({ isAuth: true, role: role }));
         } catch (error) {
             console.log(error)
+            Swal.fire({
+                title: 'Error!',
+                text: 'Wrong Username or password',
+                icon: 'error',
+                confirmButtonText: 'Retry'
+            })
         }
     }
-
     return (
         <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
             <div className="w-full m-auto bg-white lg:max-w-lg">
@@ -81,7 +87,8 @@ const Login = () => {
                                 required
                             />
                         </CardContent>
-                        <CardFooter>
+                        <CardFooter className="flex flex-col items-start">
+                            <p className='text-xs mb-1'>Forgot  Password?<Link className='text-primary' to={"/reset"}> Click here </Link>to Reset</p>
                             <Button type='submit' className="w-full" >
                                 Login
                             </Button>

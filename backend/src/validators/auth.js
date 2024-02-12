@@ -16,9 +16,7 @@ const emailExists = check('email').custom(async (value) => {
 });
 
 const loginFieldsCheck = check('email').custom(async (value, { req }) => {
-    console.log("called");
     const user = await User.findOne({ where: { email: value } });
-    console.log(user);
     if (!user) {
         throw new Error('Email Does not exist');
     }

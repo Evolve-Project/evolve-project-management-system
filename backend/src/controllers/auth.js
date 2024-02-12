@@ -1,8 +1,9 @@
 
 const { hash } = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
-const { SECRET } = require('../constants');
+const { sign, verify } = require('jsonwebtoken');
+const { SECRET, EMAILUSER, EMAILPASSWORD } = require('../constants');
 const { User } = require('../models/');
+const nodemailer = require('nodemailer');
 
 exports.getUsers = async (req, res) => {
     try {
@@ -90,5 +91,53 @@ exports.logout = async (req, res) => {
         })
     } catch (error) {
         console.log("Error in getUsers, auth controller ", error);
+    }
+}
+
+exports.getUserByToken = async (req, res) => {
+    const token = req.body.token;
+    console.log(token)
+    verify(token, SECRET, (error, decodedData) => {
+        return res.status(200).json({
+            email: decodedData.email,
+        })
+    })
+}
+
+
+exports.resetPassword = async (req, res) => {
+    let payload = {
+        email: req.body.email
+    }
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.zoho.in',
+            port: 465,
+            secure: true, // use SSL
+            auth: {
+                user: EMAILUSER,
+                pass: EMAILPASSWORD,
+            }
+        });
+        const token = sign(payload, SECRET)
+        const mailOptions = {
+            from: 'harsh@harshvse.in',
+            to: req.body.email,
+            subject: 'Password Reset',
+            text: `To reset your password, please click on the following link: http://localhost:3000/reset-password/${token}`
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Error sending email' });
+            }
+        })
+        return res.status(200).json({
+            success: true,
+            message: 'Reset link sent successful',
+        })
+
+    } catch (error) {
+        console.log('error in resetting password');
     }
 }
