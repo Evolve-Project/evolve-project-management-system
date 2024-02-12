@@ -6,7 +6,6 @@ const { hash } = require('bcryptjs');
 module.exports = {
   async up(queryInterface, Sequelize) {
     const users = [];
-
     for (let i = 0; i <= 20; i++) {
       const hashedPassword = await hash(`password${i}`, 10);
       users.push({
