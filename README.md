@@ -79,7 +79,7 @@ This command will undo all your seeders, in the reverse order they are listed.
 
 
 # quick way to setup database
-enter these commands one by one in terminal
+enter these commands one by one in terminal(../backend/src)
 
 ```js
 npx sequelize-cli db:create
