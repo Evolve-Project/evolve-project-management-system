@@ -1,0 +1,36 @@
+/* Chat.css */
+.parent{
+    display: flex;
+    justify-content: flex-end;
+}
+.container {
+    position: absolute;
+    width: 70%;
+    border: 1px solid black;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    overflow-y: scroll;
+    /* Align container content to the right */
+}
+
+.contain {
+    width: 100%;
+    padding: 30px;
+    
+}
+
+/* Adjust styles for smaller screen sizes */
+@media (max-width: 768px) {
+    .contain {
+        width: 80%;
+        /* Adjust width for smaller screens */
+    }
+}
+
+@media (max-width: 300px) {
+    .contain {
+        width: 90%;
+        /* Further adjust width for very small screens */
+    }
+}
