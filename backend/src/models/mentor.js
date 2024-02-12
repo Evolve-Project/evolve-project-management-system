@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
       allowNull: false
-    }
+    },
   }, {
     sequelize,
     modelName: 'Mentor',

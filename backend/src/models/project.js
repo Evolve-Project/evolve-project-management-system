@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Mentee, { foreignKey: 'project_id'}); // this is the project_id in mentee table. Each Project has many Mentees
       this.hasMany(models.Mentor, { foreignKey: 'project_id'}); // this is the project_id in mentor table. Each Project has many Mentors
       this.hasMany(models.Milestone, { foreignKey: 'project_id'}); // this is the project_id in milestone table. Each Project has many Milestones
-      this.hasMany(models.Task, { foreignKey: 'project_id'}); // this is the project_id in task table. Each Project has many Tasks
+      // this.hasMany(models.Task, { foreignKey: 'project_id'}); // this is the project_id in task table. Each Project has many Tasks
     }
   }
   Project.init({
@@ -52,7 +52,14 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isUrl: true
       }
+    },
+    //team_id field addition for subham's algorithm
+    assigned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false
     }
+    
   }, {
     sequelize,
     modelName: 'Project',

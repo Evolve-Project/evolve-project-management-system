@@ -81,7 +81,15 @@ This command will undo all your seeders, in the reverse order they are listed.
 enter these commands one by one in terminal
 
 ```js
+npx sequelize-cli db:drop // run this only if you have previously created database to delete and recreate it
 npx sequelize-cli db:create
 npx sequelize-cli db:migrate
-npx sequelize-cli db:seed:all
+// instead of this run the below seeds -- npx sequelize-cli db:seed:all
+npx sequelize db:seed --seed 20240210190115-demo-user.js
+npx sequelize db:seed --seed 20240212080357-demo_projects.js
+npx sequelize db:seed --seed 20240212111734-demo_mentee.js
+npx sequelize db:seed --seed 20240212111741-demo_mentor.js
+npx sequelize db:seed --seed 20240212081246-demo_sdlc.js
+npx sequelize db:seed --seed 20240212082746-demo_milestones.js
+npx sequelize db:seed --seed 20240212072539-demo_tasks.js
 ```

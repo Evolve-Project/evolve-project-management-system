@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
       allowNull: true
-    }
+    },
   }, {
     sequelize,
     modelName: 'Mentee',
