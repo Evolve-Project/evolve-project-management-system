@@ -1,22 +1,21 @@
-import React, { useImperativeHandle } from "react";
+import React, { useState , useEffect } from "react";
 import DashboardMentee from "./Dashboard";
 import Layout from "@/components/layout/layout";
 import Navbar from "@/components/navbar/navbar";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
-import {
-  BrowserRouter,
-  Navigate,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import axios from "axios";
 import "../.././index.css";
 import { Link } from "react-router-dom";
 const Projects = () => {
+  const [tasks, setUser] = useState([]);
+
+  useEffect(() => {
+    console.log("task insertion")
+  },[]) 
   return (
     <>
       <Layout>
-      <div className="navbar-made">
+        <div className="navbar-made">
           <nav class="bg-000000">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div class="flex justify-between h-16">
@@ -52,8 +51,6 @@ const Projects = () => {
                       <Link
                         to="/feedback"
                         class="text-custom-purple hover:text-custom-grey"
-
-                        
                       >
                         Feedback
                       </Link>
