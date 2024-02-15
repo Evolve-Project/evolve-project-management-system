@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState , useEffect } from "react";
 import DashboardMentee from "./Dashboard";
 import Layout from "@/components/layout/layout";
 import Navbar from "@/components/navbar/navbar";
@@ -6,12 +6,12 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 import "../.././index.css";
 import { Link } from "react-router-dom";
-import {BsFillThrashFill, BsFillPencilFill} from 'react-icons/bs';
-
-
 const Projects = () => {
-  
+  const [tasks, setUser] = useState([]);
 
+  useEffect(() => {
+    console.log("task insertion")
+  },[]) 
   return (
     <>
       <Layout>
@@ -61,24 +61,7 @@ const Projects = () => {
             </div>
           </nav>
         </div>
-        <h1>
-          Projects Page{" "}
-          <Link to="/addtask" className="btn btn-outline-light">
-            Add Task
-          </Link>
-        </h1>
-        <table class="table caption-top  border shadow">
-          <caption>List of tasks</caption>
-          <thead>
-            <tr>
-              <th scope="col">TaskName</th>
-              <th scope="col">Task Description</th>
-              <th scope="col">Mentee ID </th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>{tasks.map((task, index) => {})}</tbody>
-        </table>
+        <h1>Projects Page</h1>
       </Layout>
     </>
   );
