@@ -21,9 +21,13 @@ export async function fetchProtectedInfo() {
 }
 
 export async function requestResetPassword(userEmail) {
-    return await axios.post('http://localhost:8000/api/reset-password', userEmail);
+    return await axios.post('http://localhost:8000/api/request-reset-password', userEmail);
 }
 
 export async function requestUserByToken(userToken) {
     return await axios.post('http://localhost:8000/api/get-user-by-token', { token: userToken });
+}
+
+export async function resetPassword({ id, values }) {
+    return await axios.post('http://localhost:8000/api/reset-password', { token: id, password: values.password });
 }

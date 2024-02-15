@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { onLogin, requestResetPassword, requestUserByToken } from '../api/authApi'
+import { onLogin, requestResetPassword, requestUserByToken, resetPassword } from '../api/authApi'
 import Layout from '../components/layout/layout'
 import { useDispatch } from 'react-redux'
 import { authenticateUser } from '../redux/slices/authslice'
@@ -13,29 +13,52 @@ import { useParams } from 'react-router';
 
 const ResetPassword = (props) => {
     const [values, setValues] = useState({
-        email: '',
-        password: ''
+        password: ""
     })
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordSame, setPasswordSame] = useState(true);
+
     const [error, setError] = useState(false)
 
-    const onChange = (e) => {
+    const onChangePassword = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
+    }
+    const onChangeConfirmPassword = (e) => {
+        setConfirmPassword(e.target.value);
     }
     const { id } = useParams();
 
     const dispatch = useDispatch()
     const onSubmit = async (e) => {
         e.preventDefault()
-        try {
+        if (values.password != confirmPassword) {
             Swal.fire({
-                title: 'Success',
-                text: 'Password reset successful you can now login',
-                icon: 'success',
-                confirmButtonText: 'okay'
+                title: 'Error',
+                text: 'Password and Confirm Password are not same',
+                icon: 'Error',
+                confirmButtonText: 'Okay'
             }).then(() => { console.log("clicked ok") });
-        } catch (error) {
-            console.log("Error: ", error);
+        } else {
+            try {
+                const res = await resetPassword({ id, values });
+                console.log(res);
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Password reset successful you can now login',
+                    icon: 'success',
+                    confirmButtonText: 'Okay'
+                }).then(() => { console.log("clicked ok") });
+            } catch (error) {
+                console.log("Error: ", error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Okay'
+                }).then(() => { console.log("clicked ok") });
+            }
         }
+
     }
 
     return (
@@ -52,12 +75,27 @@ const ResetPassword = (props) => {
                                 Enter your new Password
                             </Label>
                             <Input
-                                onChange={(e) => onChange(e)}
+                                onChange={(e) => onChangePassword(e)}
                                 type='password'
                                 value={values.password}
                                 className='form-control'
                                 id='password'
                                 name='password'
+                                placeholder='*******'
+                                required
+                            />
+                        </CardContent>
+                        <CardContent>
+                            <Label htmlFor='confirmPassword'>
+                                Confirm your new Password
+                            </Label>
+                            <Input
+                                onChange={(e) => onChangeConfirmPassword(e)}
+                                type='text'
+                                value={confirmPassword}
+                                className='form-control'
+                                id='confirmPassword'
+                                name='confirmPassword'
                                 placeholder='*******'
                                 required
                             />

@@ -28,7 +28,10 @@ const Login = () => {
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
     }
-
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
     const dispatch = useDispatch()
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -76,16 +79,21 @@ const Login = () => {
                             <Label htmlFor='password'>
                                 Password
                             </Label>
-                            <Input
-                                onChange={(e) => onChange(e)}
-                                type='password'
-                                value={values.password}
-                                className='form-control'
-                                id='password'
-                                name='password'
-                                placeholder='password'
-                                required
-                            />
+                            <div className='relative'>
+                                <Input
+                                    onChange={(e) => onChange(e)}
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={values.password}
+                                    className='form-control'
+                                    id='password'
+                                    name='password'
+                                    placeholder='password'
+                                    required
+                                />
+                                <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'} absolute right-5 top-1.5`}
+                                    onClick={togglePasswordVisibility}
+                                ></i>
+                            </div>
                         </CardContent>
                         <CardFooter className="flex flex-col items-start">
                             <p className='text-xs mb-1'>Forgot  Password?<Link className='text-primary' to={"/reset"}> Click here </Link>to Reset</p>

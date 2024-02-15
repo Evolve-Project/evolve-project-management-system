@@ -25,7 +25,6 @@ const ResetForm = () => {
     const onSubmit = async (e) => {
         e.preventDefault()
         try {
-            console.log(values);
             const data = await requestResetPassword(values);
             console.log(data);
             Swal.fire({

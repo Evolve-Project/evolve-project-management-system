@@ -1,4 +1,4 @@
-
+var passwordValidator = require('password-validator');
 const { hash } = require('bcryptjs');
 const { sign, verify } = require('jsonwebtoken');
 const { SECRET, EMAILUSER, EMAILPASSWORD } = require('../constants');
@@ -102,12 +102,14 @@ exports.getUserByToken = async (req, res) => {
             email: decodedData.email,
         })
     })
+
 }
 
 
-exports.resetPassword = async (req, res) => {
+exports.requestResetPassword = async (req, res) => {
     let payload = {
-        email: req.body.email
+        email: req.body.email,
+        exp: Math.floor(Date.now() / 1000) + (60 * 10),
     }
     try {
         const transporter = nodemailer.createTransport({
@@ -140,4 +142,46 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         console.log('error in resetting password');
     }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const decoded = await verify(req.body.token, SECRET);
+        var schema = new passwordValidator();
+        schema
+            .is().min(8)
+            .is().max(100)
+            .has().uppercase()
+            .has().lowercase();
+        if (schema.validate(req.body.password)) {
+            const hashedPassword = await hash(req.body.password, 10);
+            const user = await User.findOne({ where: { email: decoded.email } });
+            if (user) {
+                user.update({ password: hashedPassword })
+            }
+            return res.status(200).json({
+                success: true,
+                email: decoded.email,
+            })
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "Password Too Weak",
+            })
+        }
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        })
+    }
+
+    // (error, decodedData) => {
+    //     if (error) {
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: error.message,
+    //         })
+    //     }
+
 }
