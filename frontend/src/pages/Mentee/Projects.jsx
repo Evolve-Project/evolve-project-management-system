@@ -62,7 +62,35 @@ const Projects = () => {
           </nav>
         </div>
         <h1>Projects Page</h1>
+
       </Layout>
+      <table className="table shadow border">
+  <thead>
+    <tr>
+      <th scope="col">Task name</th>
+      <th scope="col">Task Description</th>
+      <th scope="col">Mentee ID</th>
+      <th scope="col">Deadline</th>
+      <th scope="col">status</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+  
+  </tbody>
+</table>
     </>
   );
 };
