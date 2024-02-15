@@ -5,6 +5,31 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { mentor, mentor_metrics } from "@/dummyData";
 
+const Metric = ()=>{
+  return (<div className="content">
+      {mentor_metrics.map((metric) => {
+        return (
+          <div className="metric-box">
+            <span className="name">{metric}</span>
+            <span className="rating">
+              <Rating
+                name="half-rating"
+                defaultValue={0}
+                precision={0.5}
+              />
+            </span>
+            <span className="comment">
+              <input type="text" placeholder="comment" />
+            </span>
+          </div>
+        );
+      })}
+      <div className="flex flex-row-reverse">
+        <span className="btn">submit</span>
+      </div>
+    </div>
+)};
+
 const MenteeFeedback = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -47,28 +72,7 @@ const MenteeFeedback = () => {
                 </div>
 
                 {activeDropdown === mentor.user_id && (
-                  <div className="content">
-                    {mentor_metrics.map((metric) => {
-                      return (
-                        <div className="metric-box">
-                          <span className="name">{metric}</span>
-                          <span className="rating">
-                            <Rating
-                              name="half-rating"
-                              defaultValue={0}
-                              precision={0.5}
-                            />
-                          </span>
-                          <span className="comment">
-                            <input type="text" placeholder="comment" />
-                          </span>
-                        </div>
-                      );
-                    })}
-                    <div className="flex flex-row-reverse">
-                      <span className="btn">submit</span>
-                    </div>
-                  </div>
+                  <Metric />
                 )}
               </>
             );

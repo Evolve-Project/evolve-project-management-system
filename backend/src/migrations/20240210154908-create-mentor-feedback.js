@@ -31,18 +31,6 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      doubt_clarification_rating: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          min: 1,
-          max: 5
-        }
-      },
-      doubt_clarification_feedback: {
-        type: DataTypes.TEXT,
-        allowNull: false
-      },
       support_rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -52,6 +40,30 @@ module.exports = {
         }
       },
       support_feedback: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      encouragement_rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 1,
+          max: 5
+        }
+      },
+      encouragement_feedback: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      feedback_rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 1,
+          max: 5
+        }
+      },
+      feedback_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },

@@ -41,11 +41,11 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      interaction_rating: {
+      communication_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      interaction_feedback: {
+      communication_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
@@ -57,11 +57,11 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      punctuality_rating: {
+      timely_delivery_rating: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      punctuality_feedback: {
+      timely_delivery_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
