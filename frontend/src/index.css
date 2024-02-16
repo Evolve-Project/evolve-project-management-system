@@ -55,7 +55,13 @@
   }
 
   body {
-    background-color: #F6F6F3; 
+    background-color: #F6F6F3 ; 
+  }
+  body {
+    background-color: #F6F6F3 ; 
+  }
+  body {
+    @apply h-screen;
   }
 }
 

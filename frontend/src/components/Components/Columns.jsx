@@ -28,3 +28,22 @@ export const COLUMNS =[
         accessor:"Progress" 
     }
 ];
+
+export const UserCOLUMNS =[
+    {
+        Header:"User ID",
+        accessor:"id"
+    },
+    {
+        Header:"Name",
+        accessor:"name"
+    },
+    {
+        Header:"Role",
+        accessor:"role"
+    },
+    {
+        Header:"Project Assigned",
+        accessor:"projectassigned"
+    }
+];
