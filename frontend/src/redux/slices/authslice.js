@@ -9,7 +9,7 @@ const userAuthFromLocalStorage = () => {
     console.log(role);
     return { isAuth, role }
   }
-  return { isAuth: true, role: "admin"}
+  return { isAuth: false, role: null }
 }
 
 const initialState = {
