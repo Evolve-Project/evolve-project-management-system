@@ -3,12 +3,11 @@ import "@/styles/feedback.css";
 import { Rating } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { mentee, mentee_metrics } from "@/dummyData";
+import { mentor, mentor_metrics } from "@/dummyData";
 
 const Metric = ()=>{
-  return (
-    <div className="content">
-      {mentee_metrics.map((metric) => {
+  return (<div className="content">
+      {mentor_metrics.map((metric) => {
         return (
           <div className="metric-box">
             <span className="name">{metric}</span>
@@ -31,15 +30,15 @@ const Metric = ()=>{
     </div>
 )};
 
-const MentorFeedback = () => {
+const MenteeFeedback = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const handleDropDown = (e, mentee) => {
+  const handleDropDown = (e, mentor) => {
     e.preventDefault();
-    if (mentee.user_id === activeDropdown) 
+    if (mentor.user_id === activeDropdown) 
       setActiveDropdown(null);
     else
-      setActiveDropdown(mentee.user_id);
+      setActiveDropdown(mentor.user_id);
   };
 
   return (
@@ -47,12 +46,12 @@ const MentorFeedback = () => {
       <div className="container">
         <div className="title"> Feedback </div>
         <div className="component">
-          {mentee.map((mentee) => {
+          {mentor.map((mentor) => {
             return (
               <>
                 <div className="box">
                   <span className="name">
-                    {mentee.first_name + " " + mentee.last_name}
+                    {mentor.first_name + " " + mentor.last_name}
                   </span>
                   <span className="rating">
                     <Rating
@@ -65,14 +64,14 @@ const MentorFeedback = () => {
                   <span className="drop-down">
                     <span
                       className={"drop-down-icon"}
-                      onClick={(e) => handleDropDown(e, mentee)}
+                      onClick={(e) => handleDropDown(e, mentor)}
                     >
-                      {(activeDropdown === mentee.user_id) ? (<ArrowDropUpIcon/>) : (<ArrowDropDownIcon />)}
+                      {(activeDropdown === mentor.user_id) ? (<ArrowDropUpIcon/>) : (<ArrowDropDownIcon />)}
                     </span>
                   </span>
                 </div>
 
-                {activeDropdown === mentee.user_id && (
+                {activeDropdown === mentor.user_id && (
                   <Metric />
                 )}
               </>
@@ -84,4 +83,4 @@ const MentorFeedback = () => {
   );
 };
 
-export default MentorFeedback;
+export default MenteeFeedback;
