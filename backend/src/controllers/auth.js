@@ -105,7 +105,6 @@ exports.getUserByToken = async (req, res) => {
 
 }
 
-
 exports.requestResetPassword = async (req, res) => {
     let payload = {
         email: req.body.email,
@@ -150,7 +149,7 @@ exports.resetPassword = async (req, res) => {
         var schema = new passwordValidator();
         schema
             .is().min(8)
-            .is().max(100)
+            .is().max(24)
             .has().uppercase()
             .has().lowercase();
         if (schema.validate(req.body.password)) {
@@ -175,13 +174,5 @@ exports.resetPassword = async (req, res) => {
             message: error.message,
         })
     }
-
-    // (error, decodedData) => {
-    //     if (error) {
-    //         return res.status(400).json({
-    //             success: false,
-    //             message: error.message,
-    //         })
-    //     }
 
 }
