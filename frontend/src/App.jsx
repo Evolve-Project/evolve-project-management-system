@@ -36,7 +36,7 @@ const App = () => {
         />
 
         <Route path="/" element={<PrivateRoutes />}>
-          {role === "Admin" && (
+          {role === "admin" && (
             <>
               <Route path="/dashboard" element={<DashboardAdmin />} />
               <Route path="/usermanagement" element={<UserManagement />} />
@@ -46,7 +46,7 @@ const App = () => {
             </>
           )}
 
-          {role === "Mentor" && (
+          {role === "mentor" && (
             <>
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/feedback" element={<Feedback />} />
@@ -55,7 +55,7 @@ const App = () => {
             </>
           )}
 
-          {role === "Mentee" && (
+          {role === "mentee" && (
             <>
               <Route path="/dashboard" element={<MenteeDashboard />} />
               {/* <Route path="/attendance" element={<Attendance />} />

@@ -16,25 +16,20 @@ const admin = [
     id: 2,
     title: "User Management",
     icon: transactions,
-    link: "/usermanagement",
+    link: "/dashboard",
   },
+
   {
     id: 3,
-    title: "Attendance",
+    title: "Projects",
     icon: expenses,
-    link: "/attendance",
+    link: "/dashboard",
   },
   {
     id: 4,
-    title: "Projects",
-    icon: expenses,
-    link: "/projects",
-  },
-  {
-    id: 5,
     title: "Checkouts",
     icon: expenses,
-    link: "/checkouts",
+    link: "/dashboard",
   },
 ];
 const mentor = [
@@ -67,6 +62,12 @@ const mentor = [
     title: "Query",
     icon: expenses,
     link: "/query",
+  },
+  {
+    id: 5,
+    title: "Freedback",
+    icon: expenses,
+    link: "/Freedback",
   },
 ];
 const mentee = [

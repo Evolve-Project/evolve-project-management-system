@@ -16,7 +16,7 @@ const PrivateRoutes = () => {
       {isAuth ? (
         <MainLayout>
           <Navbar />
-          <main className="w-full ">
+          <main className="w-full h-screen overflow-y-auto">
             <Outlet />
           </main>
         </MainLayout>

@@ -18,9 +18,9 @@ const Navbar = ({ active, setActive, menuItems }) => {
   const [item, setItem] = useState([]);
 
   useEffect(() => {
-    if (role === "Admin") {
+    if (role === "admin") {
       setItem(admin);
-    } else if (role === "Mentor") {
+    } else if (role === "mentor") {
       setItem(mentor);
     } else {
       setItem(mentee);
@@ -55,7 +55,6 @@ const Navbar = ({ active, setActive, menuItems }) => {
         {item.map((item) => (
           <li
             key={item.id}
-            onClick={() => setActive(item.id)}
             className={`grid items-center gap-2 mx-6 my-1 font-semibold cursor-pointer transition-colors ${
               active === item.id ? "text-purple-700" : "text-gray-600"
             }`}
