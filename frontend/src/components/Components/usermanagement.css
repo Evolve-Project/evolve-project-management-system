@@ -1,0 +1,35 @@
+.container{
+    width: 100%;
+    font-family: sans-serif;
+}
+/* tilte is not responsive */
+.title {
+    margin: 20px auto;
+    text-align: center;
+    color: black;
+    font-size: 30px;
+    max-width: 600px;
+    position: relative;
+}
+.title::before {    
+    content: "";
+    display: block;
+    width: 28vw;
+    height: 8px;
+    background: #7B76F1;
+    left: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}
+.title::after {
+    content: "";
+    display: block;
+    width: 28vw;
+    height: 8px;
+    background: #7B76F1;
+    right: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}

@@ -58,8 +58,8 @@ export const mentee = [
     }
 ]
 
-export const mentee_metrics = ["Performance", "Team Work", "Interaction", "Problem Solving", "Punctuality"];
+export const mentee_metrics = ["Performance", "Team Work", "Communication", "Problem Solving", "Timely delivery"];
 
-export const mentor_metrics = ["Interaction", "Doubt Clarification", "Support"];
+export const mentor_metrics = ["Interaction", "Support", "Encouragement", "Feedback"];
 
 // module.exports = {mentor, mentee, mentee_metrics, mentor_metrics};

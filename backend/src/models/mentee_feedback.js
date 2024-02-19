@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    interaction_rating: {
+    communication_rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         max: 5
       }
     },
-    interaction_feedback: {
+    communication_feedback: {
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    punctuality_rating: {
+    timely_delivery_rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         max: 5
       }
     },
-    punctuality_feedback: {
+    timely_delivery_feedback: {
       type: DataTypes.TEXT,
       allowNull: false
     },
