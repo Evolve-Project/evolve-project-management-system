@@ -4,53 +4,68 @@ import {
   Routes,
   Route,
   Outlet,
-} from 'react-router-dom'
-import Dashboard from './pages/dashboard'
-import Home from './pages/home'
-import Login from './pages/login'
-import Register from './pages/register'
-import { useSelector } from 'react-redux'
-import AddQuery from './pages/Mentee/AddQuery'
-import Attendance from './pages/Mentee/Attendance'
-import Feedback from './pages/Mentee/Feedback'
-import Projects from './pages/Mentee/Projects'
-
-
-const PrivateRoutes = () => {
-  const { isAuth } = useSelector((state) => state.auth)
-  const checkLogin = isAuth.isAuth;
-
-  return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
-}
-
-const RestrictedRoutes = () => {
-  const { isAuth } = useSelector((state) => state.auth)
-
-  return <>{!isAuth ? <Outlet /> : <Navigate to='/dashboard' />}</>
-}
+} from "react-router-dom";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import { useSelector } from "react-redux";
+import PrivateRoutes from "./components/private/PrivateRoutes";
+import DashboardAdmin from "./pages/Admin/DashboardAdmin";
+import MentorDashboard from "./pages/Mentor/MentorDashboard";
+import MenteeDashboard from "./pages/Mentee/MenteeDashboard";
+import Query from "./pages/Mentor/Query";
+import Feedback from "./pages/Mentor/Feedback";
+import UserManagement from "./pages/Admin/UserManagement";
+import Attendance from "./pages/Admin/Attendance";
+import Projects from "./pages/Admin/Projects";
+import Checkouts from "./pages/Admin/Checkouts";
 
 const App = () => {
+  const { isAuth, role } = useSelector((state) => state.auth);
+  console.log(role);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home />} />
+        {/* Route for public routes */}
+        <Route
+          path="/login"
+          element={isAuth ? <Navigate to="/dashboard" /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={isAuth ? <Navigate to="/dashboard" /> : <Register />}
+        />
 
-        <Route path='/add_query' element={<AddQuery/>} />
-        <Route path='/attendance' element={<Attendance/>} />
-        <Route path='/projects' element={<Projects/>} />
-        <Route path='/feedback' element={<Feedback/>} />
+        <Route path="/" element={<PrivateRoutes />}>
+          {role === "admin" && (
+            <>
+              <Route path="/dashboard" element={<DashboardAdmin />} />
+              <Route path="/usermanagement" element={<UserManagement />} />
+              <Route path="/attendance" element={<Attendance />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/checkouts" element={<Checkouts />} />
+            </>
+          )}
 
-        <Route element={<PrivateRoutes />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-        </Route>
+          {role === "mentor" && (
+            <>
+              <Route path="/dashboard" element={<MentorDashboard />} />
+              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/query" element={<Query />} />
+              <Route path="/attendance" element={<Query />} />
+            </>
+          )}
 
-        <Route element={<RestrictedRoutes />}>
-          <Route path='/register' element={<Register />} />
-          <Route path='/login' element={<Login />} />
+          {role === "mentee" && (
+            <>
+              <Route path="/dashboard" element={<MenteeDashboard />} />
+              {/* <Route path="/attendance" element={<Attendance />} />
+              <Route path="/projects" element={<Projects />} /> */}
+            </>
+          )}
         </Route>
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
 
-export default App
+export default App;

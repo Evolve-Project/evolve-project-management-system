@@ -1,10 +1,9 @@
-import Layout from "@/components/layout/layout"
+import React from 'react'
 
-const Register = () => {
-    return (
-        <Layout>
-            <h1>Register</h1>
-        </Layout>
-    )
+const register = () => {
+  return (
+    <div>register</div>
+  )
 }
-export default Register
+
+export default register
