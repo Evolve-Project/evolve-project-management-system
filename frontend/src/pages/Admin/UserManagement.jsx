@@ -9,6 +9,7 @@ import GlobalFilter from "@/components/Components/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import Popup from '@/components/Components/popup';
 import { useLocation,useSearchParams } from 'react-router-dom';
+import addUsers from '@/components/Components/addUSers';
 const UserManagement = () => {
   let columns = useMemo(() => UserCOLUMNS, []);
   let data = useMemo(() => userdata, []);
@@ -38,7 +39,6 @@ const UserManagement = () => {
     useSortBy,
     usePagination
   );
-
   const {
     getTableBodyProps,
     getTableProps,
@@ -83,6 +83,7 @@ const UserManagement = () => {
               <option value="Mentee">Mentee</option>
               <option value="Mentor">Mentor</option>
             </select>
+            <Button className="mr-20" onClick={addUsers}>Add users</Button>
           </div>
           <div style={{ width: 'calc(100% - 160px)', margin: '0 auto' }} >
             <table {...getTableProps()} className="custom-table">
