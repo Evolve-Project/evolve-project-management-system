@@ -1,7 +1,7 @@
   {
     "development": {
-      "username": "postgres",
-      "password": "postgres",
+      "username": "postgress",
+      "password": "postgress",
       "database": "evolve_application",
       "host": "localhost",
       "dialect": "postgres"
