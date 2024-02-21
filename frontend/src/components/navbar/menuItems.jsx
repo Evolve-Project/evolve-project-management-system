@@ -80,7 +80,7 @@ const mentee = [
     id: 2,
     title: "Feedback",
     icon: transactions,
-    link: "/dashboard",
+    link: "/feedback",
   },
   {
     id: 3,

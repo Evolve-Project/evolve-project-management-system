@@ -13,11 +13,13 @@ import DashboardAdmin from "./pages/Admin/DashboardAdmin";
 import MentorDashboard from "./pages/Mentor/MentorDashboard";
 import MenteeDashboard from "./pages/Mentee/MenteeDashboard";
 import Query from "./pages/Mentor/Query";
-import Feedback from "./pages/Mentor/Feedback";
+import MentorFeedback from "./pages/Mentor/Feedback";
+import MenteeFeedback from "./pages/Mentee/Feedback";
 import UserManagement from "./pages/Admin/UserManagement";
 import Attendance from "./pages/Admin/Attendance";
 import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
+import Satisfaction from "./pages/Admin/Satifaction";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -42,6 +44,7 @@ const App = () => {
               <Route path="/usermanagement" element={<UserManagement />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/satisfaction" element={<Satisfaction/>} />
               <Route path="/checkouts" element={<Checkouts />} />
             </>
           )}
@@ -49,7 +52,7 @@ const App = () => {
           {role === "Mentor" && (
             <>
               <Route path="/dashboard" element={<MentorDashboard />} />
-              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
               <Route path="/attendance" element={<Query />} />
             </>
@@ -58,6 +61,7 @@ const App = () => {
           {role === "Mentee" && (
             <>
               <Route path="/dashboard" element={<MenteeDashboard />} />
+              <Route path="/feedback" element={<MenteeFeedback/>}/>
               {/* <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} /> */}
             </>
