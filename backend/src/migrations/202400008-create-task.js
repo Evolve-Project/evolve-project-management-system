@@ -25,18 +25,18 @@ module.exports = {
           key: 'id'
         }
       },
-      mentee_id: { // to be filled only when a mentee assigns a task to himself/herself
+      mentee_user_id: { // to be filled only when a mentee assigns a task to himself/herself
         type: DataTypes.INTEGER,
         references: {
-          model: 'mentees',
+          model: 'users',
           key: 'id'
         },
         allowNull: true
       },
-      mentor_id: { 
+      mentor_user_id: { 
         type: DataTypes.INTEGER,
         references: {
-          model: 'mentors',
+          model: 'users',
           key: 'id'
         },
         allowNull: true

@@ -9,18 +9,18 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      mentor_id: {
+      mentor_user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'mentors',
+          model: 'users',
           key: 'id',
         },
         allowNull: false
       },
-      mentee_id: {
+      mentee_user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'mentees',
+          model: 'users',
           key: 'id',
         },
         allowNull: false

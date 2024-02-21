@@ -9,8 +9,6 @@ module.exports = (sequelize, DataTypes) => {
 
       this.belongsTo(models.User, { foreignKey: 'user_id'});  // this is the user_id in the mentee table and has one to one relationship with the user table
       this.belongsTo(models.Team, { foreignKey: 'team_id'}); // this is the team_id in the mentee table and has many to one relationship with the team table
-      this.hasMany(models.Attendance, { foreignKey: 'mentee_id' }); //this is the mentee_id in attendance table. Each Mentee can have many Attendances
-      this.hasMany(models.Task, { foreignKey: 'mentee_id' }); // this is the mentee_id in task table. Each Mentee can have many Tasks  
     }
   }
   Mentee.init({

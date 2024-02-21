@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Milestone, { foreignKey: 'milestone_id' }); // this is the milestone_id in task table. Each Task belongs to one Milestone
-      this.belongsTo(models.Mentee, { foreignKey: 'mentee_id' }); // this is the mentee_id in task table. Each Task belongs to one Mentee
-      this.belongsTo(models.Mentor, { foreignKey: 'mentor_id' }); // this is the mentor_id in task table. Each Task belongs to one Mentor
+      this.belongsTo(models.User, { foreignKey: 'mentee_user_id' }); // this is the mentee_user_id in task table. Each Task is assigned to one mentee user
+      this.belongsTo(models.User, { foreignKey: 'mentor_user_id' }); // this is the mentor_user_id in task table. Each Task is assigned to one mentor user
     }
   }
   Task.init({
@@ -28,18 +28,18 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    mentee_id: { // to be filled only when a mentee assigns a task to himself/herself
+    mentee_user_id: { // to be filled only when a mentee assigns a task to himself/herself
       type: DataTypes.INTEGER,
       references: {
-        model: 'mentees',
+        model: 'users',
         key: 'id'
       },
       allowNull: true
     },
-    mentor_id: { 
+    mentor_user_id: { 
       type: DataTypes.INTEGER,
       references: {
-        model: 'mentors',
+        model: 'users',
         key: 'id'
       },
       allowNull: true

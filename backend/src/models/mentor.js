@@ -7,8 +7,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.User, { foreignKey: 'user_id' }); // this is the user_id in the mentor table and has one to one relationship with the user table
       this.belongsTo(models.Team, { foreignKey: 'team_id' }); // this is the team_id in the mentor table and has many to one relationship with the team table
-      this.hasMany(models.Attendance, { foreignKey: 'mentor_id' }); // this is the mentor_id in attendance table. Each Mentor can have many Attendances
-      this.hasMany(models.Task, { foreignKey: 'mentor_id' }); // this is the mentor_id in task table. Each Mentor can have many Tasks  
     }
   }
   Mentor.init({

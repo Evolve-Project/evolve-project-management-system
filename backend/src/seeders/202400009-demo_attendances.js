@@ -27,8 +27,8 @@ module.exports = {
 
         for (const mentee of mentees) {
           attendances.push({
-            mentor_id: faker.random.arrayElement(mentors),
-            mentee_id: mentee,
+            mentor_user_id: faker.random.arrayElement(mentors),
+            mentee_user_id: mentee,
             date_of_meet: date_of_meet,
             attendance: faker.random.arrayElement(['Present', 'Absent']),
             createdAt: new Date(),
