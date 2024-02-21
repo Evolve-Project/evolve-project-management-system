@@ -18,12 +18,14 @@ const Navbar = ({ active, setActive, menuItems }) => {
   const [item, setItem] = useState([]);
 
   useEffect(() => {
-    if (role === "admin") {
+    if (role === "Admin") {
       setItem(admin);
-    } else if (role === "mentor") {
+    } else if (role === "Mentor") {
       setItem(mentor);
-    } else {
+    } else if (role === "Mentee") {
       setItem(mentee);
+    } else {
+      setItem(null);
     }
   }, [item]);
 

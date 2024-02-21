@@ -32,6 +32,12 @@ const admin = [
   },
   {
     id: 5,
+    title: "Satisfaction",
+    icon: expenses,
+    link: "/satisfaction"
+  },
+  {
+    id: 6,
     title: "Checkouts",
     icon: expenses,
     link: "/checkouts",
