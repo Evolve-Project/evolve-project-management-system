@@ -6,29 +6,7 @@ const { hash } = require('bcryptjs');
 module.exports = {
   async up(queryInterface, Sequelize) {
     const users = [];
-
-    for (let i = 0; i <= 20; i++) {
-      const hashedPassword = await hash(`password${i}`, 10);
-      users.push({
-        email: `mentee${i}@example.com`,
-        password: hashedPassword,
-        role: 'Mentee',
-        is_active: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-    }
-    for (let i = 0; i <= 5; i++) {
-      const hashedPassword = await hash(`password${i}`, 10);
-      users.push({
-        email: `mentor${i}@example.com`,
-        password: hashedPassword,
-        role: 'Mentor',
-        is_active: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-    }
+    //adding 1 admin
     const hashedPassword = await hash(`password`, 10);
     users.push({
       email: `admin@example.com`,
@@ -39,6 +17,31 @@ module.exports = {
       updatedAt: new Date()
     });
 
+
+    //adding 50 mentees id 2 to 51
+    for (let i = 0; i < 50; i++) {
+      const hashedPassword = await hash(`password${i}`, 10);
+      users.push({
+        email: `mentee${i}@example.com`,
+        password: hashedPassword,
+        role: 'Mentee',
+        is_active: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+    }
+    //adding 16 mentors id 52 to 67
+    for (let i = 0; i < 16; i++) {
+      const hashedPassword = await hash(`password${i}`, 10);
+      users.push({
+        email: `mentor${i}@example.com`,
+        password: hashedPassword,
+        role: 'Mentor',
+        is_active: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+    }
     await queryInterface.bulkInsert('users', users, {});
   },
 

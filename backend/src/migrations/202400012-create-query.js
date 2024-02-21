@@ -2,53 +2,40 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('tasks', {
+    await queryInterface.createTable('queries', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      task_name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      task_desc: {
+      text: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      milestone_id: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'milestones',
+          model: 'users',
           key: 'id'
         }
       },
-      project_id: {
+      reply_id: {
         type: DataTypes.INTEGER,
-        references: { 
-          model: 'projects',
-          key: 'id'
-        },
-        allowNull: false
-      },
-      mentee_id: { // to be filled only when a mentee assigns a task to himself/herself
-        type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
-          model: 'mentees',
+          model: 'queries',
           key: 'id'
-        },
-        allowNull: false
+        }
       },
-      status: {
-        type: DataTypes.BOOLEAN,
+      team_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: false
-      },
-      task_completion_datetime: {
-        type: DataTypes.DATE,
-        allowNull: true
+        references: {
+          model: 'teams',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -60,7 +47,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tasks');
+  async down(queryInterface, DataTypes) {
+    await queryInterface.dropTable('queries');
   }
 };

@@ -1,0 +1,51 @@
+.satisfaction_container{
+    width: 100%;
+    font-family: sans-serif;
+    --radius : 8px;
+}
+/* tilte is not responsive */
+.satisfaction_title {
+    margin: 20px auto;
+    text-align: center;
+    color: black;
+    font-size: 40px;
+    max-width: 600px;
+    position: relative;
+}
+.satisfaction_title::before {    
+    content: "";
+    display: block;
+    width: 30vw;
+    height: 8px;
+    background: #7B76F1;
+    left: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}
+.satisfaction_title::after {
+    content: "";
+    display: block;
+    width: 30vw;
+    height: 8px;
+    background: #7B76F1;
+    right: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}
+
+.satisfaction_content{
+    width: 100%;
+}
+.satisfaction_input{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+    margin: 5px;
+}
+.satisfaction_text_title{
+    font-weight: bold;
+    font-size: large;
+}

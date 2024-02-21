@@ -2,40 +2,40 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('milestones', {
+    await queryInterface.createTable('feedbacks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      sdlc_id: {
+      metric_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'feedback_metrics',
+          key: 'id'
+        }
+      },
+      rating: {
+        type: DataTypes.INTEGER,
+      },
+      review: {
+        type: DataTypes.TEXT,
+      },
+      given_to_user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'sdlc',
-          key: 'id',
-        },
-        allowNull: false
+          model: 'users',
+          key: 'id'
+        }
       },
-      project_id: {
+      given_by_user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'projects',
-          key: 'id',
-        },
-        allowNull: false
-      },
-      status: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      milestone_completion_datetime: {
-        type: DataTypes.DATE,
-        allowNull: true
-      },
-      total_tasks: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+          model: 'users',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -47,7 +47,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('milestones');
+  async down(queryInterface, DataTypes) {
+    await queryInterface.dropTable('feedbacks');
   }
 };
