@@ -72,21 +72,10 @@ const UserManagement = () => {
     setSelectedUser(row.original);
     setOpen(true);
   };
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const [hasOpenDialog, setHasOpenDialog] = React.useState(false);
+  
   const dropdownTriggerRef = React.useRef(null);
   const focusRef = React.useRef(null);
 
-  function handleDialogItemSelect() {
-    focusRef.current = dropdownTriggerRef.current;
-  }
-
-  function handleDialogItemOpenChange(open) {
-    setHasOpenDialog(open);
-    if (open === false) {
-      setDropdownOpen(false);
-    }
-  }
   return (
     <div>
       <div className="container">
