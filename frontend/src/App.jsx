@@ -20,8 +20,10 @@ import DashboardAdmin from "./pages/Admin/Dashboard";
 import DashboardMentor from "./pages/Mentor/Dashboard";
 import DashboardMentee from "./pages/Mentee/Dashboard";
 import MenteeMilestones from "./pages/Mentee/MenteeMilestones";
+import MentorMilestone from "./pages/Mentor/MentorMilestone";
 
 import Satisfaction from "./pages/Admin/Satifaction";
+import { Milestone } from "lucide-react";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -57,6 +59,7 @@ const App = () => {
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/query" element={<Query />} />
               <Route path="/attendance" element={<Query />} />
+              <Route path="/milestones" element={<MentorMilestone/>} />
             </>
           )}
 

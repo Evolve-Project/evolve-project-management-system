@@ -68,6 +68,12 @@ const mentor = [
     icon: expenses,
     link: "/query",
   },
+  {
+    id: 6,
+    title: "Milestones",
+    icon: transactions,
+    link: "/milestones",
+  }
 ];
 const mentee = [
   {
@@ -96,7 +102,7 @@ const mentee = [
   }
   ,
   {
-    id: 2,
+    id: 5,
     title: "Milestones",
     icon: transactions,
     link: "/milestones",
