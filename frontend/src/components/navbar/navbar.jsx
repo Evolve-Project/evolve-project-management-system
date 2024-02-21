@@ -18,9 +18,9 @@ const Navbar = ({ active, setActive, menuItems }) => {
   const [item, setItem] = useState([]);
 
   useEffect(() => {
-    if (role === "admin") {
+    if (role === "Admin") {
       setItem(admin);
-    } else if (role === "mentor") {
+    } else if (role === "Mentor") {
       setItem(mentor);
     } else {
       setItem(mentee);
