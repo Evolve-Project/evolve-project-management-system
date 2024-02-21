@@ -94,6 +94,13 @@ const mentee = [
     icon: expenses,
     link: "/projects",
   }
+  ,
+  {
+    id: 2,
+    title: "Milestones",
+    icon: transactions,
+    link: "/milestones",
+  }
  
 ];
 export { admin, mentee, mentor };

@@ -19,6 +19,7 @@ import Checkouts from "./pages/Admin/Checkouts";
 import DashboardAdmin from "./pages/Admin/Dashboard";
 import DashboardMentor from "./pages/Mentor/Dashboard";
 import DashboardMentee from "./pages/Mentee/Dashboard";
+import MenteeMilestones from "./pages/Mentee/MenteeMilestones";
 
 import Satisfaction from "./pages/Admin/Satifaction";
 
@@ -65,6 +66,7 @@ const App = () => {
               <Route path="/feedback" element={<MenteeFeedback/>}/>
               {/* <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} /> */}
+              <Route path="/milestones" element={<MenteeMilestones/>}/>
             </>
           )}
         </Route>
