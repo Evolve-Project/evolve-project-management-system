@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     end_date: {
-      type: DataTypes.DATEonly,
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
     status: {

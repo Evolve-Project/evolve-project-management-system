@@ -1,6 +1,6 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
+const { Model } = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
   class FeedbackMetric extends Model {
     static associate(models) {
       // define association here
