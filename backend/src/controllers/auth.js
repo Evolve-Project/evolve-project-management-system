@@ -49,7 +49,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     let user = req.user;
     let payload = {
-        id: user.user_id,
+        id: user.id,
         email: user.email,
     }
 
