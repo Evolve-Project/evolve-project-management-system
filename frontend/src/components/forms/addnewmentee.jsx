@@ -37,14 +37,15 @@ export function Addmentee() {
   });
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter Name" {...field} />
+                <Input placeholder="Enter the Name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,8 +56,9 @@ export function Addmentee() {
           name="mail"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="Enter E-mail" {...field} />
+                <Input placeholder="Enter the E-mail" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,6 +69,7 @@ export function Addmentee() {
           name="clgname"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>College Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter The College Name" {...field} />
               </FormControl>

@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useMemo,useEffect } from 'react';
-import "../../components/Components/usermanagement.css";
+import "@/styles/usermanagement.css";
 import { UserCOLUMNS } from "@/components/Components/Columns";
 import userdata from "@/components/Components/userdata.json";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
-import "@/components/Components/table.css";
+import "@/styles/table.css";
 import GlobalFilter from "@/components/Components/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import Popup from '@/components/Components/popup';
@@ -20,14 +20,6 @@ import { Bulkmentee, Bulkmentor } from '@/components/forms/bulkusers';
 const UserManagement = () => {
   let columns = useMemo(() => UserCOLUMNS, []);
   let data = useMemo(() => userdata, []);
-  // const [role, setRole] = useState("All");
-  // const [params, setParams] = useSearchParams();
-  // useEffect(() => {
-  //   const roleParam = params.get("role");
-  //   if (roleParam) {
-  //     setRole(roleParam);
-  //   }
-  // }, [params]);
   const [params] = useSearchParams();
   const roleFromParams = params.get("role");
   const [role, setRole] = useState(roleFromParams || "All");

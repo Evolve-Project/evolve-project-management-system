@@ -34,12 +34,13 @@ export function Addmentor() {
   });
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter Name" {...field} />
               </FormControl>
@@ -52,6 +53,7 @@ export function Addmentor() {
           name="mail"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>E-mail</FormLabel>
               <FormControl>
                 <Input placeholder="Enter E-mail" {...field} />
               </FormControl>
