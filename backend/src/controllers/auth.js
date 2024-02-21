@@ -1,4 +1,3 @@
-
 const { hash } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const { SECRET } = require('../constants');
