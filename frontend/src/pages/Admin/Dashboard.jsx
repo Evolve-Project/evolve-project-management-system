@@ -7,11 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useMemo } from "react";
-import { COLUMNS } from "@/components/Components/Columns";
-import MOCK_DATA from "@/components/Components/MOCK_DATA.json";
+import { COLUMNS } from "@/components/AdminComponents/Columns";
+import MOCK_DATA from "@/components/AdminComponents/MOCK_DATA.json";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
 import "@/styles/table.css";
-import GlobalFilter from "@/components/Components/GlobalFilter";
+import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 const DashboardAdmin = () => {

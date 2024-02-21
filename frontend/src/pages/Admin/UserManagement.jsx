@@ -1,13 +1,13 @@
 'use client'
 import React, { useState, useMemo,useEffect } from 'react';
 import "@/styles/usermanagement.css";
-import { UserCOLUMNS } from "@/components/Components/Columns";
-import userdata from "@/components/Components/userdata.json";
+import { UserCOLUMNS } from "@/components/AdminComponents/Columns";
+import userdata from "@/components/AdminComponents/userdata.json";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 import "@/styles/table.css";
-import GlobalFilter from "@/components/Components/GlobalFilter";
+import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
-import Popup from '@/components/Components/popup';
+import Popup from '@/components/AdminComponents/popup';
 import { useLocation,useSearchParams } from 'react-router-dom';
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
