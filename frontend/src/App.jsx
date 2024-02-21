@@ -54,7 +54,7 @@ const App = () => {
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
-              <Route path="/attendance" element={<Query />} />
+              {/* <Route path="/attendance" element={<Query />} /> */}
             </>
           )}
 
