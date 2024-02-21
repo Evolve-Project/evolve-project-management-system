@@ -2,8 +2,8 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    const sdlcSteps = [
+  async up (queryInterface, DataTypes) {
+    const milestones = [
       { name: 'Requirements', description: 'Requirements gathering and analysis', start_date: new Date('2024-03-01'), end_date: new Date('2024-03-08'), createdAt: new Date(), updatedAt: new Date() },
       { name: 'Design', description: 'Design of software solution', start_date: new Date('2024-03-08'), end_date: new Date('2024-03-15'), createdAt: new Date(), updatedAt: new Date() },
       { name: 'Implementation', description: 'Coding and implementation', start_date: new Date('2024-03-15'), end_date: new Date('2024-03-22'), createdAt: new Date(), updatedAt: new Date() },
@@ -12,10 +12,10 @@ module.exports = {
       { name: 'Maintenance', description: 'Ongoing maintenance and updates', start_date: new Date('2024-04-05'), end_date: new Date('2024-04-12'), createdAt: new Date(), updatedAt: new Date() }
     ];
 
-    await queryInterface.bulkInsert('sdlc', sdlcSteps, {});
+    await queryInterface.bulkInsert('milestone_descriptions', milestones, {});
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('sdlc', null, {});
+  async down (queryInterface, DataTypes) {
+    await queryInterface.bulkDelete('milestone_descriptions', null, {});
   }
 };

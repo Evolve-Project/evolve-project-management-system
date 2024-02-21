@@ -19,11 +19,11 @@ module.exports = {
         allowNull: false
       },
       start_date: {
-        type: DataTypes.DATE, //we might need to change data type to dateonly
+        type: DataTypes.DATEONLY,
         allowNull: false
       },
       end_date: {
-        type: DataTypes.DATE, //we might need to change data type to dateonly
+        type: DataTypes.DATEONLY,
         allowNull: false
       },
       status: {
@@ -54,7 +54,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('projects');
   }
 };

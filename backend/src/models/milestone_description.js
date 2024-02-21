@@ -3,18 +3,13 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Sdlc extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class MilestoneDescription extends Model {
     static associate(models) {
       // define association here
-      this.hasMany(models.Milestone, { foreignKey: 'sdlc_id' }); //this is the sdlc_id in milestone table. Each Sdlc has many Milestones
+      this.hasMany(models.Milestone, { foreignKey: 'milestone_description_id' }); //this is the milestone_description_id in milestone table. Each Sdlc has many Milestones
     }
   }
-  Sdlc.init({
+  MilestoneDescription.init({
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -45,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Sdlc',
-    tableName: 'sdlc'
+    modelName: 'MilestoneDescription',
+    tableName: 'milestone_descriptions'
   });
-  return Sdlc;
+  return MilestoneDescription;
 };

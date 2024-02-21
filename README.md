@@ -79,18 +79,210 @@ This command will undo all your seeders, in the reverse order they are listed.
 
 
 # quick way to setup database and add dummy data
-enter these commands one by one in terminal
+#### enter these commands one by one in terminal
 
-```js
-npx sequelize-cli db:drop // run this only if you have previously created database to delete and recreate it
-npx sequelize-cli db:create
-npx sequelize-cli db:migrate
-// instead of this run the below seeds -- npx sequelize-cli db:seed:all
-npx sequelize db:seed --seed 20240210190115-demo-user.js
-npx sequelize db:seed --seed 20240212080357-demo_projects.js
-npx sequelize db:seed --seed 20240212111734-demo_mentee.js
-npx sequelize db:seed --seed 20240212111741-demo_mentor.js
-npx sequelize db:seed --seed 20240212081246-demo_sdlc.js
-npx sequelize db:seed --seed 20240212082746-demo_milestones.js
-npx sequelize db:seed --seed 20240212072539-demo_tasks.js
+
+### drop the previously created database
+```bash
+npx sequelize-cli db:drop
 ```
+### create a new database
+```bash
+npx sequelize-cli db:create
+```
+
+### run the migrations in the following order to create the tables
+***order is important***
+```bash
+npx sequelize-cli db:migrate --name 20240209050050-create-user.js
+npx sequelize-cli db:migrate --name 20240209061825-create-project.js
+npx sequelize-cli db:migrate --name 20240220160325-create-team.js
+npx sequelize-cli db:migrate --name 20240209061936-create-mentee.js
+npx sequelize-cli db:migrate --name 20240209062024-create-mentor.js
+npx sequelize-cli db:migrate --name 20240209062149-create-milestone_description.js
+npx sequelize-cli db:migrate --name 20240209062250-create-milestone.js
+npx sequelize-cli db:migrate --name 20240209062328-create-task.js
+npx sequelize-cli db:migrate --name 20240209062125-create-attendance.js
+npx sequelize-cli db:migrate --name 20240220161802-create-feedback_metric.js
+npx sequelize-cli db:migrate --name 20240220161700-create-feedback.js
+npx sequelize-cli db:migrate --name 20240220161308-create-query.js
+```
+
+
+### run the seeders in the following order to add dummy data
+***order is important***
+```bash
+npx sequelize-cli db:seed --seed 20240210190115-demo_users.js
+npx sequelize-cli db:seed --seed 20240212080357-demo_projects.js
+npx sequelize-cli db:seed --seed 20240221024923-demo_teams.js
+npx sequelize-cli db:seed --seed 20240212111734-demo_mentees.js
+npx sequelize-cli db:seed --seed 20240212111741-demo_mentors.js
+npx sequelize-cli db:seed --seed 20240212081246-demo_milestone_descriptions.js
+npx sequelize-cli db:seed --seed 20240212082746-demo_milestones.js
+npx sequelize-cli db:seed --seed 20240212072539-demo_tasks.js
+npx sequelize-cli db:seed --seed 20240212111752-demo_attendances.js
+npx sequelize-cli db:seed --seed 20240221040953-demo_feedback_metrics.js
+npx sequelize-cli db:seed --seed 20240221040906-demo_feedbacks.js
+npx sequelize-cli db:seed --seed 20240221025828-demo_queries.js
+```
+
+### tables in evolve_application database in human readable format for reference
+
+### SequelizeMeta
+
+| Column | Type           | Comment | PK  | Nullable | Default |
+|--------|----------------|---------|-----|----------|---------|
+| name   | varchar(255)  |         | YES | NO       |         |
+
+### attendances
+
+| Column       | Type                   | Comment | PK  | Nullable | Default |
+|--------------|------------------------|---------|-----|----------|---------|
+| mentor_id    | integer                |         |     | NO       |         |
+| mentee_id    | integer                |         |     | NO       |         |
+| date_of_meet | date                   |         |     | NO       |         |
+| attendance   | USER-DEFINED           |         |     | NO       |         |
+| createdAt    | timestamp with time zone |       |     | NO       |         |
+| updatedAt    | timestamp with time zone |       |     | NO       |         |
+
+### feedback_metrics
+
+| Column      | Type           | Comment | PK  | Nullable | Default |
+|-------------|----------------|---------|-----|----------|---------|
+| id          | integer        |         | YES | NO       |         |
+| metric_name | varchar(255)   |         |     | NO       |         |
+| role        | USER-DEFINED   |         |     | NO       |         |
+| createdAt   | timestamp with time zone | |     | NO       |         |
+| updatedAt   | timestamp with time zone | |     | NO       |         |
+
+### feedbacks
+
+| Column           | Type           | Comment | PK  | Nullable | Default |
+|------------------|----------------|---------|-----|----------|---------|
+| metric_id        | integer        |         |     | NO       |         |
+| rating           | integer        |         | YES |          |         |
+| review           | text           |         | YES |          |         |
+| given_to_user_id | integer        |         | YES |          |         |
+| given_by_user_id | integer        |         | YES |          |         |
+| createdAt        | timestamp with time zone | |     | NO       |         |
+| updatedAt        | timestamp with time zone | |     | NO       |         |
+
+### mentees
+
+| Column    | Type           | Comment | PK  | Nullable | Default |
+|-----------|----------------|---------|-----|----------|---------|
+| id        | integer        |         | YES | NO       |         |
+| user_id   | integer        |         |     | NO       |         |
+| first_name| varchar(100)   |         |     | NO       |         |
+| last_name | varchar(100)   |         |     | YES      |         |
+| University| varchar(255)   |         |     | NO       |         |
+| dob       | date           |         |     | NO       |         |
+| home_city | varchar(100)   |         |     | YES      |         |
+| team_id   | integer        |         |     | YES      |         |
+| createdAt | timestamp with time zone | |     | NO       |         |
+| updatedAt | timestamp with time zone | |     | NO       |         |
+
+### mentors
+
+| Column    | Type           | Comment | PK  | Nullable | Default |
+|-----------|----------------|---------|-----|----------|---------|
+| id        | integer        |         | YES | NO       |         |
+| user_id   | integer        |         |     | NO       |         |
+| first_name| varchar(100)   |         |     | NO       |         |
+| last_name | varchar(100)   |         |     | YES      |         |
+| Experience| integer        |         |     | NO       |         |
+| team_id   | integer        |         |     | NO       |         |
+| createdAt | timestamp with time zone | |     | NO       |         |
+| updatedAt | timestamp with time zone | |     | NO       |         |
+
+### milestone_descriptions
+
+| Column      | Type           | Comment | PK  | Nullable | Default |
+|-------------|----------------|---------|-----|----------|---------|
+| id          | integer        |         | YES | NO       |         |
+| name        | varchar(255)   |         |     | NO       |         |
+| description | varchar(255)   |         |     | NO       |         |
+| start_date  | timestamp with time zone | |     | NO       |         |
+| end_date    | timestamp with time zone | |     | NO       |         |
+| createdAt   | timestamp with time zone | |     | NO       |         |
+| updatedAt   | timestamp with time zone | |     | NO       |         |
+
+### milestones
+
+| Column                    | Type           | Comment | PK  | Nullable | Default |
+|---------------------------|----------------|---------|-----|----------|---------|
+| id                        | integer        |         | YES | NO       |         |
+| milestone_description_id | integer        |         |     | NO       |         |
+| team_id                   | integer        |         |     | NO       |         |
+| status                    | boolean        |         |     | YES      | false   |
+| milestone_completion_datetime | timestamp with time zone | | | YES |      |
+| total_tasks               | integer        |         |     | YES      |         |
+| createdAt                 | timestamp with time zone | |     | NO       |         |
+| updatedAt                 | timestamp with time zone | |     | NO       |         |
+
+### projects
+
+| Column              | Type           | Comment | PK  | Nullable | Default |
+|---------------------|----------------|---------|-----|----------|---------|
+| id                  | integer        |         | YES | NO       |         |
+| name                | varchar(255)   |         |     | NO       |         |
+| description         | text           |         |     | NO       |         |
+| start_date          | date           |         |     | NO       |         |
+| end_date            | date           |         |     | NO       |         |
+| status              | boolean        |         |     | YES      | false   |
+| git_repository_link | varchar(255)   |         |     | NO       |         |
+| trello_board_link   | varchar(255)   |         |     | NO       |         |
+| createdAt           | timestamp with time zone | |     | NO       |         |
+| updatedAt           | timestamp with time zone | |     | NO       |         |
+
+### queries
+
+| Column    | Type           | Comment | PK  | Nullable | Default |
+|-----------|----------------|---------|-----|----------|---------|
+| id        | integer        |         | YES | NO       |         |
+| text      | text           |         |     | NO       |         |
+| user_id   | integer        |         |     | NO       |         |
+| reply_id  | integer        |         |     | YES      |         |
+| team_id   | integer        |         |     | NO       |         |
+| createdAt | timestamp with time zone | |     | NO       |         |
+| updatedAt | timestamp with time zone | |     | NO       |         |
+
+### tasks
+
+| Column                   | Type           |
+
+ Comment | PK  | Nullable | Default |
+|--------------------------|----------------|---------|-----|----------|---------|
+| id                       | integer        |         | YES | NO       |         |
+| task_name                | varchar(255)   |         |     | NO       |         |
+| task_desc                | text           |         |     | NO       |         |
+| milestone_id             | integer        |         |     | NO       |         |
+| mentee_id                | integer        |         |     | YES      |         |
+| mentor_id                | integer        |         |     | YES      |         |
+| status                   | boolean        |         |     | NO       | false   |
+| task_completion_datetime | timestamp with time zone | | | YES      |         |
+| createdAt                | timestamp with time zone | |     | NO       |         |
+| updatedAt                | timestamp with time zone | |     | NO       |         |
+
+### teams
+
+| Column             | Type           | Comment | PK  | Nullable | Default |
+|--------------------|----------------|---------|-----|----------|---------|
+| id                 | integer        |         | YES | NO       |         |
+| project_id         | integer        |         |     | YES      |         |
+| team_name          | varchar(255)   |         |     | NO       |         |
+| total_team_members | integer        |         |     | NO       |         |
+| createdAt          | timestamp with time zone | |     | NO       |         |
+| updatedAt          | timestamp with time zone | |     | NO       |         |
+
+### users
+
+| Column    | Type           | Comment | PK  | Nullable | Default         |
+|-----------|----------------|---------|-----|----------|-----------------|
+| id        | integer        |         | YES | NO       |                 |
+| email     | varchar(255)   |         |     | NO       |                 |
+| password  | varchar(255)   |         |     | NO       |                 |
+| role      | varchar(255)   |         |     | NO       | 'user'::character varying |
+| is_active | boolean        |         |     | YES      |                 |
+| createdAt | timestamp with time zone | |     | NO       |                 |
+| updatedAt | timestamp with time zone | |     | NO       |                 |

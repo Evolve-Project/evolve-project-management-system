@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('sdlc', {
+    await queryInterface.createTable('milestone_descriptions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -47,7 +47,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('sdlc');
+  async down(queryInterface, DataTypes) {
+    await queryInterface.dropTable('milestone_descriptions');
   }
 };

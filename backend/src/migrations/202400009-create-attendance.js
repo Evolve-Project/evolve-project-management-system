@@ -2,7 +2,13 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('attendance', {
+    await queryInterface.createTable('attendances', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       mentor_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -38,6 +44,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('attendance');
+    await queryInterface.dropTable('attendances');
   }
 };

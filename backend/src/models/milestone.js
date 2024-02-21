@@ -4,31 +4,26 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Milestone extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Sdlc, { foreignKey: 'sdlc_id' }); // this is the sdlc_id in milestone table. Each Milestone belongs to one Sdlc
-      this.belongsTo(models.Project, { foreignKey: 'project_id' }); // this is the project_id in milestone table. Each Milestone belongs to one Project
+      this.belongsTo(models.MilestoneDescription, { foreignKey: 'milestone_description_id' }); // this is the milestone_description_id in milestone table. Each Milestone belongs to one MilestoneDescription
+      this.belongsTo(models.Team, { foreignKey: 'team_id' }); // this is the team_id in milestone table. Each Milestone belongs to one Team
       this.hasMany(models.Task, { foreignKey: 'milestone_id' }); // this is the milestone_id in task table. Each Milestone has many Tasks
     }
   }
   Milestone.init({
-    sdlc_id: {
+    milestone_description_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'sdlc',
+        model: 'milestone_descriptions',
         key: 'id',
       },
       allowNull: false
     },
-    project_id: {
+    team_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'projects',
+        model: 'teams',
         key: 'id',
       },
       allowNull: false

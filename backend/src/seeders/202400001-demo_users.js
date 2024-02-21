@@ -30,8 +30,8 @@ module.exports = {
         updatedAt: new Date()
       });
     }
-    //adding 10 mentors id 52 to 61
-    for (let i = 0; i < 10; i++) {
+    //adding 16 mentors id 52 to 67
+    for (let i = 0; i < 16; i++) {
       const hashedPassword = await hash(`password${i}`, 10);
       users.push({
         email: `mentor${i}@example.com`,

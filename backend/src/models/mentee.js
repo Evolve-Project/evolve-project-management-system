@@ -4,31 +4,24 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Mentee extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
 
       this.belongsTo(models.User, { foreignKey: 'user_id'});  // this is the user_id in the mentee table and has one to one relationship with the user table
-      this.belongsTo(models.Project, { foreignKey: 'project_id'}); // this is the project_id in the mentee table and has many to one relationship with the project table
+      this.belongsTo(models.Team, { foreignKey: 'team_id'}); // this is the team_id in the mentee table and has many to one relationship with the team table
       this.hasMany(models.Attendance, { foreignKey: 'mentee_id' }); //this is the mentee_id in attendance table. Each Mentee can have many Attendances
-      this.hasMany(models.Task, { foreignKey: 'mentee_id' }); // this is the mentee_id in task table. Each Mentee can have many Tasks
-      this.hasMany(models.MenteeFeedback, { foreignKey: 'mentee_id' }); // this is the mentee_id in mentee_feedback table. Each Mentee can have many MenteeFeedbacks
-      this.hasMany(models.MentorFeedback, { foreignKey: 'mentee_id' }); // this is the mentee_id in mentor_feedback table. Each Mentee can have many MentorFeedbacks
-      
+      this.hasMany(models.Task, { foreignKey: 'mentee_id' }); // this is the mentee_id in task table. Each Mentee can have many Tasks  
     }
   }
   Mentee.init({
     user_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'users', // name of your model (table)
+        model: 'users', 
         key: 'id',
       },
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     first_name: {
       type: DataTypes.STRING(100),
@@ -50,10 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    project_id: {
+    team_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'projects', // name of your model (table)
+        model: 'teams', 
         key: 'id',
       },
       allowNull: true

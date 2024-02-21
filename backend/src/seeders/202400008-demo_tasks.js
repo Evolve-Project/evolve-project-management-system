@@ -13,6 +13,7 @@ module.exports = {
           task_desc: faker.lorem.sentence(),
           milestone_id: milestoneId,
           mentee_id: null,
+          mentor_id: null,
           status: faker.datatype.boolean(),
           task_completion_datetime: null,
           createdAt: new Date(),

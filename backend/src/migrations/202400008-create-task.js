@@ -25,19 +25,18 @@ module.exports = {
           key: 'id'
         }
       },
-      // project_id already present in milestones
-      // project_id: {
-      //   type: DataTypes.INTEGER,
-      //   references: { 
-      //     model: 'projects',
-      //     key: 'id'
-      //   },
-      //   allowNull: false
-      // },
       mentee_id: { // to be filled only when a mentee assigns a task to himself/herself
         type: DataTypes.INTEGER,
         references: {
           model: 'mentees',
+          key: 'id'
+        },
+        allowNull: true
+      },
+      mentor_id: { 
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'mentors',
           key: 'id'
         },
         allowNull: true
