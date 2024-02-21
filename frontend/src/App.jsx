@@ -56,9 +56,8 @@ const App = () => {
           {role === "Mentor" && (
             <>
               <Route path="/dashboard" element={<DashboardMentor />} />
-              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
-              <Route path="/attendance" element={<Query />} />
               <Route path="/milestones" element={<MentorMilestone/>} />
             </>
           )}
