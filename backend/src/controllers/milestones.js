@@ -1,17 +1,13 @@
-const { Milestone } = require('../models');
+const { Milestone } = require('../../src/models');
 
 exports.getMilestone = async (req, res) => {
     try {
-        const milestone = await Milestone.findAll({
+        const milestones = await Milestone.findAll({
             attributes: ['milestone_description_id', 'team_id','milestone_completion_datetime',
             'total_tasks']
         }); 
 
-        console.log(milestone);
-        return res.status(200).json({
-            success: true,
-            
-        });
+        console.log(milestones);
     } catch (error) {
         console.log("Error in getMilestone, Milestone controller ", error);
     }

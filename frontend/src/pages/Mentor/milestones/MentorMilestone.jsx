@@ -7,21 +7,11 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from "../../../components/theme/theme.jsx"
 
 
+
 function MentorMilestone() {
     
 
-async function fetchMilestones() {
-    try {
-        const response = await loadMilestones();
-        // Handle the response data here
-        console.log(response.data);
-    } catch (error) {
-        // Handle errors here
-        console.error('Error loading milestones:', error);
-    }
-}
-
-fetchMilestones();
+  loadMilestones()
     
   return (
     <div>
