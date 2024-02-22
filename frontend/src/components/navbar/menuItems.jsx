@@ -32,6 +32,12 @@ const admin = [
   },
   {
     id: 5,
+    title: "Satisfaction",
+    icon: expenses,
+    link: "/satisfaction"
+  },
+  {
+    id: 6,
     title: "Checkouts",
     icon: expenses,
     link: "/checkouts",
@@ -80,7 +86,7 @@ const mentee = [
     id: 2,
     title: "Feedback",
     icon: transactions,
-    link: "/dashboard",
+    link: "/feedback",
   },
   {
     id: 3,

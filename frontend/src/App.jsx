@@ -9,16 +9,19 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import { useSelector } from "react-redux";
 import PrivateRoutes from "./components/private/PrivateRoutes";
-import DashboardAdmin from "./pages/Admin/DashboardAdmin";
-import MentorDashboard from "./pages/Mentor/MentorDashboard";
-import MenteeDashboard from "./pages/Mentee/MenteeDashboard";
 import Query from "./pages/Mentor/Query";
-import Feedback from "./pages/Mentor/Feedback";
+import MentorFeedback from "./pages/Mentor/Feedback";
+import MenteeFeedback from "./pages/Mentee/Feedback";
 import UserManagement from "./pages/Admin/UserManagement";
 import Attendance from "./pages/Admin/Attendance";
 import MentorAttendance from "./pages/Mentor/Attendance"
 import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
+import DashboardAdmin from "./pages/Admin/Dashboard";
+import DashboardMentor from "./pages/Mentor/Dashboard";
+import DashboardMentee from "./pages/Mentee/Dashboard";
+
+import Satisfaction from "./pages/Admin/Satifaction";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -49,8 +52,8 @@ const App = () => {
 
           {role === "Mentor" && (
             <>
-              <Route path="/dashboard" element={<MentorDashboard />} />
-              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/dashboard" element={<DashboardMentor />} />
+              <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
               <Route path="/attendance" element={<MentorAttendance />} />
             </>
@@ -58,7 +61,8 @@ const App = () => {
 
           {role === "Mentee" && (
             <>
-              <Route path="/dashboard" element={<MenteeDashboard />} />
+              <Route path="/dashboard" element={<DashboardMentee />} />
+              <Route path="/feedback" element={<MenteeFeedback />} />
               {/* <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} /> */}
             </>

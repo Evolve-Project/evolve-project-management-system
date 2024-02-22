@@ -1,0 +1,125 @@
+.satisfaction_container{
+    width: 100%;
+    font-family: sans-serif;
+    --radius : 8px;
+    
+}
+/* tilte is not responsive */
+.satisfaction_title {
+    margin: 20px auto;
+    text-align: center;
+    color: black;
+    font-size: 40px;
+    max-width: 600px;
+    position: relative;
+}
+.satisfaction_title::before {    
+    content: "";
+    display: block;
+    width: 30vw;
+    height: 8px;
+    background: #7B76F1;
+    left: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}
+.satisfaction_title::after {
+    content: "";
+    display: block;
+    width: 30vw;
+    height: 8px;
+    background: #7B76F1;
+    right: 28vw;
+    top: 50%;
+    position: absolute;
+    border-radius: var(--radius);
+}
+
+.satisfaction_content{
+    width: 100%;
+}
+.satisfaction_input{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+    margin: 5px;
+    position: relative;
+    overflow: hidden;
+    transition: width 0.5s ease;
+    /* padding: 2px; */
+}
+.satisfaction_text_title{
+    font-weight: bold;
+    font-size: large;
+}
+
+.satisfaction_detail_option{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+}
+.satisfaction_metric_container{
+    background-color: #ebebfe;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin: 1rem;
+    box-shadow: 1px 1px 5px black;
+}
+.satisfaction_metric_name{
+    color: #5469b0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    /* fon */
+}
+.satisfaction_comment_box
+{
+    padding: 1rem;
+}
+.satisfaction_user_detail{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 0.5rem;
+}
+.satisfaction_user_comment{
+    background-color: #f1f1fa;
+    border-radius: var(--radius);
+    box-shadow: 1px 1px 3px black;
+    /* width: 100%; */
+    /* height: 2rem; */
+    padding: 1rem;
+    overflow-wrap: break-word;
+}
+
+
+
+
+
+
+
+.satisfaction_edit{
+    background-color: #7B76F1;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.satisfaction_edit_text{
+    display: none;
+}
+
+.satisfaction_edit:hover.satisfaction_edit{
+    border-radius: var(--radius);    
+}
+.satisfaction_edit:hover .satisfaction_edit_text{
+    display: block;
+} 

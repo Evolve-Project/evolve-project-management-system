@@ -22,8 +22,10 @@ const Navbar = ({ active, setActive, menuItems }) => {
       setItem(admin);
     } else if (role === "Mentor") {
       setItem(mentor);
-    } else {
+    } else if (role === "Mentee") {
       setItem(mentee);
+    } else {
+      setItem(null);
     }
   }, [item]);
 
@@ -55,7 +57,6 @@ const Navbar = ({ active, setActive, menuItems }) => {
         {item.map((item) => (
           <li
             key={item.id}
-            onClick={() => setActive(item.id)}
             className={`grid items-center gap-2 mx-6 my-1 font-semibold cursor-pointer transition-colors ${
               active === item.id ? "text-purple-700" : "text-gray-600"
             }`}

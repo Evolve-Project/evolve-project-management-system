@@ -28,7 +28,6 @@ const loginFieldsCheck = check('email').custom(async (value, { req }) => {
     }
 
     req.user = user;
-    console.log(req.user);
 })
 
 module.exports = {
