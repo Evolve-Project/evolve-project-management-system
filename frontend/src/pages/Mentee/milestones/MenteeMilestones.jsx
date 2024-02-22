@@ -11,7 +11,8 @@ function MenteeMilestones() {
       <h1>Mentee Milestone</h1>
       <ChakraProvider theme={theme}>
       <Box maxW = {1000} mx="auto" px={6} frontSize="sm"> 
-      <Heading ab={10}>TenStack Table</Heading>
+      <Heading ab={10}>Tasks</Heading>
+
      <MilestoneTableMentee/>
       </Box>
       </ChakraProvider>
