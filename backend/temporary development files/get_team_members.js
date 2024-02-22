@@ -1,6 +1,6 @@
 // temporary file, delete after use
 // a way to fetch team mentee details asscoiated with a mentor for attendance taking
-const { Mentor, User, Mentee } = require('../src/models');
+const { Mentor, User, Mentee } = require('../models');
 
 async function fetchTeamData(mentorUid) {
     const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
