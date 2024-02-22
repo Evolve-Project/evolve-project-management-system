@@ -21,6 +21,7 @@ import DashboardMentor from "./pages/Mentor/Dashboard";
 import DashboardMentee from "./pages/Mentee/Dashboard";
 
 import Satisfaction from "./pages/Admin/Satifaction";
+import Project from "./pages/Mentor/Project";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -55,7 +56,7 @@ const App = () => {
               <Route path="/dashboard" element={<DashboardMentor />} />
               <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
-              {/* <Route path="/attendance" element={<Query />} /> */}
+              <Route path="/project" element={<Project />} />
             </>
           )}
 

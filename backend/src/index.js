@@ -15,8 +15,8 @@ app.use(passport.initialize())
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 //initialize routes
-app.use('/api', authRoutes);
 app.use('/api', userRoutes);
+app.use('/api', authRoutes);
 
 
 app.listen(PORT, () => {
