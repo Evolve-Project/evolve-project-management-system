@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink,useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { onLogout } from "@/api/authApi";
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ active, setActive, menuItems }) => {
   const { isAuth, role } = useSelector((state) => state.auth);
-
+  const location = useLocation();
   const [error, setError] = useState(false);
   const [item, setItem] = useState([]);
 
@@ -46,12 +46,13 @@ const Navbar = ({ active, setActive, menuItems }) => {
   };
 
   return (
-    <nav className="p-8 bg-white backdrop-blur-lg rounded-xl flex flex-col justify-between w-80 sticky top-0 left-0 h-full z-50">
-      <div>
-        <h1 className="text-4xl pl-6">{role}</h1>
+    <aside className="h-screen">
+    <nav className="h-full flex flex-col bg-white border-r shadow-sm ">
+      <div className="p-4 pb-2 flex  items-center">
+        <h1 className="text-4xl ">{role}</h1>
       </div>
 
-      <ul className="menu-items flex-1 flex flex-col">
+      {/* <ul className="menu-items flex-1 flex flex-col">
         {item.map((item) => (
           <li
             key={item.id}
@@ -61,14 +62,30 @@ const Navbar = ({ active, setActive, menuItems }) => {
           >
             {item.icon}
             <Link to={item.link}>{item.title}</Link>
-            {/* <span>{item.title}</span> */}
+          
+          </li>
+        ))}
+      </ul> */}
+      <ul className="flex-1 px-3">
+        {item.map((item) => (
+          <li
+            key={item.id}
+            className={` relative flex items-center py-2 px-3 my-1
+            font-medium rounded-md cursor-pointer
+            transition-colors group ${
+              location.pathname === item.link  ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
+              : "hover:bg-indigo-50 text-gray-600"
+            }`}
+          >
+            {item.icon}
+           <span className="w-52 ml-3"><NavLink to={item.link}>{item.title}</NavLink></span> 
           </li>
         ))}
       </ul>
       {isAuth ? (
         <div className="pt-24">
-          <div className="bottom-nav">
-            <div className="user-con bottom-nav flex items-center gap-4">
+          <div className="">
+            <div className="flex items-center gap-4">
               <img
                 src={avatar}
                 alt=""
@@ -97,6 +114,7 @@ const Navbar = ({ active, setActive, menuItems }) => {
         </div>
       )}
     </nav>
+    </aside>
   );
 };
 
