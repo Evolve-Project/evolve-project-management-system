@@ -19,7 +19,7 @@ module.exports = {
         allowNull: false,
         references: { model: 'mentors', key: 'id' }
       },
-      metric1_rating: {
+      interaction_rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -27,11 +27,11 @@ module.exports = {
           max: 5
         }
       },
-      metric1_feedback: {
+      interaction_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric2_rating: {
+      support_rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -39,11 +39,11 @@ module.exports = {
           max: 5
         }
       },
-      metric2_feedback: {
+      support_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      metric3_rating: {
+      encouragement_rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -51,7 +51,19 @@ module.exports = {
           max: 5
         }
       },
-      metric3_feedback: {
+      encouragement_feedback: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      feedback_rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 1,
+          max: 5
+        }
+      },
+      feedback_feedback: {
         type: DataTypes.TEXT,
         allowNull: false
       },

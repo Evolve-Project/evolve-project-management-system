@@ -22,7 +22,7 @@ const loginFieldsCheck = check('email').custom(async (value, { req }) => {
     }
 
     const validpassword = await compare(req.body.password, user.password);
-
+    console.log(validpassword)
     if (!validpassword) {
         throw new Error("Invalid Password");
     }

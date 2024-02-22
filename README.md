@@ -50,6 +50,7 @@ So far, we have created the following tables:
 
 ### Migrations
 We have added corresponding migrations for each table. To run the migrations, use the following command:
+### make sure to run these commands in the /backend/src folder
 ```javascript
 npx sequelize-cli db:migrate
 ```
@@ -78,7 +79,7 @@ This command will undo all your seeders, in the reverse order they are listed.
 
 
 # quick way to setup database
-enter these commands one by one in terminal
+enter these commands one by one in terminal(../backend/src)
 
 ```js
 npx sequelize-cli db:create

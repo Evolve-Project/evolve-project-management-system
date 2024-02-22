@@ -50,9 +50,10 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     let user = req.user;
     let payload = {
-        id: user.user_id,
+        id: user.id,
         email: user.email,
     }
+
     try {
         const token = sign(payload, SECRET)
 
@@ -73,7 +74,6 @@ exports.login = async (req, res) => {
 
 exports.protected = async (req, res) => {
     try {
-        console.log(req.user);
         return res.status(200).json({
             info: "protected info",
         })
