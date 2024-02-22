@@ -2,15 +2,19 @@
 
 module.exports = {
   up: async (queryInterface, DataTypes) => {
+    const mentee_metrics = ["Performance", "Team Work", "Communication", "Problem Solving", "Timely delivery"];
+    const mentor_metrics = ["Interaction", "Support", "Encouragement", "Feedback"];
+
     const feedbackMetrics = [
-      { metric_name: 'Communication Skills', role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Knowledge in the Field', role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Availability and Responsiveness', role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Understanding of Concepts', role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Application of Knowledge', role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Problem Solving Skills', role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Teamwork and Collaboration', role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
-      { metric_name: 'Adaptability and Learning Speed', role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentee_metrics[0], role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentee_metrics[1], role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentee_metrics[2], role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentee_metrics[3], role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentee_metrics[4], role: 'Mentee', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentor_metrics[0], role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentor_metrics[1], role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentor_metrics[2], role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
+      { metric_name: mentor_metrics[3], role: 'Mentor', createdAt: new Date(), updatedAt: new Date() },
     ];
 
     await queryInterface.bulkInsert('feedback_metrics', feedbackMetrics, {});
