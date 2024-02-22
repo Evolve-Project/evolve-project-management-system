@@ -2,6 +2,7 @@ const express = require("express");
 const { PORT, CLIENT } = require('./constants')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
+const { getMilestone} = require("../src/controllers/milestones");
 
 const app = express();
 const passport = require('passport')
@@ -20,3 +21,5 @@ app.use('/api', authRoutes);
 app.listen(PORT, () => {
     console.log(`server started on port ${PORT}`);
 });
+
+getMilestone();

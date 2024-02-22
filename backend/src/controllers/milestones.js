@@ -3,8 +3,9 @@ const { Milestone } = require('../models');
 exports.getMilestone = async (req, res) => {
     try {
         const milestone = await Milestone.findAll({
-            attributes: ['milestone_description_id', 'team_id', 'status','milestone_completion_datetime',' total_tasks']
-        });
+            attributes: ['milestone_description_id', 'team_id','milestone_completion_datetime',
+            'total_tasks']
+        }); 
 
         console.log(milestone);
         return res.status(200).json({
@@ -18,14 +19,13 @@ exports.getMilestone = async (req, res) => {
 
 
 exports.addMilestone = async (req, res) => {
-    const { milestone_description_id, team_id, status,milestone_completion_datetime,total_tasks } = req.body;
+    const { milestone_description_id, team_id,milestone_completion_datetime,total_tasks } = req.body;
     try {
        
 
         await Milestone.create({
             milestone_description_id: milestone_description_id,
             team_id:  team_id,
-            status: status,
             milestone_completion_datetime: milestone_completion_datetime,
             total_tasks : total_tasks
         });
