@@ -26,7 +26,8 @@
   padding-left: 20px;
 }
 
-.custom-table td, .custom-table th {
+.custom-table td,
+.custom-table th {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -49,4 +50,4 @@
 
 .global-filter-container {
   margin-bottom: 30px;
-}
+} 

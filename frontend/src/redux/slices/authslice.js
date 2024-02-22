@@ -4,9 +4,7 @@ const userAuthFromLocalStorage = () => {
   const authData = localStorage.getItem('authData')
 
   if (authData) {
-    console.log(authData);
     const { isAuth, role } = JSON.parse(authData)
-    console.log(role);
     return { isAuth, role }
   }
   return { isAuth: false, role: null }

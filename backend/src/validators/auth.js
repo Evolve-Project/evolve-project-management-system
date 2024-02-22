@@ -2,7 +2,7 @@ const { check } = require('express-validator');
 const { compare } = require('bcryptjs');
 const { User } = require('../models/');
 
-const password = check('password').isLength({ min: 6, max: 15 }).withMessage('password not the corrent length');
+const password = check('password').isLength({ min: 6, max: 30 }).withMessage('password not the corrent length');
 
 const email = check('email').isEmail().withMessage('Invalid Email');
 
@@ -16,24 +16,21 @@ const emailExists = check('email').custom(async (value) => {
 });
 
 const loginFieldsCheck = check('email').custom(async (value, { req }) => {
-    console.log("called");
     const user = await User.findOne({ where: { email: value } });
-    console.log(user);
     if (!user) {
         throw new Error('Email Does not exist');
     }
 
     const validpassword = await compare(req.body.password, user.password);
-
+    console.log(validpassword)
     if (!validpassword) {
         throw new Error("Invalid Password");
     }
 
     req.user = user;
-    console.log(req.user);
 })
 
 module.exports = {
     registerValidation: [email, password, role, emailExists],
-    loginValidation: [loginFieldsCheck]
+    loginValidation: [loginFieldsCheck],
 }

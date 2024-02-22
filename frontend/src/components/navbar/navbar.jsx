@@ -22,8 +22,10 @@ const Navbar = ({ active, setActive, menuItems }) => {
       setItem(admin);
     } else if (role === "Mentor") {
       setItem(mentor);
-    } else {
+    } else if (role === "Mentee") {
       setItem(mentee);
+    } else {
+      setItem(null);
     }
   }, [item]);
 

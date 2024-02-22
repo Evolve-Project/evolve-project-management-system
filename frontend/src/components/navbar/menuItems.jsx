@@ -31,6 +31,12 @@ const admin = [
   },
   {
     id: 5,
+    title: "Satisfaction",
+    icon: <GrUserManager/>,
+    link: "/satisfaction"
+  },
+  {
+    id: 6,
     title: "Checkouts",
     icon: <AiFillNotification/>,
     link: "/checkouts",
@@ -47,7 +53,7 @@ const mentor = [
     id: 2,
     title: "Attendance",
     icon: <IoCheckboxOutline/>,
-    link: "/dashboard",
+    link: "/attendance",
   },
   {
     id: 3,

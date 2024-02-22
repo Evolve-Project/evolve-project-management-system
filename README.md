@@ -15,10 +15,16 @@ npm run dev
 
 create a copy of .env.example file and remove the .example extension
 PORT = 8000
-SECRET = evolvesecretfile
+SECRET = 'H5Vxuw0vOU'
 
 CLIENT_URL = http://localhost:3000
 SERVER_URL = http://localhost:8000 
+DB_USERNAME=postgres
+DB_PASSWORD=12345678
+DB_NAME=evolve_application
+DB_HOST=localhost
+DB_DIALECT=postgres
+DB_PORT=5432
 ```
 cd backend
 npm install
@@ -45,7 +51,7 @@ So guys here is the basic details about our database so far
 ### Migrations
 We have added corresponding migrations for each table. To run the migrations, use the following command:
 
-**NOTE: Make sure to run these commands in the /backend/src directory.**
+**NOTE: Make sure to run these commands in the /backend directory.** // not in backend/src directory
 ```javascript
 npx sequelize-cli db:migrate
 ```
@@ -90,7 +96,7 @@ This command will undo all your seeders, in the reverse order they are listed.
 
 
 # quick way to setup database and add dummy data
-#### Open the terminal and navigate to backend/src folder and run the following commands in the order they are listed
+#### Open the terminal and navigate to /backend directory and run the following commands in the order they are listed(no need to go to /backend/src directory)
 ```bash
 npx sequelize-cli db:drop
 npx sequelize-cli db:create
