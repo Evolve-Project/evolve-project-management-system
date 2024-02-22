@@ -19,8 +19,8 @@ import Checkouts from "./pages/Admin/Checkouts";
 import DashboardAdmin from "./pages/Admin/Dashboard";
 import DashboardMentor from "./pages/Mentor/Dashboard";
 import DashboardMentee from "./pages/Mentee/Dashboard";
-import MenteeMilestones from "./pages/Mentee/MenteeMilestones";
-import MentorMilestone from "./pages/Mentor/MentorMilestone";
+import MentorMilestone from "./pages/Mentor/milestones/MentorMilestone";
+import MenteeMilestones from "./pages/Mentee/milestones/MenteeMilestones";
 
 import Satisfaction from "./pages/Admin/Satifaction";
 import { Milestone } from "lucide-react";

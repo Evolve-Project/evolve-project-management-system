@@ -1,10 +1,10 @@
 import React from 'react'
-import { loadMilestones } from '../../api/milestone';
+import { loadMilestones } from '../../../api/milestone';
 import {Box , Heading}  from "@chakra-ui/react"
 
 import MilestoneTable from './MilestoneTable';
 import { ChakraProvider } from '@chakra-ui/react';
-import theme from "../../components/theme/theme.jsx"
+import theme from "../../../components/theme/theme.jsx"
 
 
 function MentorMilestone() {
