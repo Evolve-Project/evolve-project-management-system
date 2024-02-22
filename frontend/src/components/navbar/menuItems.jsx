@@ -48,7 +48,7 @@ const mentor = [
     id: 2,
     title: "Attendance",
     icon: transactions,
-    link: "/dashboard",
+    link: "/attendance",
   },
   {
     id: 3,

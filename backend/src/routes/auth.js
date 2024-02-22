@@ -3,6 +3,7 @@ const { getUsers, register, login, protected, logout } = require("../controllers
 const { registerValidation, loginValidation } = require("../validators/auth");
 const { validationMiddleware } = require("../middlewares/validation-middleware");
 const { userAuth } = require("../middlewares/passport-middleware");
+
 const router = Router();
 
 router.get('/get-users', getUsers);

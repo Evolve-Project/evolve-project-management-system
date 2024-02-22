@@ -1,4 +1,3 @@
-
 const { hash } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const { SECRET } = require('../constants');
@@ -49,7 +48,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     let user = req.user;
     let payload = {
-        id: user.user_id,
+        id: user.id,
         email: user.email,
     }
 
@@ -73,7 +72,6 @@ exports.login = async (req, res) => {
 
 exports.protected = async (req, res) => {
     try {
-        console.log(req.user);
         return res.status(200).json({
             info: "protected info",
         })

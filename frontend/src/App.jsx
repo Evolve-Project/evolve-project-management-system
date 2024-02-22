@@ -16,6 +16,7 @@ import Query from "./pages/Mentor/Query";
 import Feedback from "./pages/Mentor/Feedback";
 import UserManagement from "./pages/Admin/UserManagement";
 import Attendance from "./pages/Admin/Attendance";
+import MentorAttendance from "./pages/Mentor/Attendance"
 import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
 
@@ -51,7 +52,7 @@ const App = () => {
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/query" element={<Query />} />
-              <Route path="/attendance" element={<Query />} />
+              <Route path="/attendance" element={<MentorAttendance />} />
             </>
           )}
 
