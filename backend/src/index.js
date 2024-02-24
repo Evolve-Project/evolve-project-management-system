@@ -14,8 +14,10 @@ app.use(passport.initialize())
 
 //import routes
 const authRoutes = require('./routes/auth');
+const attendanceRoutes = require('./routes/attendance')
 //initialize routes
 app.use('/api', authRoutes);
+app.use('/api', attendanceRoutes);
 
 
 app.listen(PORT, () => {
