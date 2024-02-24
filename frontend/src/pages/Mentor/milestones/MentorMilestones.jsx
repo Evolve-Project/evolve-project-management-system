@@ -4,12 +4,17 @@ import { Button } from '@mui/material'
 import {Box , Heading}  from "@chakra-ui/react"
 import { ChakraProvider } from '@chakra-ui/react';
 import { loadMilestones } from '@/api/milestoneApi.js';
+import { Select } from '@chakra-ui/react'
 
 import theme from "./themes/theme.jsx"
 function MentorMilestones() {
+  const [status, setStatus] = useState([]);
 
+  const handleChange = (event) => {
+    setStatus(event.target.value);
+  };
   const [milestoneDesc, setMilestoneDesc] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+  
 
   useEffect(() => {
     async function fetchMilestoneDesc() {
@@ -41,6 +46,7 @@ function MentorMilestones() {
       <ChakraProvider theme={theme}>
       <Box maxW = {1000} mx="auto" px={6} frontSize="sm"> 
       <Heading ab={8}>Milestones</Heading>
+      <br />
       <table className="table-auto border-collapse w-full">
             <thead>
               <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -62,16 +68,16 @@ function MentorMilestones() {
                   <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
                   <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
                   <td className="py-2 px-4 text-left relative">
-                    <button
-                      className="bg-blue-500 text-white py-1 px-4 rounded-full"
-                      onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
-                    >
-                      On Progress
-                    </button>
+                  <Select placeholder='In Progress'>
+  <option value='option1'>Completed</option>
+  
+  
+</Select>
                    
                   </td>
                   <td className="py-2 px-4 text-left">
-                    <button className="bg-gray-200 text-gray-800 py-1 px-4 rounded-full">View Details</button>
+                    <button className="bg-gray-200 text-gray-800 py-1 px-4 rounded-full">View</button>
+                  
                   </td>
                 </tr>
               ))}
