@@ -14,7 +14,6 @@ import MentorFeedback from "./pages/Mentor/Feedback";
 import MenteeFeedback from "./pages/Mentee/Feedback";
 import UserManagement from "./pages/Admin/UserManagement";
 import Attendance from "./pages/Admin/Attendance";
-import MentorAttendance from "./pages/Mentor/Attendance"
 import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
 import DashboardAdmin from "./pages/Admin/Dashboard";
@@ -49,8 +48,8 @@ const App = () => {
               <Route path="/usermanagement" element={<UserManagement />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} />
-              <Route path="/checkouts" element={<Checkouts />} />
               <Route path="/satisfaction" element={<Satisfaction/>} />
+              <Route path="/checkouts" element={<Checkouts />} />
             </>
           )}
 
@@ -61,14 +60,13 @@ const App = () => {
               <Route path="/query" element={<Query />} />
               <Route path="/milestones" element={<MentorMilestone/>} />
               {/* <Route path="/attendance" element={<Query />} /> */}
-              <Route path="/attendance" element={<MentorAttendance />} />
             </>
           )}
 
           {role === "Mentee" && (
             <>
               <Route path="/dashboard" element={<DashboardMentee />} />
-              <Route path="/feedback" element={<MenteeFeedback />} />
+              <Route path="/feedback" element={<MenteeFeedback/>}/>
               {/* <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} /> */}
               <Route path="/milestones" element={<MenteeMilestones/>}/>

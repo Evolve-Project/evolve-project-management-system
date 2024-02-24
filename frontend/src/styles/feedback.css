@@ -1,9 +1,8 @@
-.container {
+.container{
     width: 100%;
     font-family: sans-serif;
-    --radius: 8px;
+    --radius : 8px;
 }
-
 /* tilte is not responsive */
 .title {
     margin: 20px auto;
@@ -13,8 +12,7 @@
     max-width: 600px;
     position: relative;
 }
-
-.title::before {
+.title::before {    
     content: "";
     display: block;
     width: 30vw;
@@ -25,7 +23,6 @@
     position: absolute;
     border-radius: var(--radius);
 }
-
 .title::after {
     content: "";
     display: block;
@@ -37,14 +34,12 @@
     position: absolute;
     border-radius: var(--radius);
 }
-
-.component {
+.component{
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
-.box {
+.box{
     width: 80%;
     margin: auto;
     height: 60px;
@@ -53,35 +48,29 @@
     display: flex;
     flex-direction: row;
 }
-
-.name {
+.name{
     flex: 7;
     margin: auto 0;
     padding-left: 50px;
 }
-
-.rating {
+.rating{
     flex: 4;
     margin: auto;
 }
-
-.drop-down {
+.drop-down{
     flex: 1;
     margin: auto;
     cursor: pointer;
 }
-
-.drop-down-icon {
+.drop-down-icon{
     padding: 2px;
     transition: all .2s ease-in;
 }
-
-.drop-down-icon:hover {
-    background-color: #ddddde;
+.drop-down-icon:hover{
+    background-color:#ddddde;
     border-radius: 50%;
 }
-
-.content {
+.content{
     width: 80%;
     gap: 10px;
     margin: auto;
@@ -91,29 +80,26 @@
     flex-direction: column;
     border-radius: 10px;
 }
-
-.metric-box {
+.metric-box{
     width: 100%;
     margin: auto;
     background-color: rgb(255, 255, 255);
     height: 50px;
     display: flex;
 }
-
-.comment {
+.comment{
     flex: 3;
     margin: auto;
     padding: 0 20px;
 }
-
-.comment input {
+.comment input{
     border: 3px solid rgb(198, 196, 196);
     background-color: aliceblue;
     padding: 2px;
 }
 
-.btn {
-    background-image: linear-gradient(to right, #4834D4, #686DE0);
+.btn{
+    background-image: linear-gradient(to right,#4834D4,#686DE0);
     color: white;
     padding: 10px 20px;
     cursor: pointer;

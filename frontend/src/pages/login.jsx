@@ -2,8 +2,7 @@ import { useState } from "react";
 import { onLogin } from "../api/authApi";
 import { useDispatch } from "react-redux";
 import { authenticateUser } from "./../redux/slices/authslice";
-import { Link, Navigate } from "react-router-dom";
-import Swal from 'sweetalert2'
+import { Navigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -26,10 +25,7 @@ const Login = () => {
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+
   const dispatch = useDispatch();
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -38,73 +34,65 @@ const Login = () => {
       const { data } = await onLogin(values);
       const role = data.role;
       dispatch(authenticateUser({ role }));
-      localStorage.setItem('authData', JSON.stringify({ isAuth: true, role: role }));
+      localStorage.setItem(
+        "authData",
+        JSON.stringify({ isAuth: true, role: role })
+      );
     } catch (error) {
-      console.log(error)
-      Swal.fire({
-        title: 'Error!',
-        text: 'Wrong Username or password',
-        icon: 'error',
-        confirmButtonText: 'Retry'
-      })
+      console.log(error);
     }
-  }
+  };
+
   return (
     <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
       <div className="w-full m-auto bg-white lg:max-w-lg">
-        <form onSubmit={(e) => onSubmit(e)} className='flex items-center justify-center h-full'>
-          <Card className='w-[350px]'>
+        <form
+          onSubmit={(e) => onSubmit(e)}
+          className="flex items-center justify-center h-full"
+        >
+          <Card className="w-[350px]">
             <CardHeader>
               <CardTitle>Login</CardTitle>
-              <CardDescription>Welcome to Evolve Advanced Mentoring App</CardDescription>
+              <CardDescription>
+                Welcome to Evolve Advanced Mentoring App
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Label htmlFor='email'>
-                Email address
-              </Label>
+              <Label htmlFor="email">Email address</Label>
               <Input
                 onChange={(e) => onChange(e)}
-                type='email'
-                className='form-control'
-                id='email'
-                name='email'
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
                 value={values.email}
-                placeholder='test@gmail.com'
+                placeholder="test@gmail.com"
                 required
               />
             </CardContent>
             <CardContent>
-              <Label htmlFor='password'>
-                Password
-              </Label>
-              <div className='relative'>
-                <Input
-                  onChange={(e) => onChange(e)}
-                  type={showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  className='form-control'
-                  id='password'
-                  name='password'
-                  placeholder='password'
-                  required
-                />
-                <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'} absolute right-5 top-1.5`}
-                  onClick={togglePasswordVisibility}
-                ></i>
-              </div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                onChange={(e) => onChange(e)}
+                type="password"
+                value={values.password}
+                className="form-control"
+                id="password"
+                name="password"
+                placeholder="password"
+                required
+              />
             </CardContent>
-            <CardFooter className="flex flex-col items-start">
-              <p className='text-xs mb-1'>Forgot  Password?<Link className='text-primary' to={"/reset"}> Click here </Link>to Reset</p>
-              <Button type='submit' className="w-full" >
+            <CardFooter>
+              <Button type="submit" className="w-full">
                 Login
               </Button>
             </CardFooter>
           </Card>
-
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Login;

@@ -13,15 +13,14 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 export function Addmentee() {
+
   function onSubmit(values) {
+    // Do something with the form values.
     console.log(values);
   }
   const formSchema = z.object({
-    firstname: z.string().min(2, {
-      message: "First Name must be at least 2 characters.",
-    }),
-    lastname: z.string().min(2, {
-      message: "Last Name must be at least 2 characters.",
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
     }),
     mail: z.string().email(),
     clgname: z.string().min(2, {
@@ -31,8 +30,7 @@ export function Addmentee() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstname: "",
-      lastname:"",
+      name: "",
       mail:"",
       clgname:""
     },
@@ -42,25 +40,12 @@ export function Addmentee() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
           control={form.control}
-          name="firstname"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>First Name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter the First Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-             <FormField
-          control={form.control}
-          name="lastname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter the Last Name" {...field} />
+                <Input placeholder="Enter the Name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
