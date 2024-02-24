@@ -63,9 +63,9 @@ const mentor = [
   },
   {
     id: 4,
-    title: "Projects",
+    title: "Milestones",
     icon: <IoIosGlobe/>,
-    link: "/dashboard",
+    link: "/milestones",
   },
   {
     id: 5,
