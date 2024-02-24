@@ -1,6 +1,8 @@
-const { validationMiddleware } = require("../middlewares/validation-middleware");
+const {
+  validationMiddleware,
+} = require("../middlewares/validation-middleware");
 const { Router } = require("express");
-const {getMilestoneDesc  } = require("../controllers/milestones");
+const { getMilestoneDesc } = require("../controllers/milestones");
 const router = Router();
-router.get('/get-milestones', getMilestoneDesc);
-
+router.get("/get-milestones", getMilestoneDesc);
+module.exports = router;

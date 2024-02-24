@@ -7,8 +7,11 @@ exports.getMilestoneDesc = async (req, res) => {
     });
 
     console.log(milestone_desc);
+   return  res.json(milestone_desc);
    
   } catch (error) {
     console.log("Error in getMilestoneDesc, auth controller ", error);
   }
 };
+
+
