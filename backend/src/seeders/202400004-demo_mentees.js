@@ -14,10 +14,11 @@ module.exports = {
         University: faker.company.companyName(),
         dob: faker.date.past(),
         home_city: faker.address.city(),
+        team_id: ((userId - 2) % 8) + 1, // Cycle through team IDs from 1 to 8
         createdAt: new Date(),
         updatedAt: new Date()
       });
-    } 
+    }
 
     await queryInterface.bulkInsert('mentees', mentees, {});
   },
