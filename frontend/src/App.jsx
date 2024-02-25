@@ -42,28 +42,28 @@ const App = () => {
         <Route path="/" element={<PrivateRoutes />}>
           {role === "Admin" && (
             <>
-              <Route path="/dashboard" element={<DashboardAdmin />} />
+              <Route index element={<DashboardAdmin />} />
               <Route path="/usermanagement" element={<UserManagement />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} />
-              <Route path="/satisfaction" element={<Satisfaction/>} />
+              <Route path="/satisfaction" element={<Satisfaction />} />
               <Route path="/checkouts" element={<Checkouts />} />
             </>
           )}
 
           {role === "Mentor" && (
             <>
-              <Route path="/dashboard" element={<DashboardMentor />} />
-              <Route path="/feedback" element={<MentorFeedback />} />
-              <Route path="/query" element={<Query />} />
-              <Route path="/project" element={<Project />} />
+              <Route index element={<DashboardMentor />} />
+              <Route path="feedback" element={<MentorFeedback />} />
+              <Route path="query" element={<Query />} />
+              <Route path="project" element={<Project />} />
             </>
           )}
 
           {role === "Mentee" && (
             <>
               <Route path="/dashboard" element={<DashboardMentee />} />
-              <Route path="/feedback" element={<MenteeFeedback/>}/>
+              <Route path="/feedback" element={<MenteeFeedback />} />
               {/* <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} /> */}
             </>

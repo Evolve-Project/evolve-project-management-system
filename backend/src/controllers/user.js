@@ -209,22 +209,41 @@ exports.removeid = async (req, res) => {
     });
   }
 };
-
 exports.assignProject = async (req, res) => {
   try {
     const role = req.user.role;
     if (role === "Admin" || role === "Mentee") {
       return res.status(400).json({ success: false, error: "Invalid role" });
     }
-    const team = await Team.findOne({
-      where: { project_id: null },
-      limit: 1,
+    // console.log(req.user.id);
+
+    const mentorTeamId = await Mentor.findOne({
+      where: { user_id: req.user.id },
+      attributes: ["team_id"],
+      raw: true, // Return plain data, not Sequelize instances
     });
-    if (team) {
-      console.log("Found team:", team);
-      const newProject = await Project.create({
-        ...req.body,
+
+    if (!mentorTeamId.team_id) {
+      return res.status(400).json({
+        message: "Team is not assgined",
       });
+    }
+    // console.log(mentorTeamId.team_id);
+
+    const team = await Team.findOne({
+      where: { id: mentorTeamId.team_id },
+    });
+    if (team.project_id) {
+      return res.status(200).json({
+        message: "Project is already assigned",
+      });
+    }
+    if (team) {
+      console.log("Found team:", req.body.formData);
+      const newProject = await Project.create({
+        ...req.body.formData,
+      });
+      console.log(newProject);
       await team.update({ project_id: newProject.dataValues.id });
     } else {
       res.status(400).json({
@@ -236,6 +255,7 @@ exports.assignProject = async (req, res) => {
       success: true,
       message: "Project assigned successfully",
       // project: newProject,
+      // team,
     });
   } catch (error) {
     console.error(error);
@@ -245,3 +265,84 @@ exports.assignProject = async (req, res) => {
     });
   }
 };
+exports.mentorDetails = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Fetch mentor details and include the associated team
+    const mentorDetails = await Mentor.findOne({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Team,
+          attributes: ["id", "team_name", "project_id", "total_team_members"],
+          include: [
+            {
+              model: Project,
+              attributes: [
+                "id",
+                "name",
+                "description",
+                "start_date",
+                "end_date",
+                "status",
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const menteesList = await Mentee.findAll({
+      where: { team_id: mentorDetails?.Team?.id },
+      attributes: ['id', 'team_id', 'first_name'], // Specify the properties you want to retrieve
+    });
+
+    if (mentorDetails) {
+      const formattedResponse = {
+        mentorInfo: {
+          id: mentorDetails.id,
+          user_id: mentorDetails.user_id,
+          first_name: mentorDetails.first_name,
+          last_name: mentorDetails.last_name,
+          Experience: mentorDetails.Experience,
+          createdAt: mentorDetails.createdAt,
+          updatedAt: mentorDetails.updatedAt,
+        },
+        teamInfo: {
+          id: mentorDetails.Team?.id,
+          team_name: mentorDetails.Team?.team_name,
+          project_id: mentorDetails.Team?.project_id,
+          total_team_members: mentorDetails.Team?.total_team_members,
+        },
+        projectInfo: {
+          id: mentorDetails.Team.Project?.id,
+          name: mentorDetails.Team.Project?.name,
+          description: mentorDetails.Team.Project?.description,
+          start_date: mentorDetails.Team.Project?.start_date,
+          end_date: mentorDetails.Team.Project?.end_date,
+          status: mentorDetails.Team.Project?.status,
+        },
+        menteeInfo:{
+          menteesList
+        }
+      };
+      return res.status(200).json({
+        success: true,
+        message: "Mentor details fetched successfully",
+        formattedResponse,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Mentor not found",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};x

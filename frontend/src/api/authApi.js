@@ -19,6 +19,6 @@ export async function onLogout() {
 export async function fetchProtectedInfo() {
   return await axios.get("http://localhost:8000/api/protected");
 }
-export async function createProject(formData) {
-  return await axios.post("http://localhost:8000/api/assignProject", formData);
-}
+// export async function createProject(formData) {
+//   return await axios.post("http://localhost:8000/api/assignProject", formData);
+// }

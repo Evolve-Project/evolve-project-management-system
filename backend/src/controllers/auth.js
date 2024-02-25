@@ -1,7 +1,7 @@
 const { hash } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 const { SECRET } = require("../constants");
-const { User ,Mentee} = require("../models/");
+const { User, Mentee, Mentor } = require("../models/");
 
 exports.getUsers = async (req, res) => {
   try {
@@ -20,7 +20,8 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { email, password, role, first_name, University, dob } = req.body;
+  const { email, password, role, first_name, University, dob, Experience } =
+    req.body;
   try {
     const hashedPassword = await hash(password, 10);
 
@@ -32,17 +33,25 @@ exports.register = async (req, res) => {
     });
     if (role == "Mentee") {
       const newMentee = await Mentee.create({
-        user_id:user.id,
+        user_id: user.id,
         first_name,
         University,
         dob,
       });
     }
-    
+    if (role == "Mentor") {
+      const newMentee = await Mentor.create({
+        user_id: user.id,
+        first_name,
+        University,
+        Experience,
+      });
+    }
+
     return res.status(201).json({
       success: true,
       message: "register complete",
-    //   newMentee
+      //   newMentee
     });
   } catch (error) {
     console.log("Error in registering user, auth controller ", error);

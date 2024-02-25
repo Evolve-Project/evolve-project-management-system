@@ -38,6 +38,7 @@ const Login = () => {
         "authData",
         JSON.stringify({ isAuth: true, role: role })
       );
+      
     } catch (error) {
       console.log(error);
     }

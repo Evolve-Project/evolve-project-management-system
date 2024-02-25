@@ -1,7 +1,10 @@
-import { createProject } from "@/api/authApi";
-import React, { useState } from "react";
-
+import { createProject, loadUser } from "@/redux/Actions/User";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 const Project = () => {
+  const dispatch = useDispatch();
+  const { mentor } = useSelector((state) => state.mentor);
+  const { message, error } = useSelector((state) => state.message);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -19,25 +22,26 @@ const Project = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Your logic to send the formData to the server
-    console.log("Form data submitted:", formData);
-    createProject(formData);
-    // Reset the form after submission
-    setFormData({
-      name: "",
-      description: "",
-      start_date: "",
-      end_date: "",
-      status: true,
-      git_repository_link: "",
-      trello_board_link: "",
-    });
+    // console.log("Form data submitted:", formData);
+    await dispatch(createProject(formData));
+    dispatch(loadUser());
   };
+  useEffect( () => {
+    if (message) {
+      // alert.success(message);
+      dispatch({ type: "clearMessage" });
+    }
+    if (error) {
+      // alert.error(error);
+      dispatch({ type: "clearErrors" });
+    }
+  }, [message, error, dispatch]);
 
-  return (
+  return mentor?.teamInfo?.project_id ? (
+    <div>PROJECT IS ALREADY ASSIGNED</div>
+  ) : (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-8">
       <h1>Create Project</h1>
       <div className="mb-4">

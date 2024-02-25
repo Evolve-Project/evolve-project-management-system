@@ -5,6 +5,7 @@ const {
   addSingleUser,
   removeid,
   assignProject,
+  mentorDetails,
 } = require("../controllers/user");
 
 const { userAuth } = require("../middlewares/passport-middleware");
@@ -15,6 +16,7 @@ router.get("/teamidToMentee", userAuth, teamidToMentee);
 router.get("/teamidToMentor", userAuth, teamidToMentor);
 router.get("/addSingleUser", userAuth, addSingleUser);
 router.get("/removeid", userAuth, removeid);
+router.get("/mentorDetails", userAuth, mentorDetails);
 
 router.post("/assignProject", userAuth, assignProject);
 
