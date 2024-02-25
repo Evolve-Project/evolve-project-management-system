@@ -345,4 +345,4 @@ exports.mentorDetails = async (req, res) => {
       message: error.message,
     });
   }
-};x
+};
