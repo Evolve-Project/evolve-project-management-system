@@ -33,10 +33,13 @@ import {
 } from "@/components/ui/form"
 import { CalendarIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
-import { CreateAttendance } from '@/api/attendanceApi';
+import { CreateAttendance, FetchMentees } from '@/api/attendanceApi';
+import { Textarea } from "@/components/ui/textarea"
+import AttendanceDatatable from '@/components/DataTable/AttendanceDataTable';
+import { useEffect } from 'react';
 
 const Attendance = () => {
-  const userData = {
+  const oldUserData = {
     users: [
       {
         name: 'Aarav',
@@ -79,7 +82,80 @@ const Attendance = () => {
   const form = useForm()
 
   const [open, setOpen] = useState(false);
-  const [attendanceData, setAttendanceData] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([
+    {
+      id: 1,
+      name: "Harsh",
+      description: "Project meeting",
+      date: new Date("2024-02-22"),
+      attendance: [1, 2, 3] // Assuming these are user IDs present on this date
+    },
+    {
+      id: 2,
+      name: "Verma",
+      description: "Project meeting",
+      date: new Date("2024-02-21"),
+      attendance: [4, 5, 6]
+    },
+    {
+      id: 3,
+      name: "Harsh",
+      description: "Project meeting",
+      date: new Date("2024-02-20"),
+      attendance: [2, 3, 7]
+    },
+    {
+      id: 4,
+      name: "Verma",
+      description: "Project meeting",
+      date: new Date("2024-02-19"),
+      attendance: [1, 4, 6]
+    },
+    {
+      id: 5,
+      name: "Harsh",
+      description: "Project meeting",
+      date: new Date("2024-02-18"),
+      attendance: [3, 5, 7]
+    },
+    {
+      id: 6,
+      name: "Verma",
+      description: "Project meeting",
+      date: new Date("2024-02-17"),
+      attendance: [1, 2, 6]
+    },
+    {
+      id: 7,
+      name: "Harsh",
+      description: "Project meeting",
+      date: new Date("2024-02-16"),
+      attendance: [3, 4, 5]
+    },
+    {
+      id: 8,
+      name: "Verma",
+      description: "Project meeting",
+      date: new Date("2024-02-15"),
+      attendance: [1, 4, 7]
+    }
+  ]);
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    // Fetch user data from API when component mounts
+    const fetchUserData = async () => {
+      const response = await FetchMentees();
+      setUserData(response.data);
+      // console.log(oldUserData);
+    };
+    fetchUserData();
+  }, []); // Empty dependency array ensures the effect runs only once on mount
+
+  useEffect(() => {
+    // Log userData whenever it changes
+    // console.log(userData);
+  }, [userData]);
 
   const onSubmit = async (data) => {
 
@@ -94,29 +170,20 @@ const Attendance = () => {
     } else {
       const id = crypto.randomUUID()
       data.id = id;
+      data.name = "Harsh Verma";
+      console.log(data);
       attendanceData.push(data);
       try {
         CreateAttendance(data);
       } catch (error) {
         console.log(error);
       }
+      attendanceData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      setAttendanceData([...attendanceData]); // Trigger re-render
     }
     setOpen(false);
   };
 
-  // Function to remove user from attendance
-  const removeUser = (id, userId) => {
-    const updatedAttendance = attendanceData.map(at => {
-      if (at.id === id) {
-        return {
-          ...at,
-          attendance: at.attendance.filter(id => id !== userId)
-        };
-      }
-      return at;
-    });
-    setAttendanceData(updatedAttendance);
-  };
 
 
   return (
@@ -189,10 +256,6 @@ const Attendance = () => {
                 render={() => (
                   <FormItem>
                     <div className="mb-4">
-                      <FormLabel className="text-base">Sidebar</FormLabel>
-                      <FormDescription>
-                        Select the items you want to display in the sidebar.
-                      </FormDescription>
                     </div>
                     {userData.users.map((item) => (
                       <FormField
@@ -222,7 +285,7 @@ const Attendance = () => {
                                 />
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
-                                {item.name}
+                                {item.first_name + " " + item.last_name}
                               </FormLabel>
                             </FormItem>
                           )
@@ -233,23 +296,44 @@ const Attendance = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Attendance description"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit">Submit</Button>
             </form>
           </Form>
         </DialogContent>
 
       </Dialog>
-      <div className='w-9/12 flex justify-center mx-auto'>
+      {/* attendance table */}
+      {/* <div className='w-9/12 flex justify-center mx-auto'>
         <Table >
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[100px]  text-left">Mentor Name</TableHead>
               <TableHead className="w-[100px]  text-left">Date</TableHead>
+              <TableHead className="w-[100px]  text-left">Description</TableHead>
               <TableHead className="w-[100px]  text-center">Total Present</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {attendanceData.map((at) => (
               <TableRow key={at.id}>
+                <TableCell className="border border-gray-300 p-2 text-center">{at.name}</TableCell>
                 <TableCell className="border border-gray-300 p-2 text-left">
                   <Dialog>
                     <DialogTrigger>{`${at.date.getDate()}-${at.date.getMonth() + 1}-${at.date.getFullYear()}`}</DialogTrigger>
@@ -281,13 +365,15 @@ const Attendance = () => {
                     </DialogContent>
                   </Dialog>
                 </TableCell>
-
+                <TableCell className="border border-gray-300 p-2 text-center">{at.description}</TableCell>
                 <TableCell className="border border-gray-300 p-2 text-center">{at.attendance.length}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+      </div> */}
+
+      {userData.users != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div >
 
   )
