@@ -64,8 +64,8 @@ const mentor = [
   {
     id: 4,
     title: "Projects",
-    icon: expenses,
-    link: "/dashboard",
+    icon: <IoIosGlobe/>,
+    link: "/project",
   },
   {
     id: 5,
@@ -90,8 +90,8 @@ const mentee = [
   {
     id: 3,
     title: "Ask Query",
-    icon: trend,
-    link: "/dashboard",
+    icon: <IoCheckboxOutline/>,
+    link: "/query",
   },
   {
     id: 4,
