@@ -11,8 +11,8 @@ const Project = () => {
     start_date: "",
     end_date: "",
     status: true,
-    git_repository_divnk: "",
-    trello_board_divnk: "",
+    git_repository_link: "",
+    trello_board_link: "",
   });
 
   const handleChange = (e) => {
@@ -119,12 +119,12 @@ const Project = () => {
 
       <div className="mb-4">
         <label className="block mb-2 text-sm font-bold text-gray-700">
-          Git Repository divnk
+          Git Repository link
         </label>
         <input
           type="url"
-          name="git_repository_divnk"
-          value={formData.git_repository_divnk}
+          name="git_repository_link"
+          value={formData.git_repository_link}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md"
           required
@@ -133,12 +133,12 @@ const Project = () => {
 
       <div className="mb-4">
         <label className="block mb-2 text-sm font-bold text-gray-700">
-          Trello Board divnk
+          Trello Board link
         </label>
         <input
           type="url"
-          name="trello_board_divnk"
-          value={formData.trello_board_divnk}
+          name="trello_board_link"
+          value={formData.trello_board_link}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md"
           required
