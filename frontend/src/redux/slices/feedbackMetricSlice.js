@@ -1,11 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { feedback_metrics } from "@/dummyData";
 
-// {
-//     "id" : 1,
-//     "metric_name" :  "Performance",
-//     "role" : "Mentee"
-// }
 const initialState = {
     feedback_metrics : feedback_metrics,
     lastIndex : feedback_metrics.length
