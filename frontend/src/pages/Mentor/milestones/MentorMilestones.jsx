@@ -5,8 +5,9 @@ import {Box , Heading}  from "@chakra-ui/react"
 import { ChakraProvider } from '@chakra-ui/react';
 import { loadMilestones } from '@/api/milestoneApi.js';
 import { Select } from '@chakra-ui/react'
-
+import { Link } from 'react-router-dom';
 import theme from "./themes/theme.jsx"
+import AddMilestone from './AddMilestone.jsx';
 function MentorMilestones() {
   const [status, setStatus] = useState([]);
 
@@ -45,7 +46,11 @@ function MentorMilestones() {
         
       <ChakraProvider theme={theme}>
       <Box maxW = {1000} mx="auto" px={6} frontSize="sm"> 
-      <Heading ab={8}>Milestones</Heading>
+      <div>
+      <div><Heading ab={8}>Milestones</Heading></div>
+      </div>
+     
+      
       <br />
       <table className="table-auto border-collapse w-full">
             <thead>
@@ -76,7 +81,7 @@ function MentorMilestones() {
                    
                   </td>
                   <td className="py-2 px-4 text-left">
-                    <button className="bg-gray-200 text-gray-800 py-1 px-4 rounded-full">View</button>
+                   <Link   to={`/milestones/${milestone.name}` } ><button className="bg-gray-200 text-gray-800 py-1 px-4 rounded-full">View</button></Link>
                   
                   </td>
                 </tr>
