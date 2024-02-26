@@ -11,8 +11,8 @@ const Project = () => {
     start_date: "",
     end_date: "",
     status: true,
-    git_repository_link: "",
-    trello_board_link: "",
+    git_repository_divnk: "",
+    trello_board_divnk: "",
   });
 
   const handleChange = (e) => {
@@ -24,23 +24,41 @@ const Project = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Form data submitted:", formData);
     await dispatch(createProject(formData));
     dispatch(loadUser());
   };
-  useEffect( () => {
+  useEffect(() => {
     if (message) {
-      // alert.success(message);
       dispatch({ type: "clearMessage" });
     }
     if (error) {
-      // alert.error(error);
       dispatch({ type: "clearErrors" });
     }
+    dispatch(loadUser());
   }, [message, error, dispatch]);
-
   return mentor?.teamInfo?.project_id ? (
-    <div>PROJECT IS ALREADY ASSIGNED</div>
+    <div className="max-w-md mx-auto mt-11 border rounded-md relative">
+      <h1 className="bg-blue-500 text-white text-2xl p-2">Project Details</h1>
+      <div className="p-2">Name: {mentor.projectInfo.name}</div>
+      <div className="p-2">Description: {mentor.projectInfo.description}</div>
+      <div className="p-2">
+        Git:
+        <a target="_blank" href={mentor.projectInfo.git}>
+          Link
+        </a>
+      </div>
+      <div className="p-2">
+        Trello:
+        <a target="_blank" href={mentor.projectInfo.trello}>
+          Link
+        </a>
+      </div>
+      <div className="p-2">Start Date: {mentor.projectInfo.start_date}</div>
+      <div className="p-2">End Date: {mentor.projectInfo.end_date}</div>
+      <div className="p-2">
+        Status: {mentor.projectInfo.status ? "Active" : "Inactive"}
+      </div>
+    </div>
   ) : (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-8">
       <h1>Create Project</h1>
@@ -101,12 +119,12 @@ const Project = () => {
 
       <div className="mb-4">
         <label className="block mb-2 text-sm font-bold text-gray-700">
-          Git Repository Link
+          Git Repository divnk
         </label>
         <input
           type="url"
-          name="git_repository_link"
-          value={formData.git_repository_link}
+          name="git_repository_divnk"
+          value={formData.git_repository_divnk}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md"
           required
@@ -115,12 +133,12 @@ const Project = () => {
 
       <div className="mb-4">
         <label className="block mb-2 text-sm font-bold text-gray-700">
-          Trello Board Link
+          Trello Board divnk
         </label>
         <input
           type="url"
-          name="trello_board_link"
-          value={formData.trello_board_link}
+          name="trello_board_divnk"
+          value={formData.trello_board_divnk}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md"
           required

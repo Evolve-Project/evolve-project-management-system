@@ -1,4 +1,11 @@
-const { Mentee, Team, Mentor, Project, Sequelize } = require("../models/");
+const {
+  Mentee,
+  Team,
+  Mentor,
+  Project,
+  Query,
+  Sequelize,
+} = require("../models/");
 
 const { Op } = Sequelize;
 
@@ -258,7 +265,6 @@ exports.assignProject = async (req, res) => {
       // team,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -268,9 +274,93 @@ exports.assignProject = async (req, res) => {
 exports.mentorDetails = async (req, res) => {
   try {
     const userId = req.user.id;
-
     // Fetch mentor details and include the associated team
     const mentorDetails = await Mentor.findOne({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Team,
+          attributes: ["id", "team_name", "project_id", "total_team_members"],
+          include: [
+            {
+              model: Project,
+              attributes: [
+                "id",
+                "name",
+                "description",
+                "start_date",
+                "end_date",
+                "status",
+                "git_repository_link",
+                "trello_board_link",
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    // console.log(mentorDetails);
+    const menteesList = await Mentee.findAll({
+      where: { team_id: mentorDetails?.Team?.id },
+      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
+    });
+    // console.log(menteesList);
+    if (mentorDetails) {
+      const formattedResponse = {
+        mentorInfo: {
+          id: mentorDetails.id,
+          user_id: mentorDetails.user_id,
+          first_name: mentorDetails.first_name,
+          last_name: mentorDetails.last_name,
+          Experience: mentorDetails.Experience,
+          createdAt: mentorDetails.createdAt,
+          updatedAt: mentorDetails.updatedAt,
+        },
+        teamInfo: {
+          id: mentorDetails.Team?.id,
+          team_name: mentorDetails.Team?.team_name,
+          project_id: mentorDetails.Team?.project_id,
+          total_team_members: mentorDetails.Team?.total_team_members,
+        },
+        projectInfo: {
+          id: mentorDetails.Team.Project?.id,
+          name: mentorDetails.Team.Project?.name,
+          description: mentorDetails.Team.Project?.description,
+          start_date: mentorDetails.Team.Project?.start_date,
+          end_date: mentorDetails.Team.Project?.end_date,
+          status: mentorDetails.Team.Project?.status,
+          git: mentorDetails.Team.Project?.git_repository_link,
+          trello: mentorDetails.Team.Project?.trello_board_link,
+        },
+        menteeInfo: {
+          menteesList,
+        },
+      };
+      return res.status(200).json({
+        success: true,
+        message: "Mentor details fetched successfully",
+        formattedResponse,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Mentor not found",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.menteeDetails = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Fetch mentor details and include the associated team
+    const mentorDetails = await Mentee.findOne({
       where: { user_id: userId },
       include: [
         {
@@ -292,12 +382,12 @@ exports.mentorDetails = async (req, res) => {
         },
       ],
     });
-
+    // console.log(mentorDetails);
     const menteesList = await Mentee.findAll({
       where: { team_id: mentorDetails?.Team?.id },
-      attributes: ['id', 'team_id', 'first_name'], // Specify the properties you want to retrieve
+      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
     });
-
+    // console.log(menteesList);
     if (mentorDetails) {
       const formattedResponse = {
         mentorInfo: {
@@ -323,9 +413,9 @@ exports.mentorDetails = async (req, res) => {
           end_date: mentorDetails.Team.Project?.end_date,
           status: mentorDetails.Team.Project?.status,
         },
-        menteeInfo:{
-          menteesList
-        }
+        menteeInfo: {
+          menteesList,
+        },
       };
       return res.status(200).json({
         success: true,
@@ -340,6 +430,65 @@ exports.mentorDetails = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.createQuery = async (req, res) => {
+  try {
+    const { text, reply_id, team_id } = req.body;
+    const newQuery = await Query.create({
+      text,
+      user_id: req.user.id,
+      reply_id,
+      team_id,
+    });
+
+    // You may want to send the newly created query as a response
+    res
+      .status(201)
+      .json({ query: newQuery, message: "Query created successfully" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.allQuery = async (req, res) => {
+  try {
+    // console.log(req.qu.id);
+    let teamId;
+    let queries;
+    let id = req.query.id || null;
+    if (req.user.role == "Mentor") {
+      const mentor = await Mentor.findOne({
+        where: { user_id: req.user.id },
+        attributes: ["team_id"],
+      });
+      teamId = mentor.dataValues.team_id;
+      queries = await Query.findAll({
+        where: { reply_id: id, team_id: teamId },
+      });
+    } else {
+      const mentee = await Mentee.findOne({
+        where: { user_id: req.user.id },
+        attributes: ["team_id"],
+      });
+      teamId = mentee.dataValues.team_id;
+      queries = await Query.findAll({
+        where: { reply_id: id, team_id: teamId },
+      });
+    }
+    console.log(teamId);
+
+    res.status(201).json({
+      success: true,
+      queries,
+    });
+  } catch (error) {
     res.status(500).json({
       success: false,
       message: error.message,

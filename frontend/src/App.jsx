@@ -18,10 +18,11 @@ import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
 import DashboardAdmin from "./pages/Admin/Dashboard";
 import DashboardMentor from "./pages/Mentor/Dashboard";
-import DashboardMentee from "./pages/Mentee/Dashboard";
+import DashboardMentee from "./pages/Mentee/DashboardMentee";
 
 import Satisfaction from "./pages/Admin/Satifaction";
 import Project from "./pages/Mentor/Project";
+import AddQuery from "./pages/Mentee/AddQuery";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -32,11 +33,11 @@ const App = () => {
         {/* Route for public routes */}
         <Route
           path="/login"
-          element={isAuth ? <Navigate to="/dashboard" /> : <Login />}
+          element={isAuth ? <Navigate to="/" /> : <Login />}
         />
         <Route
           path="/register"
-          element={isAuth ? <Navigate to="/dashboard" /> : <Register />}
+          element={isAuth ? <Navigate to="/" /> : <Register />}
         />
 
         <Route path="/" element={<PrivateRoutes />}>
@@ -62,10 +63,10 @@ const App = () => {
 
           {role === "Mentee" && (
             <>
-              <Route path="/dashboard" element={<DashboardMentee />} />
+              <Route index element={<DashboardMentee />} />
               <Route path="/feedback" element={<MenteeFeedback />} />
-              {/* <Route path="/attendance" element={<Attendance />} />
-              <Route path="/projects" element={<Projects />} /> */}
+               {/* <Route path="/attendance" element={<Attendance />} /> */}
+              <Route path="/query" element={<AddQuery />} /> 
             </>
           )}
         </Route>

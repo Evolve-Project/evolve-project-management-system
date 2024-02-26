@@ -1,15 +1,20 @@
-import { loadUser } from "@/redux/Actions/User";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-const Dashboard = () => {
-  const dispatch = useDispatch();
-  const { mentor } = useSelector((state) => state.mentor);
-  useEffect(() => {
-    dispatch(loadUser());
-  }, [dispatch]);
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+
+const DashboardMentee = () => {
+  const [mentor, setmentor] = useState([]);
+
+  const load = async () => {
+    const { data } = await axios.get("http://localhost:8000/api/menteeDetails");
+    setmentor(data.formattedResponse);
+  };
   console.log(mentor);
+
+  useEffect(() => {
+    load();
+  }, []);
   return (
-    mentor && (
+    mentor.mentorInfo && (
       <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold mb-4">Mentor Information</h2>
         <ul className="list-disc pl-4">
@@ -60,4 +65,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardMentee;

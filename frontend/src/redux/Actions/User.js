@@ -39,3 +39,25 @@ export const createProject = (formData) => async (dispatch) => {
     });
   }
 };
+// export const allQuery =
+//   (id = null) =>
+//   async (dispatch) => {
+//     try {
+//       dispatch({
+//         type: "allQueryRequest",
+//       });
+
+//       const { data } = id
+//         ? await api.get(`/api/allQuery?id=${id}`)
+//         : await api.get(`/api/allQuery`);
+//       dispatch({
+//         type: "allQuerySuccess",
+//         payload: data.queries,
+//       });
+//     } catch (error) {
+//       dispatch({
+//         type: "allQueryFailure",
+//         payload: error.response.data.message,
+//       });
+//     }
+//   };

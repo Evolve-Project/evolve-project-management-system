@@ -6,6 +6,9 @@ const {
   removeid,
   assignProject,
   mentorDetails,
+  createQuery,
+  allQuery,
+  menteeDetails
 } = require("../controllers/user");
 
 const { userAuth } = require("../middlewares/passport-middleware");
@@ -17,6 +20,12 @@ router.get("/teamidToMentor", userAuth, teamidToMentor);
 router.get("/addSingleUser", userAuth, addSingleUser);
 router.get("/removeid", userAuth, removeid);
 router.get("/mentorDetails", userAuth, mentorDetails);
+router.get("/menteeDetails", userAuth, menteeDetails);
+
+
+router.post("/createQuery", userAuth, createQuery);
+router.get("/allQuery", userAuth, allQuery);
+
 
 router.post("/assignProject", userAuth, assignProject);
 
