@@ -17,8 +17,25 @@ export async function onLogout() {
 }
 
 export async function fetchProtectedInfo() {
+<<<<<<< HEAD
   return await axios.get("http://localhost:8000/api/protected");
 }
 // export async function createProject(formData) {
 //   return await axios.post("http://localhost:8000/api/assignProject", formData);
 // }
+=======
+    return await axios.get('http://localhost:8000/api/protected')
+}
+
+export async function requestResetPassword(userEmail) {
+    return await axios.post('http://localhost:8000/api/request-reset-password', userEmail);
+}
+
+export async function requestUserByToken(userToken) {
+    return await axios.post('http://localhost:8000/api/get-user-by-token', { token: userToken });
+}
+
+export async function resetPassword({ id, values }) {
+    return await axios.post('http://localhost:8000/api/reset-password', { token: id, password: values.password });
+}
+>>>>>>> refs/remotes/origin/main

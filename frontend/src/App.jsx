@@ -14,6 +14,7 @@ import MentorFeedback from "./pages/Mentor/Feedback";
 import MenteeFeedback from "./pages/Mentee/Feedback";
 import UserManagement from "./pages/Admin/UserManagement";
 import Attendance from "./pages/Admin/Attendance";
+import MentorAttendance from "./pages/Mentor/Attendance"
 import Projects from "./pages/Admin/Projects";
 import Checkouts from "./pages/Admin/Checkouts";
 import DashboardAdmin from "./pages/Admin/Dashboard";
@@ -23,6 +24,7 @@ import DashboardMentee from "./pages/Mentee/DashboardMentee";
 import Satisfaction from "./pages/Admin/Satifaction";
 import Project from "./pages/Mentor/Project";
 import AddQuery from "./pages/Mentee/AddQuery";
+import MentorMilestones from "./pages/Mentor/milestones/MentorMilestones";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -47,8 +49,8 @@ const App = () => {
               <Route path="/usermanagement" element={<UserManagement />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} />
-              <Route path="/satisfaction" element={<Satisfaction />} />
               <Route path="/checkouts" element={<Checkouts />} />
+              <Route path="/satisfaction" element={<Satisfaction/>} />
             </>
           )}
 

@@ -1,7 +1,7 @@
-const passport = require("passport");
-const { Strategy } = require("passport-jwt");
-const { SECRET } = require("../constants");
-const { User } = require("../models/");
+const passport = require('passport')
+const { Strategy } = require('passport-jwt')
+const { SECRET } = require('../constants')
+const {User} = require('../models/')
 
 const cookieExtractor = function (req) {
   let token = null;
@@ -15,13 +15,14 @@ const opts = {
 };
 
 passport.use(
-  new Strategy(opts, async ({ id }, done) => {
-    try {
-      const user = await User.findOne({ where: { id: id } });
+    new Strategy(opts, async ({ id }, done) => {
+        try {
+            console.log(id);
+            const user = await User.findOne({ where: { id: id } })
 
-      if (!user) {
-        throw new Error("401 not authorized");
-      }
+            if (!user) {
+                throw new Error('401 not authorized')
+            }
 
       return done(null, user);
     } catch (error) {
