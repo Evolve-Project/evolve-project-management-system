@@ -46,10 +46,6 @@ export function Addmentee() {
     University: z.string().min(2, {
       message: "College Name must be at least 2 characters.",
     }),
-
-    password: z.string().min(2, {
-      message: "password Name must be at least 2 characters.",
-    }),
     home_city: z.string().min(2, {
       message: "home_city Name must be at least 2 characters.",
     }),
@@ -66,7 +62,6 @@ export function Addmentee() {
       last_name: "",
       email: "",
       University: "",
-      password: "",
       home_city: "",
       dob: "",
     },
@@ -108,19 +103,6 @@ export function Addmentee() {
               <FormLabel>E-email</FormLabel>
               <FormControl>
                 <Input placeholder="Enter the E-email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter the Password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

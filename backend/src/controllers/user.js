@@ -173,13 +173,13 @@ exports.addSingleUser = async (req, res) => {
     }
     const {
       email,
-      password,
       first_name,
       last_name,
       University,
       home_city,
       dob,
     } = req.body;
+    const password = Math.random().toString(36).slice(-8);
     const hashedPassword = await hash(password, 10);
     const user = await User.create({
       email: email,
