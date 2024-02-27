@@ -47,7 +47,7 @@ const mentor = [
     id: 1,
     title: "Dashboard",
     icon: <MdDashboard/>,
-    link: "/",
+    link: "/dashboard",
   },
   {
     id: 2,
@@ -79,7 +79,7 @@ const mentee = [
     id: 1,
     title: "Dashboard",
     icon: <MdDashboard/>,
-    link: "/",
+    link: "/dashboard",
   },
   {
     id: 2,

@@ -35,17 +35,17 @@ const App = () => {
         {/* Route for public routes */}
         <Route
           path="/login"
-          element={isAuth ? <Navigate to="/" /> : <Login />}
+          element={isAuth ? <Navigate to="/dashboard" /> : <Login />}
         />
         <Route
           path="/register"
-          element={isAuth ? <Navigate to="/" /> : <Register />}
+          element={isAuth ? <Navigate to="/dashboard" /> : <Register />}
         />
 
         <Route path="/" element={<PrivateRoutes />}>
           {role === "Admin" && (
             <>
-              <Route index element={<DashboardAdmin />} />
+              <Route path="/dashboard" element={<DashboardAdmin />} />
               <Route path="/usermanagement" element={<UserManagement />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/projects" element={<Projects />} />
@@ -56,7 +56,7 @@ const App = () => {
 
           {role === "Mentor" && (
             <>
-              <Route index element={<DashboardMentor />} />
+              <Route path="/dashboard" element={<DashboardMentor />} />
               <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
               <Route path="/project" element={<Project />} />
@@ -65,7 +65,7 @@ const App = () => {
 
           {role === "Mentee" && (
             <>
-              <Route index element={<DashboardMentee />} />
+              <Route path="/dashboard" element={<DashboardMentee />} />
               <Route path="/feedback" element={<MenteeFeedback />} />
               {/* <Route path="/attendance" element={<Attendance />} /> */}
               <Route path="/query" element={<AddQuery />} />
