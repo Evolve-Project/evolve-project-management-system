@@ -103,6 +103,10 @@ async function addUser(userInfo, role) {
             // If the email already exists, return an error
             return { error: 'User already exists' };
         }
+        if (emailExists && !emailExists.is_active) {
+            await User.update({ is_active: true }, { where: { email: userInfo.Email } });
+            return { success: true };
+        }
 
         // Check if the required fields are missing
         if (role === "Mentee") {
@@ -128,7 +132,7 @@ async function addUser(userInfo, role) {
             password: hashedPassword,
             role: role,
             is_active: true
-        });
+        }, { transaction: t });
 
         // then add the user to the mentee or mentor table
         if (role === "Mentee") {
@@ -140,7 +144,7 @@ async function addUser(userInfo, role) {
                 dob: userInfo['Date of Birth'],
                 home_city: userInfo['City'],
                 team_id: null
-            });
+            }, { transaction: t });
         }
         else {
             await Mentor.create({
@@ -149,7 +153,7 @@ async function addUser(userInfo, role) {
                 last_name: userInfo['Last Name'],
                 experience: userInfo['Experience'],
                 team_id: null
-            });
+            }, { transaction: t });
         }
 
         return { success: true };
