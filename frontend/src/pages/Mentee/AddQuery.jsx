@@ -68,7 +68,7 @@ const AddQuery = () => {
   const [mentee, setMentee] = useState([]);
   const [teamId, setTeamId] = useState();
   const [inputValue, setInputValue] = useState("");
-
+  // console.log("ok");
   // mentor.teamInfo.id
 
   const apiCall = async () => {
@@ -85,8 +85,10 @@ const AddQuery = () => {
     apiCall();
     load();
   }, []);
-
-  return (
+  console.log(first);
+  return first.length == 0 ?(
+    <div>No Query Asked </div>
+  ): (
     <div className="max-w-md mx-auto mt-11">
       {first &&
         first.map((item) => (

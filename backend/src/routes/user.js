@@ -17,7 +17,9 @@ const router = Router();
 
 router.get("/teamidToMentee", userAuth, teamidToMentee);
 router.get("/teamidToMentor", userAuth, teamidToMentor);
-router.get("/addSingleUser", userAuth, addSingleUser);
+
+router.post("/addSingleUser", userAuth, addSingleUser);
+
 router.get("/removeid", userAuth, removeid);
 router.get("/mentorDetails", userAuth, mentorDetails);
 router.get("/menteeDetails", userAuth, menteeDetails);

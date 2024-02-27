@@ -38,6 +38,18 @@ export const messageReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
     //----------------------------------------------
+    .addCase("AddMenteeRequest", (state) => {
+      state.loading = true;
+    })
+    .addCase("AddMenteeSuccess", (state, action) => {
+      state.loading = false;
+      state.message = action.payload;
+    })
+    .addCase("AddMenteeFailure", (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    //----------------------------------------------
     .addCase("clearMessage", (state, action) => {
       state.message = null;
     })

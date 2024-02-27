@@ -39,6 +39,25 @@ export const createProject = (formData) => async (dispatch) => {
     });
   }
 };
+export const addMentee = (formData) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "AddMenteeRequest",
+    });
+
+    const { data } = await api.post("/api/addSingleUser", formData);
+    dispatch({
+      type: "AddMenteeSuccess",
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: "AddMenteeFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
 // export const allQuery =
 //   (id = null) =>
 //   async (dispatch) => {

@@ -1,3 +1,4 @@
+const { hash } = require("bcryptjs");
 const {
   Mentee,
   Team,
@@ -5,12 +6,25 @@ const {
   Project,
   Query,
   Sequelize,
+  User,
 } = require("../models/");
 
 const { Op } = Sequelize;
 
 exports.teamidToMentee = async (req, res) => {
   try {
+    console.log(req.user.role);
+    if (req.user.role !== "Admin") {
+      return res.status(400).json({
+        message: "Only Admin can access",
+      });
+    }
+    const teams = await Team.findAll();
+    if (teams.length) {
+      return res.status(400).json({
+        message: "Add all students manually.",
+      });
+    }
     const listOfUser = await Mentee.findAll({
       where: { team_id: null },
       order: [["University", "ASC"]],
@@ -86,20 +100,28 @@ exports.teamidToMentee = async (req, res) => {
       }
     }
     return res.status(200).json({
-      message: "ok",
-      createdTeams,
-      leftUser,
+      message: "Teams are successfully assigned to Mentees",
     });
   } catch (error) {
-    console.log("Error in createTeamId controller: ", error);
-    return res.status(500).json({
-      message: "Internal Server Error",
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
 exports.teamidToMentor = async (req, res) => {
   try {
+    if (req.user.role !== "Admin") {
+      return res.status(400).json({
+        message: "Only Admin can access",
+      });
+    }
     const createdTeams = await Team.findAll();
+    if (createdTeams.length == 0) {
+      return res.status(400).json({
+        message: "Teams are not created",
+      });
+    }
     const listOfTeamid = createdTeams.map((team) => team.id);
 
     const mentorList = await Mentor.findAll({
@@ -134,7 +156,7 @@ exports.teamidToMentor = async (req, res) => {
       mentorIndex2 = (mentorIndex2 + 1) % mentorList.length;
     }
 
-    res.json({ message: "Team IDs assigned to mentors" });
+    res.json({ message: "Teams are successfully assigned to mentors" });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -144,7 +166,39 @@ exports.teamidToMentor = async (req, res) => {
 };
 exports.addSingleUser = async (req, res) => {
   try {
-    const menteeid = req.body.menteeid;
+    if (req.user.role !== "Admin") {
+      return res.status(400).json({
+        message: "Only Admin can access",
+      });
+    }
+    const {
+      email,
+      password,
+      first_name,
+      last_name,
+      University,
+      home_city,
+      dob,
+    } = req.body;
+    const hashedPassword = await hash(password, 10);
+    const user = await User.create({
+      email: email,
+      password: hashedPassword,
+      role: "Mentee",
+      is_active: true,
+    });
+    const newMentee = await Mentee.create({
+      user_id: user.id,
+      first_name,
+      last_name,
+      University,
+      home_city,
+      dob,
+    });
+    // implement email system here
+    // implement email system here
+    console.log(newMentee.id);
+    const menteeid = newMentee.id;
     const mentee = await Mentee.findOne({
       attributes: ["team_id"],
       where: {
@@ -155,10 +209,15 @@ exports.addSingleUser = async (req, res) => {
     if (mentee.dataValues.team_id) {
       return res.status(400).json({
         success: false,
-        message: "Team id already assigned",
+        message: "Team id already assigned.",
       });
     }
     const listOfTeamidCount = await Team.findAll();
+    if (listOfTeamidCount.length == 0) {
+      return res.status(400).json({
+        message: "No teams avaliable.",
+      });
+    }
     // console.log(listOfTeamidCount[0].dataValues.student_count);
     let updatedUser;
     for (let i = 0; i < listOfTeamidCount.length; i++) {
@@ -185,8 +244,7 @@ exports.addSingleUser = async (req, res) => {
       });
     }
     res.status(200).json({
-      message: "one user added",
-      listOfTeamidCount,
+      message: `${first_name} is added`,
     });
   } catch (error) {
     res.status(500).json({
@@ -200,7 +258,10 @@ exports.removeid = async (req, res) => {
     // Using Sequelize to update records
     await Mentor.update({ team_id: null }, { where: {} });
     await Mentee.update({ team_id: null }, { where: {} });
-
+    await Query.destroy({
+      where: {},
+      truncate: true,
+    });
     // Using Sequelize to delete all records
     await Team.destroy({ where: {} });
 
@@ -220,7 +281,7 @@ exports.assignProject = async (req, res) => {
   try {
     const role = req.user.role;
     if (role === "Admin" || role === "Mentee") {
-      return res.status(400).json({ success: false, error: "Invalid role" });
+      return res.status(400).json({ success: false, message: "Invalid role" });
     }
     // console.log(req.user.id);
 
@@ -261,8 +322,6 @@ exports.assignProject = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Project assigned successfully",
-      // project: newProject,
-      // team,
     });
   } catch (error) {
     res.status(500).json({
