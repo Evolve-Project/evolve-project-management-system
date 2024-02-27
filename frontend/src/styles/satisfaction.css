@@ -2,7 +2,7 @@
     width: 100%;
     font-family: sans-serif;
     --radius : 8px;
-    
+    min-width: 900px;
 }
 /* tilte is not responsive */
 .satisfaction_title {
@@ -66,7 +66,7 @@
     background-color: #ebebfe;
     border-radius: var(--radius);
     padding: 1rem;
-    margin: 1rem;
+    margin: 1rem 0 ;
     box-shadow: 1px 1px 5px black;
 }
 .satisfaction_metric_name{
@@ -97,29 +97,14 @@
     overflow-wrap: break-word;
 }
 
-
-
-
-
-
-
 .satisfaction_edit{
     background-color: #7B76F1;
-    padding: 8px;
+    border: 3px solid #7B76F1;
+    padding: 0.6rem;
     color: white;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: var(--radius); 
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.satisfaction_edit_text{
-    display: none;
-}
-
-.satisfaction_edit:hover.satisfaction_edit{
-    border-radius: var(--radius);    
-}
-.satisfaction_edit:hover .satisfaction_edit_text{
-    display: block;
-} 

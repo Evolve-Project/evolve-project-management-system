@@ -1,45 +1,44 @@
-import {
-  dashboard,
-  expenses,
-  transactions,
-  trend,
-} from "@/components/navbar/Icons";
-
+import { GrUserManager } from "react-icons/gr";
+import { MdDashboard } from "react-icons/md";
+import { IoCheckboxOutline } from "react-icons/io5";
+import { IoIosGlobe } from "react-icons/io";
+import { AiFillNotification } from "react-icons/ai";
+import { FaClipboardQuestion } from "react-icons/fa6";
 const admin = [
   {
     id: 1,
     title: "Dashboard",
-    icon: dashboard,
+    icon: <MdDashboard />,
     link: "/dashboard",
   },
   {
     id: 2,
     title: "User Management",
-    icon: transactions,
+    icon: <GrUserManager/>,
     link: "/usermanagement",
   },
   {
     id: 3,
     title: "Attendance",
-    icon: expenses,
+    icon: <IoCheckboxOutline/>,
     link: "/attendance",
   },
   {
     id: 4,
     title: "Projects",
-    icon: expenses,
+    icon: <IoIosGlobe/>,
     link: "/projects",
   },
   {
     id: 5,
     title: "Satisfaction",
-    icon: expenses,
+    icon: <GrUserManager/>,
     link: "/satisfaction"
   },
   {
     id: 6,
     title: "Checkouts",
-    icon: expenses,
+    icon: <AiFillNotification/>,
     link: "/checkouts",
   },
 ];
@@ -47,31 +46,31 @@ const mentor = [
   {
     id: 1,
     title: "Dashboard",
-    icon: dashboard,
+    icon: <MdDashboard/>,
     link: "/dashboard",
   },
   {
     id: 2,
     title: "Attendance",
-    icon: transactions,
+    icon: <IoCheckboxOutline/>,
     link: "/attendance",
   },
   {
     id: 3,
     title: "Feedback",
-    icon: trend,
+    icon: <GrUserManager/>,
     link: "/feedback",
   },
   {
     id: 4,
-    title: "Projects",
-    icon: expenses,
-    link: "/dashboard",
+    title: "Milestones",
+    icon: <IoIosGlobe/>,
+    link: "/milestones",
   },
   {
     id: 5,
     title: "Query",
-    icon: expenses,
+    icon: <FaClipboardQuestion/>,
     link: "/query",
   },
 ];
@@ -79,25 +78,25 @@ const mentee = [
   {
     id: 1,
     title: "Dashboard",
-    icon: dashboard,
+    icon: <MdDashboard/>,
     link: "/dashboard",
   },
   {
     id: 2,
     title: "Feedback",
-    icon: transactions,
+    icon: <IoCheckboxOutline/>,
     link: "/feedback",
   },
   {
     id: 3,
     title: "Ask Query",
-    icon: trend,
+    icon: <FaClipboardQuestion/>,
     link: "/dashboard",
   },
   {
     id: 4,
     title: "Projects",
-    icon: expenses,
+    icon: <IoIosGlobe/>,
     link: "/dashboard",
   }
 ];

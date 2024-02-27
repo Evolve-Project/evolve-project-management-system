@@ -14,6 +14,7 @@ import "@/styles/table.css";
 import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
+import "@/styles/title.css"
 const DashboardAdmin = () => {
   console.log("ok");
   let columns = useMemo(() => COLUMNS, []);
@@ -48,7 +49,9 @@ const DashboardAdmin = () => {
   return (
     <>
     <div >
-      <div className="flex text-center pb-8 pt-12">
+    <div className="container">
+        <div className="title" style={{fontSize:'40px', marginBottom:'10px'}}>Dashboard</div>
+      <div className="flex text-center pb-7 pt-2">
         <Card className="w-60 mr-20 ml-40 ">
           <CardHeader>
             <CardTitle>Total Mentor</CardTitle>
@@ -97,8 +100,8 @@ const DashboardAdmin = () => {
         <GlobalFilter
           filter={globalfilter}
           setfilter={setGlobalFilter}
-          className="global-filter-container"
-          style={{ width: 'calc(100% - 160px)', margin: '0 auto', marginBottom: '20px' }}
+          className="global-filter-container "
+          style={{ width: 'calc(100% - 160px)', margin: '0 auto', marginBottom: '20px'}}
         />
         <div style={{ width: 'calc(100% - 160px)', margin: '0 auto' }} >
         <table {...getTableProps()} className="custom-table">
@@ -152,6 +155,7 @@ const DashboardAdmin = () => {
           </div>
         </div>
       </>
+      </div>
       </div>
     </>
   );

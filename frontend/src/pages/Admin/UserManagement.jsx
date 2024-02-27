@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useMemo,useEffect } from 'react';
-import "@/styles/usermanagement.css";
+import "@/styles/title.css";
 import { UserCOLUMNS } from "@/components/AdminComponents/Columns";
 import userdata from "@/components/AdminComponents/userdata.json";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
