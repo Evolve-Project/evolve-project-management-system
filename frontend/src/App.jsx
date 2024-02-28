@@ -59,6 +59,7 @@ const App = () => {
               <Route path="/query" element={<Query />} />
               <Route path="/attendance" element={<MentorAttendance />} />
               <Route path="/milestones" element={<MentorMilestones/>} />
+              <Route path="/milestones/:name" element={<MentorMilestones/>} />
             </>
           )}
 
