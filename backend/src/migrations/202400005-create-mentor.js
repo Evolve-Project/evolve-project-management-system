@@ -36,7 +36,7 @@ module.exports = {
           model: 'teams',
           key: 'id',
         },
-        allowNull: false
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

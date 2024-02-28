@@ -7,14 +7,14 @@ module.exports = {
     const attendances = [];
 
     const teamUserMapping = {
-      1: [52,60,2,10,18,26,34,42,50],
-      2: [53,61,3,11,19,27,35,43,51],
-      3: [54,62,4,12,20,28,36,44],
-      4: [55,63,5,13,21,29,37,45],
-      5: [56,64,6,14,22,30,38,46],
-      6: [57,65,7,15,23,31,39,47],
-      7: [58,66,8,16,24,32,40,48],
-      8: [59,67,9,17,25,33,41,49]
+      1: [52, 60, 2, 10, 18, 26, 34, 42, 50],
+      2: [53, 61, 3, 11, 19, 27, 35, 43, 51],
+      3: [54, 62, 4, 12, 20, 28, 36, 44],
+      4: [55, 63, 5, 13, 21, 29, 37, 45],
+      5: [56, 64, 6, 14, 22, 30, 38, 46],
+      6: [57, 65, 7, 15, 23, 31, 39, 47],
+      7: [58, 66, 8, 16, 24, 32, 40, 48],
+      8: [59, 67, 9, 17, 25, 33, 41, 49]
     };
 
     for (const teamId in teamUserMapping) {
@@ -29,8 +29,9 @@ module.exports = {
           attendances.push({
             mentor_user_id: faker.random.arrayElement(mentors),
             mentee_user_id: mentee,
+            description: faker.lorem.sentence(),
             date_of_meet: date_of_meet,
-            attendance: faker.random.arrayElement(['Present', 'Absent']),
+            attendance: faker.random.arrayElement(['Present', 'Absent', 'Leave']),
             createdAt: new Date(),
             updatedAt: new Date()
           });

@@ -25,12 +25,20 @@ module.exports = {
         },
         allowNull: false
       },
-      date_of_meet: {
-        type: DataTypes.DATEONLY,
+      description: {
+        type: DataTypes.STRING,
         allowNull: false
       },
+      date_of_meet: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          isDate: true
+        },
+        unique: true
+      },
       attendance: {
-        type: DataTypes.ENUM('Present', 'Absent'),
+        type: DataTypes.ENUM('Present', 'Absent', 'Leave'),
         allowNull: false
       },
       createdAt: {

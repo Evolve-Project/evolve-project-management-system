@@ -1,7 +1,7 @@
 const passport = require('passport')
 const { Strategy } = require('passport-jwt')
 const { SECRET } = require('../constants')
-const {User} = require('../models/')
+const { User } = require('../models/')
 
 const cookieExtractor = function (req) {
     let token = null
@@ -19,7 +19,6 @@ passport.use(
         try {
             console.log(id);
             const user = await User.findOne({ where: { id: id } })
-
             if (!user) {
                 throw new Error('401 not authorized')
             }
