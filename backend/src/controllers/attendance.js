@@ -56,3 +56,20 @@ exports.fetchTeamData = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+// {
+//     mentor_uid: 1,
+//         mentor_name: "Harsh",
+//             description: "Project meeting",
+//                 date: new Date("2024-02-22"),
+//                     attendance: {
+//         1: present,
+//             2: present,
+//                 3: absent,
+//                     4: permited
+//     }
+
+// },
+
+
+exports.insertAttendance = async (req, res) => {
