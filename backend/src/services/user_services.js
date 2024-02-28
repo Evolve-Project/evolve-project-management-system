@@ -22,6 +22,9 @@ async function fetchMenteesByMentor(mentorUid) {
             ],
             attributes: ['first_name', 'last_name']
         });
+        if (result.length === 0) {
+            throw new Error('No mentees found for this mentor.');
+        }
 
         return result.map(r => ({
             id: r.user.id,
