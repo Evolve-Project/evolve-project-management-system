@@ -8,6 +8,7 @@ import { Select } from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import theme from "./themes/theme.jsx"
 import AddMilestone from './AddMilestone.jsx';
+import Tasks from './Tasks.jsx';
 function MentorMilestones() {
   const [status, setStatus] = useState([]);
 
@@ -15,6 +16,7 @@ function MentorMilestones() {
     setStatus(event.target.value);
   };
   const [milestoneDesc, setMilestoneDesc] = useState([]);
+  const [toggle, setToggle] = useState(true);
   
 
   useEffect(() => {
@@ -80,9 +82,30 @@ function MentorMilestones() {
 </Select>
                    
                   </td>
-                  <td className="py-2 px-4 text-left">
-                   <Link   to={`/milestones/${milestone.name}` } ><button className="bg-gray-200 text-gray-800 py-1 px-4 rounded-full">View</button></Link>
-                  
+                  <td className="">
+                  {toggle ? (
+        <div className="">
+          <button
+            className=" mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            onClick={() => setToggle(false)}
+          >
+            view
+          </button>
+        </div>
+      ) : (
+        <div className="max-w-md mx-auto mt-11">
+          <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Tasks</h1>
+            <Tasks />
+          </div>
+          <button
+            className="fixed top-5 right-5 mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            onClick={() => setToggle(true)}
+          >
+            Back
+          </button>
+        </div>
+      )}
                   </td>
                 </tr>
               ))}
