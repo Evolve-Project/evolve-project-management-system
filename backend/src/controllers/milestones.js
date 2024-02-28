@@ -17,8 +17,6 @@ exports.getTasksByMilestoneName = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Perform any necessary actions with the milestone name
-
     console.log("Received milestone name:", name);
 
     const milestoneDesc = await MilestoneDescription.findOne({
@@ -32,6 +30,11 @@ exports.getTasksByMilestoneName = async (req, res) => {
       milestoneDesc ? milestoneDesc.id : null
     );
 
+    if (!milestoneDesc) {
+      // Handle the case where milestone description is not found
+      return res.status(404).json({ error: "Milestone description not found" });
+    }
+
     const milestone = await Milestone.findOne({
       where: {
         milestone_description_id: milestoneDesc.id,
@@ -40,6 +43,11 @@ exports.getTasksByMilestoneName = async (req, res) => {
 
     console.log("Milestone ID:", milestone ? milestone.id : null);
 
+    if (!milestone) {
+      // Handle the case where milestone is not found
+      return res.status(404).json({ error: "Milestone not found" });
+    }
+
     const tasks = await Task.findAll({
       where: {
         milestone_id: milestone.id,
@@ -47,8 +55,9 @@ exports.getTasksByMilestoneName = async (req, res) => {
     });
 
     console.log(tasks);
+    return res.json(tasks);
   } catch (error) {
-    console.log("Error in getMilestoneName, milestone controller ", error);
+    console.log("Error in getTasksByMilestoneName:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  // Send a response back to the client
 };
