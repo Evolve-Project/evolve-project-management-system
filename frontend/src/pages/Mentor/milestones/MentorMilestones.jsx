@@ -24,7 +24,7 @@ function MentorMilestones() {
       try {
         console.log("Fetching milestones..."); // Check if useEffect is triggered
         const response = await axios.get('http://localhost:8000/api/get-milestones');
-        console.log("hi")
+        
         console.log("Milestones response:", response.data); // Check the response from the API
         setMilestoneDesc(response.data);
       } catch (error) {
@@ -41,7 +41,22 @@ function MentorMilestones() {
     return date.toLocaleDateString('en-US');
   };
 
+  const handleViewClick = async (name) => {
+    
+    try {
+      // Send the milestone name to the server
+      
+      await axios.post('http://localhost:8000/api/send-milestone', { name });
+      // Handle success or any further action
+      
+    } catch (error) {
+      console.error('Error sending milestone name:', error);
+    }
+  };
+
   return (
+    <>
+    {toggle ? (
     <div>
       <Button></Button>
         
@@ -83,15 +98,25 @@ function MentorMilestones() {
                    
                   </td>
                   <td className="">
-                  {toggle ? (
+                 
         <div className="">
           <button
             className=" mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-            onClick={() => setToggle(false)}
+            onClick={() => {setToggle(false);handleViewClick(milestone.name);}}
           >
             view
           </button>
         </div>
+        </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+
+</Box>
+</ChakraProvider>
+</div>
       ) : (
         <div className="max-w-md mx-auto mt-11">
           <div className="p-4">
@@ -106,16 +131,7 @@ function MentorMilestones() {
           </button>
         </div>
       )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-   
-      </Box>
-      </ChakraProvider>
-    </div>
+     </>             
   )
 }
 
