@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import History from "./History";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser } from "@/redux/Actions/User";
 
 const Query = () => {
+  const { mentor } = useSelector((state) => state.mentor);
+
   const [username, setUsername] = useState("");
   const [query, setQuery] = useState("");
   const [toggle, setToggle] = useState(true);
-
-  const handleAskQuery = () => {
-    // Implement the logic to handle the query submission
-    console.log(`Username: ${username}, Query: ${query}`);
+  const dispatch = useDispatch();
+  const handleAskQuery = async () => {
+    const team = mentor?.teamInfo?.id;
+    await axios.post("http://localhost:8000/api/createQuery", {
+      text: query,
+      team_id: team,
+    });
   };
-
-  const handleViewHistory = () => {
-    // Implement the logic to view query history
-    console.log("Viewing query history");
-  };
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
 
   return (
     <>
