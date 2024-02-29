@@ -105,6 +105,8 @@ exports.addOneUser = async (req, res) => {
         if (role !== "Mentee" && role !== "Mentor") {
             return res.status(400).json({ success: false, error: 'Invalid role' });
         }
+        // console.log("userinfo in addOneUser in register_users controller: ", userInfo);
+        // console.log("role in addOneUser in register_users controller: ", role);
 
         const result = await addUser(userInfo, role);
         if (result.error) {

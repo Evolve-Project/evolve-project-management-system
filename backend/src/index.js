@@ -1,5 +1,5 @@
 const express = require("express");
-const { PORT, CLIENT } = require('./constants') 
+const { PORT, CLIENT } = require('./constants')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
 
@@ -19,14 +19,16 @@ const attendanceRoutes = require('./routes/attendance')
 const milestoneRoutes = require('./routes/milestones_desc')
 const getMilestonesName = require('./routes/milestones_desc')
 const getTasks = require('./routes/tasks')
+const registerUserRoutes = require('./routes/register_users')
 
 //initialize routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.use('/api', attendanceRoutes);
-app.use('/api',milestoneRoutes);
-app.use('/api',getMilestonesName);
-app.use('/api',getTasks);
+app.use('/api', milestoneRoutes);
+app.use('/api', getMilestonesName);
+app.use('/api', getTasks);
+app.use('/api', registerUserRoutes);
 
 
 

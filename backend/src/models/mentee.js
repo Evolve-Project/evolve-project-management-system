@@ -7,15 +7,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      this.belongsTo(models.User, { foreignKey: 'user_id'});  // this is the user_id in the mentee table and has one to one relationship with the user table
-      this.belongsTo(models.Team, { foreignKey: 'team_id'}); // this is the team_id in the mentee table and has many to one relationship with the team table
+      this.belongsTo(models.User, { foreignKey: 'user_id' });  // this is the user_id in the mentee table and has one to one relationship with the user table
+      this.belongsTo(models.Team, { foreignKey: 'team_id' }); // this is the team_id in the mentee table and has many to one relationship with the team table
     }
   }
   Mentee.init({
     user_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'users', 
+        model: 'users',
         key: 'id',
       },
       allowNull: false,
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     team_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'teams', 
+        model: 'teams',
         key: 'id',
       },
       allowNull: true

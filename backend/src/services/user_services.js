@@ -2,6 +2,7 @@
 const { Mentor, User, Mentee } = require('../models');
 const { hash } = require('bcrypt');
 const validator = require('validator');
+const { sequelize } = require('../models');
 
 // service to fetch mentees by mentor
 async function fetchMenteesByMentor(mentorUid) {
@@ -66,12 +67,13 @@ async function fetchMentorsByMentee(menteeUid) {
 async function addUser(userInfo, role) {
     // sample userInfo object
     // {
-    //     "email": "mentee@example.com",
-    //     "First Name": "John",
-    //     "Last Name": "Doe",
-    //     "University": "Example University",
-    //     "Date of Birth": "2000-01-01",
-    //     "City": "Example City"
+    //     "role": "Mentee",
+    //         "Email": "john.doe@example.com",
+    //             "First Name": "John",
+    //                 "Last Name": "Doe",
+    //                     "University": "Example University",
+    //                         "Date of Birth": "2000-01-01",
+    //                             "City": "Example City"
     // }
     // or
     // {
@@ -85,7 +87,7 @@ async function addUser(userInfo, role) {
     function isInvalid(value) {
         return value === null || value === undefined || validator.isEmpty(value);
     }
-
+    // console.log("userInfo in addUser in user_services: ", userInfo);
     try {
         // Check if the email is valid
         if (!validator.isEmail(userInfo.Email)) {
@@ -121,34 +123,42 @@ async function addUser(userInfo, role) {
         const password = Math.random().toString(36).slice(-8);
         const hashedPassword = await hash(password, 10);
 
+        // create a transaction to add the user to the database, so that if any error occurs, the changes can be rolled back
+        const t = await sequelize.transaction();
         // if the email is valid and does not exist, and all required fields are present, add the user to the database
-        const newUser = await User.create({
-            email: userInfo.Email,
-            password: hashedPassword,
-            role: role,
-            is_active: true
-        }, { transaction: t });
+        try {
+            const newUser = await User.create({
+                email: userInfo.Email,
+                password: hashedPassword,
+                role: role,
+                is_active: true
+            }, { transaction: t });
 
-        // then add the user to the mentee or mentor table
-        if (role === "Mentee") {
-            await Mentee.create({
-                user_id: newUser.id,
-                first_name: userInfo['First Name'],
-                last_name: userInfo['Last Name'],
-                university: userInfo['University'],
-                dob: userInfo['Date of Birth'],
-                home_city: userInfo['City'],
-                team_id: null
-            }, { transaction: t });
-        }
-        else {
-            await Mentor.create({
-                user_id: newUser.id,
-                first_name: userInfo['First Name'],
-                last_name: userInfo['Last Name'],
-                experience: userInfo['Experience'],
-                team_id: null
-            }, { transaction: t });
+            // then add the user to the mentee or mentor table
+            if (role === "Mentee") {
+                await Mentee.create({
+                    user_id: newUser.id,
+                    first_name: userInfo['First Name'],
+                    last_name: userInfo['Last Name'],
+                    University: userInfo['University'],
+                    dob: userInfo['Date of Birth'],
+                    home_city: userInfo['City'],
+                    team_id: null
+                }, { transaction: t });
+            }
+            else {
+                await Mentor.create({
+                    user_id: newUser.id,
+                    first_name: userInfo['First Name'],
+                    last_name: userInfo['Last Name'],
+                    Experience: userInfo['Experience'],
+                    team_id: null
+                }, { transaction: t });
+            }
+            await t.commit();
+        } catch (error) {
+            await t.rollback();
+            throw error;
         }
 
         return { success: true };
