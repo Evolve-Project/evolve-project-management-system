@@ -37,28 +37,78 @@ const Project = () => {
     dispatch(loadUser());
   }, [message, error, dispatch]);
   return mentor?.teamInfo?.project_id ? (
-    <div className="max-w-md mx-auto mt-11 border rounded-md relative">
-      <h1 className="bg-blue-500 text-white text-2xl p-2">Project Details</h1>
-      <div className="p-2">Name: {mentor.projectInfo.name}</div>
-      <div className="p-2">Description: {mentor.projectInfo.description}</div>
-      <div className="p-2">
-        Git:
-        <a target="_blank" href={mentor.projectInfo.git}>
-          Link
-        </a>
-      </div>
-      <div className="p-2">
-        Trello:
-        <a target="_blank" href={mentor.projectInfo.trello}>
-          Link
-        </a>
-      </div>
-      <div className="p-2">Start Date: {mentor.projectInfo.start_date}</div>
-      <div className="p-2">End Date: {mentor.projectInfo.end_date}</div>
-      <div className="p-2">
-        Status: {mentor.projectInfo.status ? "Active" : "Inactive"}
-      </div>
-    </div>
+    // <div className="max-w-md mx-auto mt-11 border rounded-lg relative border shadow-md">
+    //   <h1 className="bg-blue-500 text-white text-2xl p-2">Project Details</h1>
+    //   <div className="p-2">Name: {mentor.projectInfo.name}</div>
+    //   <div className="p-2">Description: {mentor.projectInfo.description}</div>
+    //   <div className="p-2">
+    //     Git:
+    //     <a target="_blank" href={mentor.projectInfo.git}>
+    //       Link
+    //     </a>
+    //   </div>
+    //   <div className="p-2">
+    //     Trello:
+    //     <a target="_blank" href={mentor.projectInfo.trello}>
+    //       Link
+    //     </a>
+    //   </div>
+    //   <div className="p-2">Start Date: {mentor.projectInfo.start_date}</div>
+    //   <div className="p-2">End Date: {mentor.projectInfo.end_date}</div>
+    //   <div className="p-2">
+    //     Status: {mentor.projectInfo.status ? "Active" : "Inactive"}
+    //   </div>
+    // </div>
+
+    <table className="max-w-md mx-auto mt-11 border rounded-lg shadow-lg">
+      <thead>
+        <tr>
+          <th colSpan="2" className="bg-blue-500 text-white text-2xl p-2">
+            Project Details
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="border p-2">Name:</td>
+          <td className=" border p-2">{mentor.projectInfo.name}</td>
+        </tr>
+        <tr>
+          <td className="border p-2">Description:</td>
+          <td className="border p-2">{mentor.projectInfo.description}</td>
+        </tr>
+        <tr>
+          <td className="border p-2">Git:</td>
+          <td className="border p-2">
+            <a target="_blank" href={mentor.projectInfo.git}>
+              Link
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td className="border p-2">Trello:</td>
+          <td className="border p-2">
+            <a target="_blank" href={mentor.projectInfo.trello}>
+              Link
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td className="border p-2">Start Date:</td>
+          <td className="border p-2">{mentor.projectInfo.start_date}</td>
+        </tr>
+        <tr>
+          <td className="border p-2">End Date:</td>
+          <td className="border p-2">{mentor.projectInfo.end_date}</td>
+        </tr>
+        <tr>
+          <td className="border p-2">Status:</td>
+          <td className="border p-2">
+            {mentor.projectInfo.status ? "Active" : "Inactive"}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   ) : (
     <>
       <div className="feedback_title">Project Details</div>
