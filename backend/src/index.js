@@ -17,8 +17,8 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const attendanceRoutes = require('./routes/attendance')
 const milestoneRoutes = require('./routes/milestones_desc')
-const getMilestonesName = require('./routes/milestones_desc')
-const getTasks = require('./routes/tasks')
+const feedbackRoutes = require('./routes/feedback')
+const tasksRoutes = require('./routes/tasks')
 const registerUserRoutes = require('./routes/register_users')
 
 //initialize routes
@@ -26,8 +26,8 @@ app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.use('/api', attendanceRoutes);
 app.use('/api', milestoneRoutes);
-app.use('/api', getMilestonesName);
-app.use('/api', getTasks);
+app.use('/api', feedbackRoutes);
+app.use('/api', tasksRoutes);
 app.use('/api', registerUserRoutes);
 
 

@@ -2,7 +2,7 @@
     width: 100%;
     font-family: sans-serif;
     --radius: 8px;
-    margin: 0 2px;
+    /* margin: 0 2px; */
 }
 
 /* tilte is not responsive */
