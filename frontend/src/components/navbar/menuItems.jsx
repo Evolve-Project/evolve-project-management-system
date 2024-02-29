@@ -73,6 +73,12 @@ const mentor = [
     icon: <FaClipboardQuestion/>,
     link: "/query",
   },
+  {
+    id: 4,
+    title: "Milestones",
+    icon: <IoIosGlobe/>,
+    link: "/milestones",
+  }
  
 ];
 const mentee = [
