@@ -72,4 +72,4 @@ exports.fetchTeamData = async (req, res) => {
 // },
 
 
-exports.insertAttendance = async (req, res) => {
+// exports.insertAttendance = async (req, res) => {
