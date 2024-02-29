@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "@/styles/feedback.css";
 import { Rating } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { feedbacks, mentees } from "@/dummyData";
 import { useSelector } from "react-redux";
+import axios from "axios";
+
+const handleRatingChange = (e, newValue, dataObject, setDataObject, metricId) => {
+  const newDataObject = dataObject.map(record => {
+    if (record.metric_id === metricId) {
+      return { ...record, rating: newValue };
+    }
+    return record;
+  });
+  setDataObject(newDataObject);
+};
 
 const handleCommentChange = (e, dataObject, setDataObject, metricId) => {
   const newDataObject = dataObject.map(record => {
@@ -13,32 +23,80 @@ const handleCommentChange = (e, dataObject, setDataObject, metricId) => {
     }
     return record;
   });
-
   setDataObject(newDataObject);
 };
-const handleSubmit = (e, dataObject)=>{
-  e.preventDefault();
-  console.log(dataObject);  //TODO : SEND DATA TO BACKEND
+
+const handleSubmit = async (e, dataObject)=>{
+  try{
+    e.preventDefault();
+    console.log(dataObject);
+    const URL = "http://localhost:8000";
+    const responce = await axios.post(`${URL}/api/feedback`, dataObject);
+    if(responce.status === 200)
+      alert(responce.data.message);
+    else{
+      alert("ERROR");
+    }
+    console.log("REsponce: ", responce);
+  }catch(err){
+    console.log("Error at sending Feedback data: ", err);
+  }
 }
-const Metric = ({curr_user_id, mentee_id, mentee_metrics})=>{
-  // const role = "Mentor";
-  // const curr_user_id = 1; 
-  // console.log(curr_user_id +"-"+ mentee_id);
-  const [dataObject,setDataObject] = useState(mentee_metrics.map((metric)=> {
-    const currRecord = feedbacks.find((record)=> record.given_by_user_id === curr_user_id && record.given_to_user_id === mentee_id && record.metric_id === metric.id);
-    const obj = new Object();
-    obj.metric_id = metric.id;
-    // console.log(currRecord);
-    obj.rating = (currRecord === undefined) ? 0 : currRecord.rating;
-    obj.review = (currRecord === undefined) ? "" : currRecord.review;
-    // console.log(obj.rating);     
-    // console.log(obj.review);     
-    obj.given_by_user_id = curr_user_id;
-    obj.given_to_user_id = mentee_id;
-    return obj;
-  }));
-  console.log(dataObject);
-  // const mentee_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics).filter((metric)=> metric.role === role);
+
+const Metric = ({ mentee_id, mentee_metrics})=>{
+  const URL = "http://localhost:8000";
+  const [loding1, setLoding1] = useState(true);
+  const [loding2, setLoding2] = useState(true);
+
+  const [feedbacks, setFeedbacks] = useState([]);
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      try{
+        const feedback_data = await axios.get(`${URL}/api/getAllFeedbacksByUserTo/${mentee_id}`);
+        setFeedbacks(feedback_data.data.allFeedbacks);
+        // console.log("feedbacks: "); 
+        // console.log(feedback_data.data.allFeedbacks);
+        setLoding1(false);
+      }catch(err){
+        console.log("Error in fetching feedbacks ",err);
+      }
+    };
+    fetchData();
+  },[mentee_id]);
+
+  const [dataObject,setDataObject] = useState([]);
+  useEffect(()=>{
+    setDataObject(mentee_metrics.map((metric)=> {
+      const currRecord = feedbacks.find((record)=> record.metric_id === metric.id);
+      // console.log(currRecord);
+      const obj = new Object();
+      obj.metric_id = metric.id;
+      obj.rating = (currRecord === undefined) ? 0 : parseFloat(currRecord.rating);
+      obj.review = (currRecord === undefined) ? "" : currRecord.review;   
+      obj.given_to_user_id = mentee_id;
+      return obj;
+    }));
+    setLoding2(false);
+  },[feedbacks]);
+
+  if(loding1 && loding2) // TODO : IMPLEMENT LODING SKELETON
+  {
+    return(
+      // <div>Loding......</div>
+      <div className="feedback_content">
+      {mentee_metrics.map((metric) => {
+        return (
+          <div className="feedback_metric-box" key={metric.id}>
+          </div>
+        );
+      })}
+      <div className="flex flex-row-reverse">
+        <span className="feedback_btn">submit</span>
+      </div>
+    </div>
+    )
+  }
+  
   return (<div className="feedback_content">
       {mentee_metrics.map((metric) => {
         return (
@@ -47,10 +105,10 @@ const Metric = ({curr_user_id, mentee_id, mentee_metrics})=>{
             <span className="feedback_rating">
               <Rating
                 name="half-rating"
-                defaultValue={dataObject.find((record)=> record.metric_id === metric.id).rating}
-                onChange={(event, newValue) => {
-                  dataObject.find(record=> record.metric_id === metric.id).rating = newValue;
-                }}
+                value={dataObject.find((record)=> record.metric_id === metric.id).rating}
+                onChange={(e, newValue)=>
+                  handleRatingChange(e, newValue, dataObject,setDataObject,metric.id)
+                }
                 precision={0.5}
               />
             </span>
@@ -74,45 +132,94 @@ const Metric = ({curr_user_id, mentee_id, mentee_metrics})=>{
 
 const MentorFeedback = () => {
   const role = "Mentee";
+  const URL = "http://localhost:8000";
   const mentee_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics)
     .filter((metric)=> metric.role === role);
-  const teamId = 1; // GET DATA WHEN LOGIN
-  const mentees_data = mentees.filter((user)=> user.team_id == teamId);
-  // const [mentor_details, setMentorDetails] = useState([]);
-  // console.log(mentee_metrics);
-  const curr_user_id = 1; //TODO : GET DATA OF USER ON LOGIN
-  const averageRating = mentees_data.map((mentee)=>{
-    return {id : mentee.user_id, avgRating : feedbacks.filter((record) => mentee.user_id === record.given_to_user_id && curr_user_id === record.given_by_user_id)
-      .reduce((total, curr) => total + curr.rating, 0) / mentee_metrics.length}});
 
-  // console.log(averageRating);
+  const [loding1, setLoding1] = useState(true);
+  const [loding2, setLoding2] = useState(true);
+  const [loding3, setLoding3] = useState(true);
+
+  const [teamId, setTeamId] = useState(null);
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      try{
+        const team_id = await axios.get(`${URL}/api/getTeamId`);
+        // console.log("Team id: ", team_id);
+        setTeamId(team_id.data.team_id);
+        setLoding1(false);
+      }catch(err){
+        console.log('Error fetching teamid: ', err);
+      }
+    }
+    fetchData();
+  },[]);
+
+  const [mentees,setMentees] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const menteesData = await axios.get(`${URL}/api/getMentees/${teamId}`);
+        setMentees(menteesData.data.allMentees);
+        // console.log("All mentees");
+        // console.log(menteesData.data.allMentees);
+        setLoding2(false);
+      } 
+      catch (error) {
+        console.error('Error fetching mentee data:', error);
+      }
+    };
+    if(teamId !== null)
+      fetchData();
+  }, [teamId]);
+
+  const [avgRating, setAvgRating] = useState([]);
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const averageRating = await axios.get(`${URL}/api/getAvgRatingByUser`);
+        setAvgRating(averageRating.data.avgRating);
+        // console.log("avg rating");
+        // console.log(averageRating.data.avgRating);
+        setLoding3(false);
+      } 
+      catch (error) {
+        console.error('Error fetching mentee data:', error);
+      }
+    };
+
+    fetchData(); // Fetch data on component mount
+  },[]);
+
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropDown = (e, mentee) => {
     e.preventDefault();
     if (mentee.user_id === activeDropdown) 
-      setActiveDropdown(null);
-    else
-      setActiveDropdown(mentee.user_id);
-      // setMentorDetails(feedbacks.filter((record)=> record.given_to_user_id === mentee.user_id));
-  };
+    setActiveDropdown(null);
+  else
+  setActiveDropdown(mentee.user_id);
+};
 
+if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
+  return (<div>loding.........</div>);
+}
 
   return (
     <>
       <div className="feedback_container">
         <div className="feedback_title"> Feedback </div>
         <div className="feedback_component">
-          {mentees_data.map((mentee) => {
+          {mentees.map((mentee) => {
             return (
               <>
-                <div className="feedback_box">
+                <div className="feedback_box" key={mentee.id}>
                   <span className="feedback_name">
                     {mentee.first_name + " " + mentee.last_name}
                   </span>
                   <span className="feedback_rating">
                     <Rating
                       name="half-rating-read"
-                      defaultValue={averageRating.find((ele)=> ele.id === mentee.user_id).avgRating}
+                      defaultValue={parseFloat(avgRating.find((ele)=> ele.given_to_user_id === mentee.user_id).average_rating)}
                       precision={0.5}
                       readOnly
                     />
@@ -128,7 +235,7 @@ const MentorFeedback = () => {
                 </div>
 
                 {activeDropdown === mentee.user_id && (
-                  <Metric curr_user_id={curr_user_id} mentee_id={mentee.user_id} mentee_metrics={mentee_metrics}/>
+                  <Metric mentee_id={mentee.user_id} mentee_metrics={mentee_metrics}/>
                 )}
               </>
             );
