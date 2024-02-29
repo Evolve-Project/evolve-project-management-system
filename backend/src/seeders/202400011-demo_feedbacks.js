@@ -22,10 +22,10 @@ module.exports = {
       const mentors = teamMembers.slice(0, 2);
       const mentees = teamMembers.slice(2);
 
-      // Each mentee will rate each mentor on 3 different metrics (1 to 3)
+      // Each mentee will rate each mentor on 4 different metrics (6 to 9)
       for (const mentee of mentees) {
         for (const mentor of mentors) {
-          for (let metricId = 1; metricId <= 3; metricId++) {
+          for (let metricId = 6; metricId <= 9; metricId++) {
             feedbacks.push({
               metric_id: metricId,
               rating: faker.datatype.number({ min: 1, max: 5 }), // Random rating between 1 and 5
@@ -39,10 +39,10 @@ module.exports = {
         }
       }
 
-      // Each mentor will rate each mentee based on 5 metrics (4 to 8)
+      // Each mentor will rate each mentee based on 5 metrics (1 to 5)
       for (const mentor of mentors) {
         for (const mentee of mentees) {
-          for (let metricId = 4; metricId <= 8; metricId++) {
+          for (let metricId = 1; metricId <= 5; metricId++) {
             feedbacks.push({
               metric_id: metricId,
               rating: faker.datatype.number({ min: 1, max: 5 }), // Random rating between 1 and 5

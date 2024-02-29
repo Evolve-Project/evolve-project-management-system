@@ -16,12 +16,13 @@ app.use(passport.initialize())
 const authRoutes = require('./routes/auth');
 const attendanceRoutes = require('./routes/attendance')
 const milestoneRoutes = require('./routes/milestones_desc')
+const feedbackRoutes = require('./routes/feedback')
 
 //initialize routes
 app.use('/api', authRoutes);
 app.use('/api', attendanceRoutes);
 app.use('/api',milestoneRoutes);
-
+app.use('/api', feedbackRoutes);
 
 
 app.listen(PORT, () => {
