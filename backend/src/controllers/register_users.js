@@ -9,6 +9,11 @@ const { addUser, validateColumns } = require('../services/user_services');
 // to upload an excel file and add user data to database after checking if it's the right excel file
 exports.addBulkUsers = async (req, res) => {
     try {
+        // Check if the request is sent by admin
+        if (req.user.role !== 'Admin') {
+            return res.status(401).json({ success: false, error: 'Unauthorized' });
+        }
+
         // Check if the role is valid
         const role = req.body.role;
         if (role !== "Mentee" && role !== "Mentor") {
@@ -89,6 +94,11 @@ exports.addBulkUsers = async (req, res) => {
 
 // add a single user to the database
 exports.addOneUser = async (req, res) => {
+    // Check if the request is sent by admin
+    if (req.user.role !== 'Admin') {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
     // need to know the format of the request body
     try {
         const { role, ...userInfo } = req.body;
