@@ -63,9 +63,9 @@ const mentor = [
   },
   {
     id: 4,
-    title: "Milestones",
+    title: "Projects",
     icon: <IoIosGlobe/>,
-    link: "/milestones",
+    link: "/project",
   },
   {
     id: 5,
@@ -73,6 +73,7 @@ const mentor = [
     icon: <FaClipboardQuestion/>,
     link: "/query",
   },
+ 
 ];
 const mentee = [
   {
@@ -90,8 +91,8 @@ const mentee = [
   {
     id: 3,
     title: "Ask Query",
-    icon: <FaClipboardQuestion/>,
-    link: "/dashboard",
+    icon: <IoCheckboxOutline/>,
+    link: "/query",
   },
   {
     id: 4,
