@@ -6,11 +6,7 @@ const validator = require('validator');
 // service to fetch mentees by mentor
 async function fetchMenteesByMentor(mentorUid) {
     try {
-        const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
-        console.log(mentor); // works till here
-
-        // will throw error here for now because the team_id is set to null in the db
-        const mentorTeamId = mentor.team_id;
+        const mentorTeamId = await fetchTeamId(mentorUid, "Mentor");
 
         const result = await Mentee.findAll({
             where: { team_id: mentorTeamId },
@@ -41,12 +37,8 @@ async function fetchMenteesByMentor(mentorUid) {
 // service to fetch mentors by mentee
 async function fetchMentorsByMentee(menteeUid) {
     try {
-        const mentee = await Mentee.findOne({ where: { user_id: menteeUid } });
-        console.log(mentee); // works till here
-
+        const menteeTeamId = await fetchTeamId(menteeUid, "Mentee");
         // will throw error here for now because the team_id is set to null in the db
-        const menteeTeamId = mentee.team_id;
-
         const result = await Mentor.findAll({
             where: { team_id: menteeTeamId },
             include: [
@@ -212,7 +204,21 @@ function validateColumns(role, actualColumns) {
     return { success: true };
 }
 
-
+async function fetchTeamId(uid, role) {
+    try {
+        if (role === "Mentee") {
+            const mentee = await Mentee.findOne({ where: { user_id: uid } });
+            return mentee.team_id;
+        }
+        else {
+            const mentor = await Mentor.findOne({ where: { user_id: uid } });
+            return mentor.team_id;
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
 
 
 
