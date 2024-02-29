@@ -17,9 +17,9 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
                 // console.log(metric);
                 // console.log(feedback);
                 const group =  feedback.filter((record)=> record.metric_id === metric.id);
-                console.log("sorting");
-                console.log(group);
+                console.log("best sorting: "+metric.metric_name);
                 group.sort((a,b)=> Math.fround(b.rating) - Math.fround(a.rating));
+                console.log(group);
                 const obj = new Object();
                 obj.key = metric.id;
                 obj.val = group
@@ -29,7 +29,9 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
             // console.log(bestSort);
             const worstSort =  metrics.map((metric=>{
                 const group =  feedback.filter((record)=> record.metric_id === metric.id);
+                console.log("worst sorting: "+metric.metric_name);
                 group.sort((a,b)=> Math.fround(a.rating) - Math.fround(b.rating));
+                console.log(group);
                 const obj = new Object();
                 obj.key = metric.id;
                 obj.val = group

@@ -17,6 +17,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const attendanceRoutes = require('./routes/attendance')
 const milestoneRoutes = require('./routes/milestones_desc')
+const feedbackRoutes = require('./routes/feedback')
 const getMilestonesName = require('./routes/milestones_desc')
 const getTasks = require('./routes/tasks')
 
@@ -25,6 +26,7 @@ app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.use('/api', attendanceRoutes);
 app.use('/api',milestoneRoutes);
+app.use('/api', feedbackRoutes);
 app.use('/api',getMilestonesName);
 app.use('/api',getTasks);
 
