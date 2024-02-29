@@ -1,7 +1,8 @@
 const { Router } = require("express");
 const { userAuth } = require("../middlewares/passport-middleware");
 const {
-    getTeamId,
+  getTeamId,
+  getMetrics,
   getMentorMetrics,
   getMenteeMetrics,
   getAllProjectDetails,
@@ -19,6 +20,7 @@ const {
 const router = Router();
 
 router.get('/getTeamId', userAuth, getTeamId);
+router.get("/feedback_metrics", userAuth, getMetrics);
 router.get("/mentor_metrics", userAuth, getMentorMetrics);
 router.get("/mentee_metrics", userAuth, getMenteeMetrics);
 router.get("/project_details", userAuth, getAllProjectDetails);
