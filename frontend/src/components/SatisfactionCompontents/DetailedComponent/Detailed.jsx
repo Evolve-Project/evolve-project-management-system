@@ -1,64 +1,51 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect, useMemo } from "react";
 import "@/styles/satisfaction.css";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector } from "react-redux";
-import { feedbacks } from "@/dummyData";
+// import { feedbacks } from "@/dummyData";
 import { FormControl, Select, MenuItem, Checkbox, ListItemText, TextField, Divider } from "@mui/material";
 
-const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
+const SatisfactionDetailed = ({role, userId, givenByRecords, feedbacks})=>{
     const metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics).filter((metric)=> metric.role === role);
-    const feedback = feedbacks.filter((record)=> record.given_to_user_id === userId);
+    // const feedback = feedbacks.filter((record)=> record.given_to_user_id === userId);
+    // console.log(userId);
+    const bestSort = useMemo(
+        () =>
+            metrics.map((metric) => {
+                const group = feedbacks.filter((record) => record.metric_id === metric.id);
+                // console.log("best sorting: " + metric.metric_name);
+                group.sort((a, b) => Math.fround(b.rating) - Math.fround(a.rating));
+                // console.log(group);
+                return { key: metric.id, val: group };
+            }),
+        [userId, feedbacks]
+    );
 
-    // let bestSort, worstSort, userIdMapName;                          //-------IMPLEMENT----------
-    // const { bestSort, worstSort, userIdMapName } = useMemo( () => {
-    //     const fetchData = async () => {
+    const worstSort = useMemo(
+        () =>
+            metrics.map((metric) => {
+                const group = feedbacks.filter((record) => record.metric_id === metric.id);
+                // console.log("worst sorting: " + metric.metric_name);
+                group.sort((a, b) => Math.fround(a.rating) - Math.fround(b.rating));
+                // console.log(group);
+                return { key: metric.id, val: group };
+            }),
+        [userId, feedbacks]
+    );
 
-            const bestSort =  metrics.map((metric=>{
-                // console.log(metric);
-                // console.log(feedback);
-                const group =  feedback.filter((record)=> record.metric_id === metric.id);
-                console.log("best sorting: "+metric.metric_name);
-                group.sort((a,b)=> Math.fround(b.rating) - Math.fround(a.rating));
-                console.log(group);
-                const obj = new Object();
-                obj.key = metric.id;
-                obj.val = group
-                return obj;
-            }));
-            // console.log("best sort");
-            // console.log(bestSort);
-            const worstSort =  metrics.map((metric=>{
-                const group =  feedback.filter((record)=> record.metric_id === metric.id);
-                console.log("worst sorting: "+metric.metric_name);
-                group.sort((a,b)=> Math.fround(a.rating) - Math.fround(b.rating));
-                console.log(group);
-                const obj = new Object();
-                obj.key = metric.id;
-                obj.val = group
-                return obj;
-            }));
-            
-            const userIdMapName =  givenByRecords.map((record)=>{
-                const obj = new Object();
-                obj.id = record.user_id;
-                obj.name = record.first_name+" "+record.last_name;
-                return obj;
-            });
-    //         return {bestSort, worstSort, userIdMapName};
-    //     };
-    //     return fetchData();
+    const userIdMapName = useMemo(
+        () =>
+            givenByRecords.map((record) => {
+                return { id: record.user_id, name: record.first_name + " " + record.last_name };
+            }),
+        [userId, feedbacks]
+    );
 
-    // }),[userId]};
-    // alert(bestSort);
     const LENGTH = givenByRecords.length;
     const [selectedIds, setSelectedIds] = useState(userIdMapName.map((record)=> record.id));
-    // const [selectedNames, setSelectedNames] = useState(userIdMapName.map((record)=> record.name));
-    // console.log(selectedIds);
-    // console.log(selectedNames);
+
     const [allSelected, setAllSelected] = useState(true);
     const [sortBy,setSortBy] = useState("best");
-
-
 
     useEffect(()=>{
         setAllSelected((LENGTH > 0) && (selectedIds.length === LENGTH));
@@ -70,15 +57,12 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
             if(selectedIds.length === LENGTH)
             {
                 setSelectedIds([]);
-                // setSelectedNames([]);
             }
             else{
                 setSelectedIds(userIdMapName.map((record)=> record.id));
-                // setSelectedNames(userIdMapName.map((record)=> record.name));
             }
         }else{
             setSelectedIds(value);
-            // setSelectedNames([...selectedNames,userIdMapName.find(record=> record.id === value[value.length - 1]).name]);
         }
     };
     const ITEM_HEIGHT = 70;
@@ -92,8 +76,6 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
         },
     };
 
-
-    
     return (
         <div className='mr-10' >
             <div className='satisfaction_detail_option'>
@@ -114,8 +96,6 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
                                 return ((selected.length === LENGTH) ?   
                                     "All selected " : 
                                     selected.map((id)=> userIdMapName.find((record)=> id === record.id).name).join(', '))}} 
-                            // (selected.length === LENGTH) ?   
-                            // "All selected " : 
                             MenuProps={MenuProps}
                         >
                             <MenuItem value="select all">
@@ -151,12 +131,11 @@ const SatisfactionDetailed = ({role, userId, givenByRecords})=>{
                 </div>
             </div>
             <div>
-                {LENGTH > 0 && metrics.map((metric)=>{
+                {metrics.map((metric)=>{
                      return(
                         <div className='satisfaction_metric_container' key={metric.id}>
                             <div className='satisfaction_metric_name'>{metric.metric_name}</div>
                             {
-                                // console.log(bestSort.find((record)=> record.key === metric.id))
                             ((sortBy === "best") ? 
                                 bestSort.find((record)=> record.key === metric.id).val : 
                                 worstSort.find((record)=> record.key === metric.id).val)

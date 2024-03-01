@@ -3,7 +3,7 @@ import "@/styles/satisfaction.css";
 import {Bar} from "react-chartjs-2";
 import {Chart} from 'chart.js/auto';
 import { useSelector } from "react-redux";
-import { feedbacks } from "@/dummyData";
+// import { feedbacks } from "@/dummyData";
 
 
 const colors = ["#9BD0F5","#5facde","#a8c1d4","#7B76F1","#5f9dc6","#1297f0","#a4a2ef"];
@@ -78,17 +78,18 @@ const options = {
     }
 }
 
-const SatisfactionChart = ({role, userId, givenByRecords})=>{
+const SatisfactionChart = ({role, userId, givenByRecords, feedbacks})=>{
     const labels = useSelector((state)=> state.feedbackMetric.feedback_metrics).filter((metric)=> metric.role === role).map((record)=> record.metric_name);
-    const feedback = feedbacks.filter((record)=> record.given_to_user_id === userId);
-
+    // const feedback = feedbacks.filter((record)=> record.given_to_user_id === userId);
+    // console.log("labels: ",labels);
+    // console.log("feedbacks: ",feedbacks);
     const data_value = givenByRecords.map((record, index) => {
         return {
             label: `${record.first_name} ${record.last_name}`,
-            data: feedback
+            data: feedbacks
                 .filter((ele) => ele.given_by_user_id === record.user_id)
                 .map((ele) => ele.rating),
-            comment: feedback
+            comment: feedbacks
                 .filter((ele) => ele.given_by_user_id === record.user_id)
                 .map((ele) => ele.review),
             backgroundColor: colors[index],

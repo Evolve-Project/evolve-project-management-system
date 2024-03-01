@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isDate: true
       },
-      unique: true
+      // unique: true
     },
     attendance: {
       type: DataTypes.ENUM('Present', 'Absent', 'Leave'),

@@ -240,7 +240,7 @@ const add_metric = async (req, res) => {
           where: { metric_name: req.body.metric_name, role: req.body.role },
         });
         if (existingMetric) {
-          // User already exists
+          // Metric already exists
           return res
             .status(409)
             .json({ status: "alreadyExists", message: "Metric already exists" });
@@ -298,16 +298,26 @@ const update_metric = async (req, res) => {
               message: "UnAuthorized Request",
             });
         }
-        const metric_id = req.body.id;
-        const metric_record = await FeedbackMetric.findOne({
-            where : {id: metric_id}
+        const existingMetric = await FeedbackMetric.findOne({
+          where: { metric_name: req.body.metric_name, role: req.body.role },
         });
-        if(metric_record === null)
-        {
-            res.status(404).json({status: "Not found",message: "Metric record not found"});
+        if (existingMetric) {
+          // Metric already exists
+          return res
+            .status(409)
+            .json({ status: "alreadyExists", message: "Metric already exists" });
         }else{
-            await metric_record.update({metric_name: req.body.metric_name});
-            res.status(200).json({status: "Updated" ,message: "Metric updated successfully"});
+          const metric_id = req.body.id;
+          const metric_record = await FeedbackMetric.findOne({
+              where : {id: metric_id}
+          });
+          if(metric_record === null)
+          {
+              res.status(404).json({status: "Not found",message: "Metric record not found"});
+          }else{
+              await metric_record.update({metric_name: req.body.metric_name});
+              res.status(200).json({status: "Updated" ,message: "Metric updated successfully"});
+          }
         }
     }catch(err){
         console.log("error in update_metric: ", err);
