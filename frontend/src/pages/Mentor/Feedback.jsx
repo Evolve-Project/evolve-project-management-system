@@ -51,8 +51,8 @@ const handleSubmit = async (e, dataObject, mentee_id, handleNewAverage)=>{
 
 const Metric = ({ mentee_id, mentee_metrics, handleNewAverage})=>{
   const URL = "http://localhost:8000";
-  const [loding1, setLoding1] = useState(true);
-  const [loding2, setLoding2] = useState(true);
+  const [loading1, setLoading1] = useState(true);
+  const [loading2, setLoading2] = useState(true);
 
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(()=>{
@@ -62,7 +62,7 @@ const Metric = ({ mentee_id, mentee_metrics, handleNewAverage})=>{
         setFeedbacks(feedback_data.data.allFeedbacks);
         // console.log("feedbacks: "); 
         // console.log(feedback_data.data.allFeedbacks);
-        setLoding1(false);
+        setLoading1(false);
       }catch(err){
         console.log("Error in fetching feedbacks ",err);
       }
@@ -82,13 +82,13 @@ const Metric = ({ mentee_id, mentee_metrics, handleNewAverage})=>{
       obj.given_to_user_id = mentee_id;
       return obj;
     }));
-    setLoding2(false);
+    setLoading2(false);
   },[feedbacks]);
 
-  if(loding1 && loding2) // TODO : IMPLEMENT LODING SKELETON
+  if(loading1 && loading2) // TODO : IMPLEMENT LOADING SKELETON
   {
     return(
-      // <div>Loding......</div>
+      // <div>Loading......</div>
       <div className="feedback_content">
       {mentee_metrics.map((metric) => {
         return (
@@ -150,9 +150,9 @@ const MentorFeedback = () => {
     }
   },[dispatch]);
 
-  const [loding1, setLoding1] = useState(true);
-  const [loding2, setLoding2] = useState(true);
-  const [loding3, setLoding3] = useState(true);
+  const [loading1, setLoading1] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [loading3, setLoading3] = useState(true);
 
   const [teamId, setTeamId] = useState(null);
   useEffect(()=>{
@@ -161,7 +161,7 @@ const MentorFeedback = () => {
         const team_id = await axios.get(`${URL}/api/getTeamId`);
         // console.log("Team id: ", team_id);
         setTeamId(team_id.data.team_id);
-        setLoding1(false);
+        setLoading1(false);
       }catch(err){
         console.log('Error fetching teamid: ', err);
       }
@@ -177,7 +177,7 @@ const MentorFeedback = () => {
         setMentees(menteesData.data.allMentees);
         // console.log("All mentees");
         // console.log(menteesData.data.allMentees);
-        setLoding2(false);
+        setLoading2(false);
       } 
       catch (error) {
         console.error('Error fetching mentee data:', error);
@@ -195,7 +195,7 @@ const MentorFeedback = () => {
         setAvgRating(averageRating.data.avgRating);
         // console.log("avg rating");
         // console.log(averageRating.data.avgRating);
-        setLoding3(false);
+        setLoading3(false);
       } 
       catch (error) {
         console.error('Error fetching avg rating data:', error);
@@ -226,8 +226,8 @@ const MentorFeedback = () => {
   setActiveDropdown(mentee.user_id);
 };
 
-if((status === "loading") || (loding1 && loding2 && loding3)){ // TODO : IMPLEMENT LODING SKELETON
-  return (<div>loding.........</div>);
+if((status === "loading") || (loading1 && loading2 && loading3)){ // TODO : IMPLEMENT LOADING SKELETON
+  return (<div>loading.........</div>);
 }
 if(status === "failed"){
   return (<div>Error: {error}</div>);

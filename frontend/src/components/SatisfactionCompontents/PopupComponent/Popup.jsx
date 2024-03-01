@@ -1,9 +1,5 @@
 import React, {
   useState,
-  // useRef,
-  // useEffect,
-  // forwardRef,
-  // useImperativeHandle,
 } from "react";
 import "@/styles/satisfaction.css";
 import { styled } from "@mui/material/styles";
@@ -37,13 +33,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   {
     handlePop();
   };
-  // const contentRef = useRef();
-  // const [contentEle,setContentEle] = useState(null);
-  // useEffect(()=>{
-  //     console.log(contentEle);
-  //     if(contentEle != null)
-  //         contentEle.current.focus();
-  // },[contentEle]);
+
   const mentor_metrics = useSelector(
     (state) => state.feedbackMetric.feedback_metrics
   ).filter((record) => record.role === "Mentor");
@@ -57,19 +47,22 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
     setEditableId(index);
     setEditedName(name);
   };
+
   const dispatch = useDispatch();
-  const handleEditSave = (index, name) =>{
+  const handleEditSave = (index, name, role) =>{
     console.log("edited");
-    dispatch(updateMetric({id: index, name}));
+    dispatch(updateMetric({id: index, metric_name : name, role}));
     setEditableId(null);
     setEditedName("");
   }
+
   const handleEditDel = (index, name) => {
     console.log("deleted");
-    const confirmation = confirm(`Are sure to delete "${name}" metric ?`);
+    const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);  // TODO : IMPLEMENT CONFIRM POP UP
     if(confirmation)
       dispatch(deleteMetric({id: index}));
   }
+
   const handleAddNewItem = (index, name) => {
     if(index == -1) //add at mentor
     {
@@ -112,6 +105,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
         </IconButton>
         <DialogContent dividers>
           <div className="flex flex-row gap-4">
+
           <div className="flex-1 min-w-72 min-h-64 bg-zinc-200 rounded-md">
               <div className="flex items-center justify-between p-4">
                 <span className="font-bold">Mentor Metrics</span>
@@ -126,7 +120,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 {mentor_metrics.map((record) => {
                   return (
                     <>
-                      <li className="flex flex-row justify-between items-center my-1">
+                      <li className="flex flex-row justify-between items-center my-1" key={record.id}>
                         <span className="p-1">
                           {editableId === record.id ? (
                             <input
@@ -142,11 +136,6 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                           ) : (
                             record.metric_name
                           )}
-
-                          {/* <input type="text" value={(metricEditId === record.id) ? record.metric_name : editValue} 
-                                    onChange={(e)=>setEditValue(e.target.value)} 
-                                    style={{backgroundColor:"inherit",border:"none",padding:"1px 1px 1px 5px",cursor:"pointer"}}   
-                                    onClick={()=>{setDisplayEditId(record.id);setEditValue(record.metric_value)}} /> */}
                         </span>
                         <span className="flex items-center gap-2">
                           <span className="cursor-pointer">
@@ -161,7 +150,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                             ) : (
                               <span
                                 className="p-1 bg-green-500 text-white rounded-md"
-                                onClick={() => handleEditSave(record.id, editedName)}
+                                onClick={() => handleEditSave(record.id, editedName, "Mentor")}
                               >
                                 save
                               </span>
@@ -205,6 +194,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 )}
               </div>
             </div>
+
             <div className="flex-1 min-w-72 min-h-64 bg-zinc-200 rounded-md">
               <div className="flex items-center justify-between p-4">
                 <span className="font-bold">Mentee Metrics</span>
@@ -219,7 +209,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 {mentee_metrics.map((record) => {
                   return (
                     <>
-                      <li className="flex flex-row justify-between items-center my-1">
+                      <li className="flex flex-row justify-between items-center my-1" key={record.id}>
                         <span className="p-1">
                           {editableId === record.id ? (
                             <input
@@ -249,7 +239,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                             ) : (
                               <span
                                 className="p-1 bg-green-500 text-white rounded-md"
-                                onClick={() => handleEditSave(record.id, editedName)}
+                                onClick={() => handleEditSave(record.id, editedName, "Mentee")}
                               >
                                 save
                               </span>
@@ -305,26 +295,5 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   );
 };
 
-{
-  /* contentEditable="true" */
-}
-{
-  /* contenteditable={`${metricEditId === ind ? true: false}`} */
-}
-{
-  /* autoFocus={`${metricEditId === ind ? true: false}`} */
-}
-{
-  /* onClick={()=>setmetricEditInd(ind)} */
-}
 
-{
-  /* ref={contentRef} */
-}
-{
-  /* onClick={()=>setContentEle(ref)} */
-}
-{
-  /* contentRef.style.contentEditable = "true" */
-}
 export default CustomizedDialogs;

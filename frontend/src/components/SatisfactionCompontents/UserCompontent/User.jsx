@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { MenuItem, TextField } from '@mui/material';
 import "@/styles/satisfaction.css";
 
-const UserName = ({handleUserId, userRecords}) => {
+const UserNames = ({handleUserId, userRecords}) => {
     const [userName, setUserName] = useState('');
     return (
         <div className='satisfaction_input'>
@@ -14,7 +14,7 @@ const UserName = ({handleUserId, userRecords}) => {
                     label="name"
                     value={userName}
                     onChange={(e)=>setUserName(e.target.value)}
-                    sx={{ minWidth: 180}}
+                    sx={{ minWidth: 220}}
                     size="small"
                     >
                     {userRecords.map((user)=>{
@@ -30,4 +30,4 @@ const UserName = ({handleUserId, userRecords}) => {
     )
 }
 
-export default UserName;
+export default UserNames;
