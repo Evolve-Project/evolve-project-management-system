@@ -38,6 +38,21 @@ const getTeamId = async (req, res) => {
     }
 }
 
+const getMetrics = async (req, res) => {
+  try {
+    const metrics = await FeedbackMetric.findAll({
+      attributes: ["id", "metric_name", "role"],
+    });
+    
+    // IF NOT EXITS 404 NOT FOUND
+
+    res.status(200).json({ metrics });
+  } catch (err) {
+    console.log("error in getMetrics: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getMentorMetrics = async (req, res) => {
   try {
     // console.log("user id : ",req.user.id);
@@ -301,7 +316,8 @@ const update_metric = async (req, res) => {
 };
 
 module.exports = {
-    getTeamId,
+  getTeamId,
+  getMetrics,
   getMentorMetrics,
   getMenteeMetrics,
   getAllProjectDetails,

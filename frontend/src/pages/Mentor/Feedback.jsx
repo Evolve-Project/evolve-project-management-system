@@ -3,8 +3,9 @@ import "@/styles/feedback.css";
 import { Rating } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { fetchFeedbackMetrics } from "@/redux/slices/feedbackMetricSlice";
 
 const handleRatingChange = (e, newValue, dataObject, setDataObject, metricId) => {
   const newDataObject = dataObject.map(record => {
@@ -26,14 +27,19 @@ const handleCommentChange = (e, dataObject, setDataObject, metricId) => {
   setDataObject(newDataObject);
 };
 
-const handleSubmit = async (e, dataObject)=>{
+const handleSubmit = async (e, dataObject, mentee_id, handleNewAverage)=>{
   try{
     e.preventDefault();
     console.log(dataObject);
     const URL = "http://localhost:8000";
     const responce = await axios.post(`${URL}/api/feedback`, dataObject);
     if(responce.status === 200)
+    {
+      const sumOfRatings = dataObject.reduce((sum, item) => sum + item.rating, 0);
+      const averageRating = sumOfRatings / dataObject.length;
+      handleNewAverage(mentee_id, averageRating);
       alert(responce.data.message);
+    }
     else{
       alert("ERROR");
     }
@@ -43,7 +49,7 @@ const handleSubmit = async (e, dataObject)=>{
   }
 }
 
-const Metric = ({ mentee_id, mentee_metrics})=>{
+const Metric = ({ mentee_id, mentee_metrics, handleNewAverage})=>{
   const URL = "http://localhost:8000";
   const [loding1, setLoding1] = useState(true);
   const [loding2, setLoding2] = useState(true);
@@ -125,16 +131,24 @@ const Metric = ({ mentee_id, mentee_metrics})=>{
         );
       })}
       <div className="flex flex-row-reverse">
-        <span className="feedback_btn" onClick={(e)=>handleSubmit(e,dataObject)}>submit</span>
+        <span className="feedback_btn" onClick={(e)=>handleSubmit(e, dataObject, mentee_id, handleNewAverage)}>submit</span>
       </div>
     </div>
 )};
 
 const MentorFeedback = () => {
-  const role = "Mentee";
   const URL = "http://localhost:8000";
+
+  const dispatch = useDispatch();
   const mentee_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics)
-    .filter((metric)=> metric.role === role);
+    .filter((metric)=> metric.role === "Mentee");
+  const status = useSelector((state) => state.feedbackMetric.status);
+  const error = useSelector((state) => state.feedbackMetric.error);
+  useEffect(()=>{ // CALLING ASYNC THUNK 
+    if(status === 'idle'){
+      dispatch(fetchFeedbackMetrics());
+    }
+  },[dispatch]);
 
   const [loding1, setLoding1] = useState(true);
   const [loding2, setLoding2] = useState(true);
@@ -184,12 +198,24 @@ const MentorFeedback = () => {
         setLoding3(false);
       } 
       catch (error) {
-        console.error('Error fetching mentee data:', error);
+        console.error('Error fetching avg rating data:', error);
       }
     };
 
     fetchData(); // Fetch data on component mount
   },[]);
+  const handleNewAverage = (mentee_id, newAverage)=>{
+    console.log("New Avg");
+    console.log(mentee_id, newAverage);
+    const newAvgRating = avgRating.map(record => {
+      if (record.given_to_user_id === mentee_id) {
+        return { ...record, average_rating: newAverage };
+      }
+      return record;
+    });
+    console.log(newAvgRating);
+    setAvgRating(newAvgRating);
+  }
 
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropDown = (e, mentee) => {
@@ -200,8 +226,11 @@ const MentorFeedback = () => {
   setActiveDropdown(mentee.user_id);
 };
 
-if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
+if((status === "loading") || (loding1 && loding2 && loding3)){ // TODO : IMPLEMENT LODING SKELETON
   return (<div>loding.........</div>);
+}
+if(status === "failed"){
+  return (<div>Error: {error}</div>);
 }
 
   return (
@@ -219,7 +248,7 @@ if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
                   <span className="feedback_rating">
                     <Rating
                       name="half-rating-read"
-                      defaultValue={parseFloat(avgRating.find((ele)=> ele.given_to_user_id === mentee.user_id).average_rating)}
+                      value={parseFloat(avgRating.find((ele)=> ele.given_to_user_id === mentee.user_id).average_rating)}
                       precision={0.5}
                       readOnly
                     />
@@ -235,7 +264,7 @@ if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
                 </div>
 
                 {activeDropdown === mentee.user_id && (
-                  <Metric mentee_id={mentee.user_id} mentee_metrics={mentee_metrics}/>
+                  <Metric mentee_id={mentee.user_id} mentee_metrics={mentee_metrics} handleNewAverage={handleNewAverage}/>
                 )}
               </>
             );
