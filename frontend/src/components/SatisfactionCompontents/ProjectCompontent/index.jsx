@@ -10,9 +10,17 @@ const ProjectNames = ({handleTeamId}) => {
     const [teams_projects , setTeamProjects] = useState([]);
     useEffect(()=>{
         const fetchData = async () =>{
-            const data = await axios.get(`${URL}/project_details`);
-            // console.log(data.data.allTeamsNames);
-            setTeamProjects(data.data.allTeamsNames);
+            try{
+                const data = await axios.get(`${URL}/project_details`);
+                // console.log(data);
+                // console.log(data.data.allTeamsNames);
+                if(data.status === 200)
+                    setTeamProjects(data.data.allTeamsNames);
+                else
+                    console.log(data); 
+            }catch(err){
+                console.log("Error in fetching project details", err);
+            }
         }
         fetchData();
     },[]);
@@ -29,11 +37,12 @@ const ProjectNames = ({handleTeamId}) => {
                     size="small"
                     >
                     {teams_projects.map((team)=>{
-                        return (
-                            <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id)}}>
-                                {team.Project.name}
-                            </MenuItem>
-                        )
+                        if(team.Project?.name)  // IF PROJECTS ASSIGNED ONLY DISPLAY
+                            return (
+                                <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id)}}>
+                                    {team.Project.name}
+                                </MenuItem>
+                            )
                     })}
                 </TextField>
             </span>

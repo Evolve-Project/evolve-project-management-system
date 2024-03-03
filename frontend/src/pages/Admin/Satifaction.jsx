@@ -6,15 +6,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 // import { mentees, mentors } from '@/dummyData';
-import ProjectNames from '@/components/SatisfactionCompontents/ProjectCompontent/project';
-import UserNames from '@/components/SatisfactionCompontents/UserCompontent/User';
-import SatisfactionChart from '@/components/SatisfactionCompontents/ChartComponent/Chart';
-import SatisfactionDetailed from '@/components/SatisfactionCompontents/DetailedComponent/Detailed';
-import CustomizedDialogs from '@/components/SatisfactionCompontents/PopupComponent/Popup';
+import ProjectNames from '@/components/SatisfactionCompontents/ProjectCompontent';
+import UserNames from '@/components/SatisfactionCompontents/UserCompontent';
+import SatisfactionChart from '@/components/SatisfactionCompontents/ChartComponent';
+import SatisfactionDetailed from '@/components/SatisfactionCompontents/DetailedComponent';
+import CustomizedDialogs from '@/components/SatisfactionCompontents/PopupComponent';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeedbackMetrics } from "@/redux/slices/feedbackMetricSlice";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import SatisfactionShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer';
+import ChartShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/chartShimmer';
+import DetailedShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer';
+import ErrorPage from '@/components/ErrorPage';
 
 const Satisfaction = ()=>{
     const URL = "http://localhost:8000/api";
@@ -31,16 +36,27 @@ const Satisfaction = ()=>{
     const [role, setRole] = useState("Mentor");
     const [mentorRecords, setMentorRecords] = useState([]);
     const [menteeRecords, setMenteeRecords] = useState([]);
+    const [loading1, setLoading1] = useState(false);
+    const [errorPage, setErrorPage] = useState(false);
     useEffect(()=>{
         const fetchData = async ()=>{
-            const mentors = await axios.get(`${URL}/getMentors/${teamId}`);
-            setMentorRecords(mentors.data.allMentors);
-            const mentees = await axios.get(`${URL}/getMentees/${teamId}`);
-            setMenteeRecords(mentees.data.allMentees);
+            try{
+                const mentors = await axios.get(`${URL}/getMentors/${teamId}`);
+                setMentorRecords(mentors.data.allMentors);
+                const mentees = await axios.get(`${URL}/getMentees/${teamId}`);
+                setMenteeRecords(mentees.data.allMentees);
+                setErrorPage(false);
+            }catch(err){
+                console.log("Error at fetching mentor and mentee records : ", err);
+                // toast.error(err?.response?.statusText);
+                setErrorPage(true);
+            }
         }
         if(teamId !== null)
         {
+            setLoading1(true);
             fetchData();
+            setLoading1(false);
         }
     },[teamId]);
 
@@ -54,13 +70,13 @@ const Satisfaction = ()=>{
     },[dispatch]);
 
     const [feedbacks, setFeedbacks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading2, setLoading2] = useState(true);
     useEffect(()=>{
         const fetchData = async ()=>{
             const feedbacks = await axios.get(`${URL}/getAllFeedbacksTo/${userId}`);
             // console.log(feedbacks.data.allFeedbacks);
             setFeedbacks(feedbacks.data.allFeedbacks);
-            setLoading(false);
+            setLoading2(false);
         }
         if(userId !== null){
             fetchData();
@@ -74,17 +90,23 @@ const Satisfaction = ()=>{
         setIsPopOpen(prev => !prev);
     }
 
-    if((status === "Initial-loading")){ // TODO : IMPLEMENT LODING SKELETON
-        return (<div>loading.........</div>);
+    if(loading1 || (status === "Initial-loading")){ // LOADING PAGE
+        return <SatisfactionShimmer/>;
     }
-    if(status === "failed"){
-        return (<div>Error: {error}</div>);
+
+    if(errorPage || status === "Initail-failed") { // ERROR PAGE
+        return <ErrorPage/>;
     }
 
     return (
         <>
+        <ToastContainer/>
             <div className='satisfaction_container'>
-                <div className='satisfaction_title'> Satisfaction </div>
+                <div className="satisfaction_title_container"> 
+                    <span className="satisfaction_title_bar"></span>
+                    <span className='satisfaction_title'> Satisfaction </span>
+                    <span className="satisfaction_title_bar"></span>
+                </div>
                 <div className='satisfaction_content'>
                     <div className="satisfaction_input justify-between">
                         <ProjectNames handleTeamId = {handleTeamId}/>
@@ -134,11 +156,19 @@ const Satisfaction = ()=>{
                         </div>
                     </div>
                     <div className="flex items-center justify-center">
-                        {(userId !== null && loading === false) ?
-                                <div style={{width:"100%"}}>
+                        {(userId !== null) ?
+                                <div className="flex items-center justify-center" style={{width:"100%"}}>
                                     {
-                                        feedbacks.length === 0 ? 
-                                            "NO FEEDBACKS" :    // TODO : IMPLEMENT NO FEEDBACK PAGE
+                                        (loading2 === true) ?
+                                            ((dataType === "visual") ?
+                                                <ChartShimmer/>:
+                                                <DetailedShimmer/>)
+                                            :
+                                        (feedbacks.length === 0) ?  // TODO : IMPLEMENT NO FEEDBACK PAGE
+                                            <div className='bg-slate-100 flex items-center justify-center' style={{width:"80%",height:"50vh"}}>
+                                                <div className='text-2xl'>NO FEEDBACKS</div>
+                                            </div>
+                                             :   
                                             (dataType === "visual") ?
                                                 <SatisfactionChart role={role} userId={userId} feedbacks={feedbacks} givenByRecords={role === "Mentor" ? menteeRecords : mentorRecords}/>:
                                                 <SatisfactionDetailed role={role} userId={userId} feedbacks={feedbacks} givenByRecords={role === "Mentor" ? menteeRecords : mentorRecords}/>

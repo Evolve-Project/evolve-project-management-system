@@ -9,9 +9,14 @@ export const fetchFeedbackMetrics = createAsyncThunk(
         const URL = "http://localhost:8000";
         const response = await axios.get(`${URL}/api/feedback_metrics`);
         return response.data.metrics;
-      } catch (error) {
-        console.log(error);
-        throw error;
+      } catch (err) {
+        console.log("metric fetch err: ",err);
+        const errorPayload = {
+          message: err.message,
+          status: err.response?.status,
+          data: err.response?.data,
+        };
+        throw errorPayload;
       }
     }
 );
@@ -25,7 +30,12 @@ export const addMetric = createAsyncThunk(
       return { ...newMetric, id };
     } catch (err) {
       console.log("add metric err: ",err);
-      return err;
+      const errorPayload = {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+      };
+      return rejectWithValue(errorPayload);
     }
   }
 );
@@ -34,11 +44,16 @@ export const deleteMetric = createAsyncThunk(
   "feedbackMetric/deleteMetric",
   async ({id}, { getState, rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:8000/api/delete_metric/${id}`);
+      const response = await axios.delete(`http://localhost:8000/api/delete_metric/${id}`);
       return id;
     } catch (err) {
       console.log("del metric err: ",err);
-      return err.response.data;
+      const errorPayload = {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+      };
+      return rejectWithValue(errorPayload);
     }
   }
 );
@@ -51,7 +66,38 @@ export const updateMetric = createAsyncThunk(
       return updatedMetric;
     } catch (err) {
       console.log("update metric err: ",err);
-      return err;
+      const errorPayload = {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+      };
+      return rejectWithValue(errorPayload);
+//       response
+// : 
+// config
+// : 
+// {transitional: {…}, adapter: Array(2), transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}
+// data
+// : 
+// {status: 'alreadyExists', message: 'Metric already exists'}
+// headers
+// : 
+// AxiosHeaders {content-length: '60', content-type: 'application/json; charset=utf-8'}
+// request
+// : 
+// XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: true, upload: XMLHttpRequestUpload, …}
+// status
+// : 
+// 409
+// statusText
+// : 
+// "Conflict"
+// [[Prototype]]
+// : 
+// Object
+// type
+// : 
+// "feedbackMetric/updateMetric/rejected"
     }
   }
 );
@@ -112,13 +158,14 @@ const metricReducer = createSlice({
             state.status = "Initial-loading";
           })
           .addCase(fetchFeedbackMetrics.fulfilled, (state, action) => {
-            state.status = "succeeded";
+            state.status = "Initail-succeeded";
             state.feedback_metrics = action.payload;
           })
           .addCase(fetchFeedbackMetrics.rejected, (state, action) => {
-            state.status = "failed";
+            state.status = "Initail-failed";
             state.error = action.error.message;
           })
+
           // ADDING NEW METRIC
           .addCase(addMetric.pending, (state)=>{
             state.status = "loading";
@@ -131,8 +178,9 @@ const metricReducer = createSlice({
           .addCase(addMetric.rejected, (state, action)=>{
             state.status = "failed";
             console.log(action.payload);
-            state.error = action.payload;
+            state.error = action.payload?.data?.message;
           })
+
           // DELETING METRIC
           .addCase(deleteMetric.pending, (state)=>{
             state.status = "loading";
@@ -145,13 +193,15 @@ const metricReducer = createSlice({
           })
           .addCase(deleteMetric.rejected, (state, action)=>{
             state.status = "failed";
-            state.error = action.payload;
+            state.error = action.payload?.data?.message;
           })
+
           // UPDATING METRIC
           .addCase(updateMetric.pending, (state)=>{
             state.status = "loading";
           })
           .addCase(updateMetric.fulfilled, (state, action)=>{
+            console.log(action.payload);  // return means its coming here not going to rejected
             state.status = "succeeded";
             // console.log("update : ",action.payload);
             const {id, metric_name} = action.payload;
@@ -160,7 +210,11 @@ const metricReducer = createSlice({
           })
           .addCase(updateMetric.rejected, (state, action)=>{
             state.status = "failed";
-            state.error = action.payload;
+            console.log("FFFILED.....");
+            console.log(action);
+            console.log(action.payload);
+            state.error = action.payload?.data?.message;
+            console.log(state.error);
           })
     },
 });

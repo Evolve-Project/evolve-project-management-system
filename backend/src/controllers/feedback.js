@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
+
 const {
   FeedbackMetric,
   Team,
@@ -20,7 +22,10 @@ const getTeamId = async (req, res) => {
                 where: {user_id}
             });
             const team_id = mentor_record.team_id;
-            res.status(200).json({team_id});
+            if(team_id === null){
+              res.status(404).json({message: "No team assigned"});
+            }else
+              res.status(200).json({team_id});
         }
         else if(role === "Mentee")
         {
@@ -28,7 +33,10 @@ const getTeamId = async (req, res) => {
                 where: {user_id}
             });
             const team_id = mentee_record.team_id;
-            res.status(200).json({team_id});
+            if(team_id === null){
+              res.status(404).json({message: "No team assigned"});
+            }else
+              res.status(200).json({team_id});
         }else{
             res.status(400).json({message: "Bad request"});
         }
@@ -45,8 +53,10 @@ const getMetrics = async (req, res) => {
     });
     
     // IF NOT EXITS 404 NOT FOUND
-
-    res.status(200).json({ metrics });
+    if(metrics.length === 0){
+      res.status(404).json({message: "No Metric found"});
+    }else
+      res.status(200).json({ metrics });
   } catch (err) {
     console.log("error in getMetrics: ", err);
     res.status(500).json({ message: "Internal server error" });
@@ -62,8 +72,10 @@ const getMentorMetrics = async (req, res) => {
     });
     
     // IF NOT EXITS 404 NOT FOUND
-
-    res.status(200).json({ mentor_metrics });
+    if(mentor_metrics.length === 0){
+      res.status(404).json({message: "No Mentor Metric found"});
+    }else
+      res.status(200).json({ mentor_metrics });
   } catch (err) {
     console.log("error in getMentorMetrics: ", err);
     res.status(500).json({ message: "Internal server error" });
@@ -79,8 +91,10 @@ const getMenteeMetrics = async (req, res) => {
     });
     
     // IF NOT EXITS 404 NOT FOUND
-
-    res.status(200).json({ mentee_metrics });
+    if(mentee_metrics.length === 0){
+      res.status(404).json({message: "No Mentee Metric found"});
+    }else
+      res.status(200).json({ mentee_metrics });
   } catch (err) {
     console.log("error in getMenteeMetrics: ", err);
     res.status(500).json({ message: "Internal server error" });
@@ -99,10 +113,12 @@ const getAllProjectDetails = async (req, res) => {
         },
       ],
     });
-    
+    // console.log(allTeamsNames);
     // IF NOT EXITS 404 NOT FOUND
-
-    res.status(200).json({ allTeamsNames });
+    if(allTeamsNames.length === 0){
+      res.status(404).json({message: "No Team found"});
+    }else
+      res.status(200).json({ allTeamsNames });
   } catch (err) {
     console.log("error in getAllProjectDetails: ", err);
     res.status(500).json({ message: "Internal server error" });
@@ -117,9 +133,8 @@ const getMentors = async (req, res) => {
     const team_id = req.params.team_id;
     const allMentors = await Mentor.findAll({
       where: { team_id },
+      attributes: ["id", "user_id", "first_name", "last_name", "team_id"]
     });
-    
-    // IF NOT EXITS 404 NOT FOUND
 
     res.status(200).json({ allMentors });
   } catch (err) {
@@ -135,9 +150,8 @@ const getMentees = async (req, res) => {
     const team_id = req.params.team_id;
     const allMentees = await Mentee.findAll({
       where: { team_id },
+      attributes: ["id","user_id", "first_name", "last_name", "team_id"]
     });
-    
-    // IF NOT EXITS 404 NOT FOUND
 
     res.status(200).json({ allMentees });
   } catch (err) {
@@ -152,8 +166,6 @@ const getAllFeedbacksTo = async (req, res) => {
     const allFeedbacks = await Feedback.findAll({
       where: { given_to_user_id: user_id },
     });
-    
-    // IF NOT EXITS 404 NOT FOUND
 
     res.status(200).json({ allFeedbacks });
   } catch (err) {
@@ -171,8 +183,6 @@ const getAllFeedbacksGivenByUserTo = async (req, res) => {
       where: { given_by_user_id, given_to_user_id },
     });
 
-    // IF NOT EXITS 404 NOT FOUND
-
     res.status(200).json({ allFeedbacks });
   } catch (err) {
     console.log("error in getAllFeedbacksByUserTo: ", err);
@@ -188,7 +198,10 @@ const getAvgRating = async (req, res) => {
             attributes : ["given_to_user_id", [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating']],
             group : ["given_by_user_id", "given_to_user_id"]
         });
-        res.status(200).json({avgRating});
+        if(avgRating.length === 0)
+          res.status(404).json({message: "No feedback found"});
+        else
+          res.status(200).json({avgRating});
     }catch(err){
         console.log("error in getAvgRating: ", err);
         res.status(500).json({ message: "Internal server error" });
@@ -237,7 +250,7 @@ const add_metric = async (req, res) => {
     }
     else{
         const existingMetric = await FeedbackMetric.findOne({
-          where: { metric_name: req.body.metric_name, role: req.body.role },
+          where: { metric_name:{[Op.iLike] : req.body.metric_name}, role: req.body.role },  // metric_name - CASE IN SENSITIVE
         });
         if (existingMetric) {
           // Metric already exists
@@ -281,6 +294,9 @@ const delete_metric = async (req, res) => {
             // const del_metric = await FeedbackMetric.destroy({
             //     where: {id: metric_id}
             // });
+            await Feedback.destroy({  // DELETING FEEDBACK WITH METRIC_ID TO AVOID CONFLICT OF FOREIGN KEY IN METRIC_RECORD
+              where: {metric_id}
+            });
             await metric_record.destroy();
             res.status(200).json({status: "deleted", message:"Metric Deleted successfully"});
         }
@@ -299,7 +315,7 @@ const update_metric = async (req, res) => {
             });
         }
         const existingMetric = await FeedbackMetric.findOne({
-          where: { metric_name: req.body.metric_name, role: req.body.role },
+          where: { metric_name:{[Op.iLike] : req.body.metric_name}, role: req.body.role },  // metric_name - CASE IN SENSITIVE
         });
         if (existingMetric) {
           // Metric already exists

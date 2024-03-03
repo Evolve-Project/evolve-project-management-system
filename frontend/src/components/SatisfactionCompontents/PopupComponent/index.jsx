@@ -18,6 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { addMetric, deleteMetric, updateMetric } from "@/redux/slices/feedbackMetricSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -49,32 +52,71 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   };
 
   const dispatch = useDispatch();
-  const handleEditSave = (index, name, role) =>{
-    console.log("edited");
-    dispatch(updateMetric({id: index, metric_name : name, role}));
-    setEditableId(null);
-    setEditedName("");
-  }
 
-  const handleEditDel = (index, name) => {
-    console.log("deleted");
-    const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);  // TODO : IMPLEMENT CONFIRM POP UP
-    if(confirmation)
-      dispatch(deleteMetric({id: index}));
-  }
-
-  const handleAddNewItem = (index, name) => {
-    if(index == -1) //add at mentor
-    {
-      dispatch(addMetric({metric_name:name, role: "Mentor"}));
-    }else{  //add at mentee
-      dispatch(addMetric({metric_name:name, role: "Mentee"}));
+  const handleEditSave = async (index, name, role) =>{  // UPDATE
+    // console.log("edited");
+    const toastId = toast.loading("Please wait...");
+    try{
+      const successData = await dispatch(updateMetric({id: index, metric_name : name, role})).unwrap();
+      // console.log(successData);
+      setEditableId(null);
+      setEditedName("");
+      toast.update(toastId,{render: "Metric updated successfully !!", isLoading: false, type: "success", autoClose: 2000});
+    }catch(err){
+      console.log("After dispatch update error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type:"warning", autoClose: 2000});
     }
-    setEditableId(null);
-    setEditedName("");
+  }
+
+  const handleEditDel = async (index, name) => {
+    // console.log("deleted");
+    const toastId = toast.loading("Please wait...");
+    try{
+      const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);  // TODO : IMPLEMENT CONFIRM POP UP
+      if(confirmation)
+      {
+        const successData = await dispatch(deleteMetric({id: index})).unwrap();
+        toast.update(toastId, {render: "Metric deleted Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+      }else{
+        toast.update(toastId, {render: "Metric Restored Successfully !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+      }
+    }catch(err){
+      console.log("After dispatch delete Metric error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
+    }
+  }
+
+  const handleAddNewItem = async (index, name) => {
+    const toastId = toast.loading("Please wait...");
+    if(name.length === 0){
+      toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+      return;
+    }
+    try{
+      let successfulData ;
+      if(index == -1) //add at Mentor
+      {
+        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentor"}));
+      }else{  //add at Mentee
+        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentee"}));
+      }
+      console.log(successfulData);
+      if(successfulData.error) //error at adding metric
+      {
+        toast.update(toastId, {render: `${successfulData.payload.data.message}`, isLoading: false, type: "warning", autoClose: 2000});
+      }else{
+        toast.update(toastId, {render: "Metric Added Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+        setEditableId(null);
+        setEditedName("");
+      }
+    }catch(err){
+      console.log("After dispatch Adding metric error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
+    }
   }
   return (
     <React.Fragment>
+    <ToastContainer/>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"

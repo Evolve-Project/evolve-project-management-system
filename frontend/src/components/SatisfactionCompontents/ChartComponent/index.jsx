@@ -3,6 +3,7 @@ import "@/styles/satisfaction.css";
 import {Bar} from "react-chartjs-2";
 import {Chart} from 'chart.js/auto';
 import { useSelector } from "react-redux";
+import ChartShimmer from "../SatisfactionShimmer/chartShimmer";
 // import { feedbacks } from "@/dummyData";
 
 
@@ -85,7 +86,7 @@ const SatisfactionChart = ({role, userId, givenByRecords, feedbacks})=>{
     // console.log("feedbacks: ",feedbacks);
     const data_value = givenByRecords.map((record, index) => {
         return {
-            label: `${record.first_name} ${record.last_name}`,
+            label: `${record.first_name} ${(record.last_name || "")}`,
             data: feedbacks
                 .filter((ele) => ele.given_by_user_id === record.user_id)
                 .map((ele) => ele.rating),
@@ -100,6 +101,9 @@ const SatisfactionChart = ({role, userId, givenByRecords, feedbacks})=>{
         labels,
         datasets: data_value
     }
+    
+    if(!givenByRecords || !feedbacks || !labels || !data_value)
+        return <ChartShimmer/>;
 
     return (
         <div  style={{width:"85%",margin:"auto"}}>
