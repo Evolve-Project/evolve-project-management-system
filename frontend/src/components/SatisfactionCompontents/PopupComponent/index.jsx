@@ -1,9 +1,5 @@
 import React, {
   useState,
-  // useRef,
-  // useEffect,
-  // forwardRef,
-  // useImperativeHandle,
 } from "react";
 import "@/styles/satisfaction.css";
 import { styled } from "@mui/material/styles";
@@ -22,6 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { addMetric, deleteMetric, updateMetric } from "@/redux/slices/feedbackMetricSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -37,13 +36,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   {
     handlePop();
   };
-  // const contentRef = useRef();
-  // const [contentEle,setContentEle] = useState(null);
-  // useEffect(()=>{
-  //     console.log(contentEle);
-  //     if(contentEle != null)
-  //         contentEle.current.focus();
-  // },[contentEle]);
+
   const mentor_metrics = useSelector(
     (state) => state.feedbackMetric.feedback_metrics
   ).filter((record) => record.role === "Mentor");
@@ -57,31 +50,73 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
     setEditableId(index);
     setEditedName(name);
   };
+
   const dispatch = useDispatch();
-  const handleEditSave = (index, name) =>{
-    console.log("edited");
-    dispatch(updateMetric({id: index, name}));
-    setEditableId(null);
-    setEditedName("");
-  }
-  const handleEditDel = (index, name) => {
-    console.log("deleted");
-    const confirmation = confirm(`Are sure to delete "${name}" metric ?`);
-    if(confirmation)
-      dispatch(deleteMetric({id: index}));
-  }
-  const handleAddNewItem = (index, name) => {
-    if(index == -1) //add at mentor
-    {
-      dispatch(addMetric({metric_name:name, role: "Mentor"}));
-    }else{  //add at mentee
-      dispatch(addMetric({metric_name:name, role: "Mentee"}));
+
+  const handleEditSave = async (index, name, role) =>{  // UPDATE
+    // console.log("edited");
+    const toastId = toast.loading("Please wait...");
+    try{
+      const successData = await dispatch(updateMetric({id: index, metric_name : name, role})).unwrap();
+      // console.log(successData);
+      setEditableId(null);
+      setEditedName("");
+      toast.update(toastId,{render: "Metric updated successfully !!", isLoading: false, type: "success", autoClose: 2000});
+    }catch(err){
+      console.log("After dispatch update error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type:"warning", autoClose: 2000});
     }
-    setEditableId(null);
-    setEditedName("");
+  }
+
+  const handleEditDel = async (index, name) => {
+    // console.log("deleted");
+    const toastId = toast.loading("Please wait...");
+    try{
+      const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);  // TODO : IMPLEMENT CONFIRM POP UP
+      if(confirmation)
+      {
+        const successData = await dispatch(deleteMetric({id: index})).unwrap();
+        toast.update(toastId, {render: "Metric deleted Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+      }else{
+        toast.update(toastId, {render: "Metric Restored Successfully !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+      }
+    }catch(err){
+      console.log("After dispatch delete Metric error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
+    }
+  }
+
+  const handleAddNewItem = async (index, name) => {
+    const toastId = toast.loading("Please wait...");
+    if(name.length === 0){
+      toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+      return;
+    }
+    try{
+      let successfulData ;
+      if(index == -1) //add at Mentor
+      {
+        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentor"}));
+      }else{  //add at Mentee
+        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentee"}));
+      }
+      console.log(successfulData);
+      if(successfulData.error) //error at adding metric
+      {
+        toast.update(toastId, {render: `${successfulData.payload.data.message}`, isLoading: false, type: "warning", autoClose: 2000});
+      }else{
+        toast.update(toastId, {render: "Metric Added Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+        setEditableId(null);
+        setEditedName("");
+      }
+    }catch(err){
+      console.log("After dispatch Adding metric error: ",err);
+      toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
+    }
   }
   return (
     <React.Fragment>
+    <ToastContainer/>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -112,6 +147,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
         </IconButton>
         <DialogContent dividers>
           <div className="flex flex-row gap-4">
+
           <div className="flex-1 min-w-72 min-h-64 bg-zinc-200 rounded-md">
               <div className="flex items-center justify-between p-4">
                 <span className="font-bold">Mentor Metrics</span>
@@ -126,7 +162,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 {mentor_metrics.map((record) => {
                   return (
                     <>
-                      <li className="flex flex-row justify-between items-center my-1">
+                      <li className="flex flex-row justify-between items-center my-1" key={record.id}>
                         <span className="p-1">
                           {editableId === record.id ? (
                             <input
@@ -142,11 +178,6 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                           ) : (
                             record.metric_name
                           )}
-
-                          {/* <input type="text" value={(metricEditId === record.id) ? record.metric_name : editValue} 
-                                    onChange={(e)=>setEditValue(e.target.value)} 
-                                    style={{backgroundColor:"inherit",border:"none",padding:"1px 1px 1px 5px",cursor:"pointer"}}   
-                                    onClick={()=>{setDisplayEditId(record.id);setEditValue(record.metric_value)}} /> */}
                         </span>
                         <span className="flex items-center gap-2">
                           <span className="cursor-pointer">
@@ -161,7 +192,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                             ) : (
                               <span
                                 className="p-1 bg-green-500 text-white rounded-md"
-                                onClick={() => handleEditSave(record.id, editedName)}
+                                onClick={() => handleEditSave(record.id, editedName, "Mentor")}
                               >
                                 save
                               </span>
@@ -205,6 +236,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 )}
               </div>
             </div>
+
             <div className="flex-1 min-w-72 min-h-64 bg-zinc-200 rounded-md">
               <div className="flex items-center justify-between p-4">
                 <span className="font-bold">Mentee Metrics</span>
@@ -219,7 +251,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                 {mentee_metrics.map((record) => {
                   return (
                     <>
-                      <li className="flex flex-row justify-between items-center my-1">
+                      <li className="flex flex-row justify-between items-center my-1" key={record.id}>
                         <span className="p-1">
                           {editableId === record.id ? (
                             <input
@@ -249,7 +281,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                             ) : (
                               <span
                                 className="p-1 bg-green-500 text-white rounded-md"
-                                onClick={() => handleEditSave(record.id, editedName)}
+                                onClick={() => handleEditSave(record.id, editedName, "Mentee")}
                               >
                                 save
                               </span>
@@ -305,26 +337,5 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   );
 };
 
-{
-  /* contentEditable="true" */
-}
-{
-  /* contenteditable={`${metricEditId === ind ? true: false}`} */
-}
-{
-  /* autoFocus={`${metricEditId === ind ? true: false}`} */
-}
-{
-  /* onClick={()=>setmetricEditInd(ind)} */
-}
 
-{
-  /* ref={contentRef} */
-}
-{
-  /* onClick={()=>setContentEle(ref)} */
-}
-{
-  /* contentRef.style.contentEditable = "true" */
-}
 export default CustomizedDialogs;
