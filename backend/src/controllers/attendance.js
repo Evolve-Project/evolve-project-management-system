@@ -1,25 +1,8 @@
 const { Mentor, User, Mentee } = require('../models/');
 const { insertBulkAttendance } = require('../services/attendance_services.js');
 const { fetchMenteesByMentor } = require('../services/user_services.js');
+const { fetchAttendanceByMentor, fetchAttendanceByMentee } = require('../services/attendance_services.js');
 
-exports.createAttendance = async (req, res) => {
-    console.log(req.body)
-    console.log(req.user.role)
-    console.log("called");
-    if (req.user.role != "Mentor") {
-        res.status(400).json({
-            success: false,
-            message: "UnAuthorized Request"
-        })
-    } else {
-        console.log(req.body)
-        res.status(200).json({
-            success: true,
-            message: "attendance created successfully"
-        })
-    }
-
-}
 
 exports.fetchTeamData = async (req, res) => {
     try {
@@ -95,3 +78,26 @@ exports.insertAttendance = async (req, res) => {
     }
 };
 
+
+// fetch attendance for mentee or mentor
+exports.fetchAttendance = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        if (req.user.role !== 'Mentor') {
+            const menteeUid = req.user.id;
+            const attendance = await fetchAttendanceByMentee(menteeUid);
+            res.status(200).json(attendance);
+        }
+        else {
+            const mentorUid = req.user.id;
+            const attendance = await fetchAttendanceByMentor(mentorUid);
+            res.status(200).json(attendance);
+        }
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

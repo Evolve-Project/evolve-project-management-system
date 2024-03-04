@@ -240,4 +240,5 @@ module.exports = {
     fetchMentorsByMentee,
     addUser,
     validateColumns,
+    fetchTeamId
 };
