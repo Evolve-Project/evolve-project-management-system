@@ -47,9 +47,9 @@ function MentorMilestones() {
   };
  
 
-  const fetchTasks = async (id) => {
+  const fetchTasks = async (milestoneDescId) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/get-tasks', { id });
+      const response = await axios.post('http://localhost:8000/api/get-tasks', { milestoneDescId });
       setTasks(response.data);
       console.log(response.data);
     } catch (error) {
@@ -61,18 +61,7 @@ function MentorMilestones() {
     fetchTasks();
   }, [milestoneDescId]);
 
-  const handleViewClick = async (id) => {
-
-    try {
-      // Send the milestone name to the server
-
-      await axios.post('http://localhost:8000/api/get-tasks', { id });
-      // Handle success or any further action
-
-    } catch (error) {
-      console.error('Error sending milestone name:', error);
-    }
-  };
+ 
 
   return (
     <>
