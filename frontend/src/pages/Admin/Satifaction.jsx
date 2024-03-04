@@ -14,8 +14,8 @@ import CustomizedDialogs from '@/components/SatisfactionCompontents/PopupCompone
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeedbackMetrics } from "@/redux/slices/feedbackMetricSlice";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import SatisfactionShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer';
 import ChartShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/chartShimmer';
 import DetailedShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer';
@@ -48,7 +48,6 @@ const Satisfaction = ()=>{
                 setErrorPage(false);
             }catch(err){
                 console.log("Error at fetching mentor and mentee records : ", err);
-                // toast.error(err?.response?.statusText);
                 setErrorPage(true);
             }
         }
@@ -100,7 +99,7 @@ const Satisfaction = ()=>{
 
     return (
         <>
-        <ToastContainer/>
+        {/* <ToastContainer/> */}
             <div className='satisfaction_container'>
                 <div className="satisfaction_title_container"> 
                     <span className="satisfaction_title_bar"></span>
