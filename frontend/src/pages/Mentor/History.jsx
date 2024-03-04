@@ -14,7 +14,7 @@ const History = () => {
   const fetchQuestions = async () => {
     try {
       const { data } = await axios.get("http://localhost:8000/api/allQuery");
-      setQuestions(data.queries);
+      setQuestions(data.queries.filter(qsn => qsn.text.trim() !== ''));
       console.log(data.queries);
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -44,8 +44,9 @@ const History = () => {
             {question.text}
           </div>
           {selectedQuestion === question.id ? (
-            <div style={{maxHeight:'150px',overflow:'auto',WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin', scrollbarColor: 'rgb(0, 191, 255) blue',  borderRadius: '8px', boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)', padding: '10px' }} className="mt-2 mb-2">
-              {answers.map((answer) => (
+            <div style={{maxHeight:'150px',overflow:'auto',WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin', scrollbarColor: 'rgb(183, 70, 225) violet',  borderRadius: '8px', boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)', padding: '10px' }} className="mt-2 mb-2">
+              {answers
+              .map(answer => (
                 <div key={answer.id} className="mt-2">
                   <div className="flex items-start">
                     <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 max-w-xs">
