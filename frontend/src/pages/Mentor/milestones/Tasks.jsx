@@ -28,7 +28,6 @@ function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState('');
-  const [attendance, setAttendance] = useState({});
   const [description, setDescription] = useState('');
 
   const handleCreateTask = (e) => {
