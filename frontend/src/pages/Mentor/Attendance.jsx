@@ -199,7 +199,6 @@ const Attendance = () => {
     });
 
     data.attendance = attendance;
-    data.mentor_name = "harsh verma";
     if (data.date == null || data.attendance == null) {
       Swal.fire({
         title: 'Error!',
@@ -210,7 +209,12 @@ const Attendance = () => {
       setOpen(false);
       return;
     }
-    console.log(data);
+    try {
+      const response = await CreateAttendance(data);
+      console.log(response);
+    } catch (error) {
+      console.log("Failed to create attendance ", error);
+    }
     setAttendanceData([...attendanceData]);
     setOpen(false);
   };
