@@ -101,3 +101,17 @@ exports.fetchAttendance = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+exports.getMentorName = async (req, res) => {
+    console.log(req.body)
+    try {
+        const mentorUid = req.body.mentorId;
+        const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
+        res.status(200).json({
+            success: true,
+            data: mentor.first_name + " " + mentor.last_name,
+        })
+    } catch (erorr) {
+        console.log("not working");
+    }
+}

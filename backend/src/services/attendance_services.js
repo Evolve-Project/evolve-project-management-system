@@ -1,5 +1,5 @@
 
-const { Attendance } = require('../models/');
+const { Attendance, Mentor, Mentee } = require('../models/');
 
 exports.insertBulkAttendance = async (dataArray) => {
     try {
@@ -18,7 +18,6 @@ exports.fetchAttendanceByMentor = async (mentorUid) => {
         // Fetch the team id of the mentor
         const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
         const mentorTeamId = mentor.team_id;
-
         // Fetch the mentees of the mentor
         const mentees = await Mentee.findAll({
             where: { team_id: mentorTeamId },
