@@ -18,6 +18,8 @@ function MentorMilestones() {
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
 
+  const [tasks, setTasks] = useState([]);
+  const [milestoneDescId, setMilestoneDescId] = useState('');
 
   useEffect(() => {
     async function fetchMilestoneDesc() {
@@ -43,6 +45,21 @@ function MentorMilestones() {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US');
   };
+ 
+
+  const fetchTasks = async (id) => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/get-tasks', { id });
+      setTasks(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [milestoneDescId]);
 
   const handleViewClick = async (id) => {
 
@@ -61,7 +78,7 @@ function MentorMilestones() {
     <>
       {toggle ? (
         <div>
-          <Button></Button>
+          
 
 
           <ChakraProvider theme={theme}>
@@ -104,8 +121,8 @@ function MentorMilestones() {
 
                         <div className="">
                           <button
-                            className=" mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-                            onClick={() => { setToggle(false); handleViewClick(milestone.id); }}
+                            className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+                            onClick={() => { setToggle(false); fetchTasks(milestone.id); }}
                           >
                             view
                           </button>
@@ -127,7 +144,7 @@ function MentorMilestones() {
             <Tasks />
           </div>
           <button
-            className="fixed top-5 right-5 mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            className="fixed top-5 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
             onClick={() => setToggle(true)}
           >
             Back
