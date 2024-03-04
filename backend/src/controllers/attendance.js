@@ -42,7 +42,7 @@ exports.fetchTeamData = async (req, res) => {
 //         1: Present,
 //             2: Present,
 //                 3: Absent,
-//                     4: Leave
+//                     4: Permitted
 //     }
 
 // },
@@ -58,6 +58,7 @@ exports.insertAttendance = async (req, res) => {
             description: attendanceData.description,
             attendance: attendance
         }));
+        console.log(attendanceArray);
         const attendance = await insertBulkAttendance(attendanceArray);
         res.status(200).json(attendance);
     } catch (error) {
@@ -65,3 +66,4 @@ exports.insertAttendance = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+

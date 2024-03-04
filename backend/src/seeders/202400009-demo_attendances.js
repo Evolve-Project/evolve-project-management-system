@@ -31,7 +31,7 @@ module.exports = {
             mentee_user_id: mentee,
             description: faker.lorem.sentence(),
             date_of_meet: date_of_meet,
-            attendance: faker.random.arrayElement(['Present', 'Absent', 'Leave']),
+            attendance: faker.random.arrayElement(['Present', 'Absent', 'Permitted']),
             createdAt: new Date(),
             updatedAt: new Date()
           });
