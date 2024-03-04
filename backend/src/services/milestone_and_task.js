@@ -6,7 +6,7 @@ async function getMilestoneDesc() {
     try {
         const milestone_desc = await MilestoneDescription.findAll();
         // console.log(milestone_desc);
-        return res.json(milestone_desc);
+        return milestone_desc;
     } catch (error) {
         // console.log("Error in getMilestoneDesc", error);
         throw error;

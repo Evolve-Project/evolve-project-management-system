@@ -17,7 +17,7 @@ async function getTasks(req, res) {
 
 async function getMilestones(req, res) {
   try {
-    const milestone_desc = await getMilestoneDesc();
+    const milestone_desc = await getMilestoneDesc(res);
     return res.json(milestone_desc);
   } catch (error) {
     console.log("Error in getMilestoneDesc", error);
