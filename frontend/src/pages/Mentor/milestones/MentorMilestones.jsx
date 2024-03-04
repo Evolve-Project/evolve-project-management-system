@@ -78,7 +78,7 @@ function MentorMilestones() {
     <>
       {toggle ? (
         <div>
-          <Button></Button>
+          
 
 
           <ChakraProvider theme={theme}>
@@ -121,7 +121,7 @@ function MentorMilestones() {
 
                         <div className="">
                           <button
-                            className=" mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+                            className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
                             onClick={() => { setToggle(false); fetchTasks(milestone.id); }}
                           >
                             view
@@ -144,7 +144,7 @@ function MentorMilestones() {
             <Tasks />
           </div>
           <button
-            className="fixed top-5 right-5 mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            className="fixed top-5 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
             onClick={() => setToggle(true)}
           >
             Back

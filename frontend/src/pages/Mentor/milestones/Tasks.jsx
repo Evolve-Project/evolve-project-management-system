@@ -69,7 +69,7 @@ function Tasks() {
               />
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col" >
               <label className="text-black">Description</label>
               <textarea
                 placeholder="Task description"
@@ -89,8 +89,9 @@ function Tasks() {
             </Select>
                 
             </div>
-            <div className="mb-4">
+            <div className="mb-4flex flex-col">
             <label className="text-black">  Due Date</label>
+            <br />
             <input
                 type="date"
                 value={date}
