@@ -1,8 +1,11 @@
-const {
-  validationMiddleware,
-} = require("../middlewares/validation-middleware");
+const { validationMiddleware, } = require("../middlewares/validation-middleware");
+const { userAuth } = require("../middlewares/passport-middleware");
 const { Router } = require("express");
-const { getMilestoneDesc } = require("../controllers/milestones");
+const {
+  getMilestones,
+  getTasks
+} = require("../controllers/milestones");
 const router = Router();
-router.get("/get-milestones", getMilestoneDesc);
+router.get("/get-milestones", userAuth, getMilestones);
+
 module.exports = router;

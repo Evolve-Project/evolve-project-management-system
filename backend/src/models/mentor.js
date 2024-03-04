@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'teams',
         key: 'id',
       },
-      allowNull: false
+      allowNull: true
     },
   }, {
     sequelize,

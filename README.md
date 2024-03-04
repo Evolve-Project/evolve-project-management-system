@@ -96,7 +96,7 @@ This command will undo all your seeders, in the reverse order they are listed.
 
 
 # quick way to setup database and add dummy data
-#### Open the terminal and navigate to /backend directory and run the following commands in the order they are listed(no need to go to /backend/src directory)
+#### Open the terminal and navigate to `/backend` directory and run the following commands in the order they are listed`(no need to go to /backend/src directory now as config file has been changed)`
 ```bash
 npx sequelize-cli db:drop
 npx sequelize-cli db:create

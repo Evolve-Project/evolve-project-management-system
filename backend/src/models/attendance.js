@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false
     },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     mentee_users_id: {
       type: DataTypes.INTEGER,
       references: {
@@ -28,10 +32,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     date_of_meet: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isDate: true
+      },
+      // unique: true
     },
     attendance: {
-      type: DataTypes.ENUM('Present', 'Absent'),
+      type: DataTypes.ENUM('Present', 'Absent', 'Leave'),
       allowNull: false
     }
   }, {

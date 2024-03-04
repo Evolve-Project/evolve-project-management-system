@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     rating: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
     },
     review: {
       type: DataTypes.TEXT,

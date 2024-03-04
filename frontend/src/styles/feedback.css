@@ -1,20 +1,34 @@
-.container {
+.feedback_container {
     width: 100%;
     font-family: sans-serif;
     --radius: 8px;
+    min-width: 600px;
 }
 
-/* tilte is not responsive */
-.title {
-    margin: 20px auto;
+
+.feedback_title_container{
+    display: flex;
+    flex-direction: row;
+    /* flex-wrap: wrap; */
+    margin: 1rem auto;
+    align-items: center;
+    gap: 1rem;
+    padding:0 1rem;
+}
+.feedback_title_bar{
+    height: 8px;
+    background: #7B76F1;
+    border-radius: var(--radius);
+    flex: 1;
+}
+ .feedback_title {
     text-align: center;
     color: black;
     font-size: 40px;
     max-width: 600px;
     position: relative;
 }
-
-.title::before {
+/*.feedback_title::before {    
     content: "";
     display: block;
     width: 30vw;
@@ -25,8 +39,7 @@
     position: absolute;
     border-radius: var(--radius);
 }
-
-.title::after {
+.feedback_title::after {
     content: "";
     display: block;
     width: 30vw;
@@ -36,16 +49,15 @@
     top: 50%;
     position: absolute;
     border-radius: var(--radius);
-}
-
-.component {
+} */
+.feedback_component{
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
-.box {
-    width: 80%;
+.feedback_box{
+    width: 85%;
+    min-width: 600px;
     margin: auto;
     height: 60px;
     border-radius: calc(2 * var(--radius));
@@ -53,36 +65,30 @@
     display: flex;
     flex-direction: row;
 }
-
-.name {
+.feedback_name{
     flex: 7;
     margin: auto 0;
     padding-left: 50px;
 }
-
-.rating {
+.feedback_rating{
     flex: 4;
     margin: auto;
 }
-
-.drop-down {
+.feedback_drop-down{
     flex: 1;
     margin: auto;
     cursor: pointer;
 }
-
-.drop-down-icon {
+.feedback_drop-down-icon{
     padding: 2px;
     transition: all .2s ease-in;
 }
-
-.drop-down-icon:hover {
-    background-color: #ddddde;
+.feedback_drop-down-icon:hover{
+    background-color:#ddddde;
     border-radius: 50%;
 }
-
-.content {
-    width: 80%;
+.feedback_content{
+    width: 85%;
     gap: 10px;
     margin: auto;
     padding: 10px;
@@ -90,30 +96,28 @@
     display: flex;
     flex-direction: column;
     border-radius: 10px;
+    min-width: 600px;
 }
-
-.metric-box {
+.feedback_metric-box{
     width: 100%;
     margin: auto;
     background-color: rgb(255, 255, 255);
     height: 50px;
     display: flex;
 }
-
-.comment {
+.feedback_comment{
     flex: 3;
     margin: auto;
     padding: 0 20px;
 }
-
-.comment input {
+.feedback_comment input{
     border: 3px solid rgb(198, 196, 196);
     background-color: aliceblue;
     padding: 2px;
 }
 
-.btn {
-    background-image: linear-gradient(to right, #4834D4, #686DE0);
+.feedback_btn{
+    background-image: linear-gradient(to right,#4834D4,#686DE0);
     color: white;
     padding: 10px 20px;
     cursor: pointer;
