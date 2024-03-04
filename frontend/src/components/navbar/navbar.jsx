@@ -72,6 +72,7 @@ const Navbar = ({ active, setActive, menuItems }) => {
           {item.map((item) => (
             <li
               key={item.id}
+              onClick={()=>navigate(item.link)}
               className={` relative flex items-center py-2 px-3 my-1
             font-medium rounded-md cursor-pointer
             transition-colors group ${
