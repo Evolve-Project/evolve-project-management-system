@@ -6,8 +6,10 @@ const { sequelize } = require('../models');
 
 // service to fetch mentees by mentor
 async function fetchMenteesByMentor(mentorUid) {
+    console.log("metor id is" + mentorUid)
     try {
-        const mentorTeamId = await fetchTeamId(mentorUid, "Mentor");
+        const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
+        const mentorTeamId = mentor.team_id;
 
         const result = await Mentee.findAll({
             where: { team_id: mentorTeamId },
@@ -22,7 +24,7 @@ async function fetchMenteesByMentor(mentorUid) {
         if (result.length === 0) {
             throw new Error('No mentees found for this mentor.');
         }
-
+        console.log(result);
         return result.map(r => ({
             id: r.user.id,
             email: r.user.email,
