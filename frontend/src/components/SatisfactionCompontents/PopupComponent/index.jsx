@@ -20,6 +20,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { addMetric, deleteMetric, updateMetric } from "@/redux/slices/feedbackMetricSlice";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DeleteConfirmation from "./DeleteConfirmation";
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -68,17 +69,26 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
     }
   }
 
-  const handleEditDel = async (index, name) => {
+  const [isDelPopOpen, setDelPopOpen] = useState(false);
+  const [del_id, setDelId] = useState(-1);
+  const [del_name, setDelName] = useState('');
+  const handleDelPopup = (id, name) =>{
+    setDelId(id);
+    setDelName(name);
+    setDelPopOpen(prev => !prev);
+  }
+  const handleEditDel = async (index, confirmation) => {
     // console.log("deleted");
     const toastId = toast.loading("Please wait...");
     try{
-      const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);  // TODO : IMPLEMENT CONFIRM POP UP
+      // const confirmation = confirm(`Delete "${name}" metric? \nThis will remove associated feedbacks.!!!`);
       if(confirmation)
       {
         const successData = await dispatch(deleteMetric({id: index})).unwrap();
-        toast.update(toastId, {render: "Metric deleted Successfully !!", isLoading: false, type: "success", autoClose: 2000});
-      }else{
-        toast.update(toastId, {render: "Metric Restored Successfully !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+        toast.update(toastId, {render: "Metric deleted Successfully !!", isLoading: false, type: "success", autoClose: 3000});
+      }
+      else{
+        toast.update(toastId, {render: "Metric Restored Successfully !!", isLoading: false, type: "info", autoClose: 2000});
       }
     }catch(err){
       console.log("After dispatch delete Metric error: ",err);
@@ -89,7 +99,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   const handleAddNewItem = async (index, name) => {
     const toastId = toast.loading("Please wait...");
     if(name.length === 0){
-      toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000, pauseOnFocusLoss: false});
+      toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
       return;
     }
     try{
@@ -198,7 +208,12 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                               </span>
                             )}
                           </span>
-                          <span onClick={() => handleEditDel(record.id, record.metric_name)}>
+
+                          <DeleteConfirmation 
+                            isOpen={isDelPopOpen} setDelPopOpen={setDelPopOpen} 
+                            id={del_id} name={del_name} handleEditDel={handleEditDel}/>
+
+                          <span onClick={() => handleDelPopup(record.id, record.metric_name)}>
                             <DeleteOutlineIcon className="cursor-pointer hover:text-red-600" />
                           </span>
                         </span>
@@ -287,7 +302,11 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                               </span>
                             )}
                           </span>
-                          <span onClick={() => handleEditDel(record.id, record.metric_name)}>
+                          <DeleteConfirmation 
+                            isOpen={isDelPopOpen} setDelPopOpen={setDelPopOpen} 
+                            id={del_id} name={del_name} handleEditDel={handleEditDel}/>
+
+                          <span onClick={() =>handleDelPopup(record.id, record.metric_name)}>
                             <DeleteOutlineIcon className="cursor-pointer hover:text-red-600" />
                           </span>
                         </span>
