@@ -57,9 +57,7 @@ function MentorMilestones() {
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, [milestoneDescId]);
+  
 
  
 
