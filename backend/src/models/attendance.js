@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    mentee_users_id: {
+    mentee_user_id: {
       type: DataTypes.INTEGER,
       references: {
         model: 'users',
@@ -36,10 +36,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isDate: true
       },
-      unique: true
+      // unique: true
     },
     attendance: {
-      type: DataTypes.ENUM('Present', 'Absent', 'Leave'),
+      type: DataTypes.ENUM('Present', 'Absent', 'Permitted'),
       allowNull: false
     }
   }, {

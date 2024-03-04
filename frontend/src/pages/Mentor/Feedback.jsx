@@ -3,8 +3,14 @@ import "@/styles/feedback.css";
 import { Rating } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { fetchFeedbackMetrics } from "@/redux/slices/feedbackMetricSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import FeedbackShimmer from "@/components/FeedbackShimmer";
+import FeedbackMetricShimmer from "@/components/FeedbackShimmer/FeedbackMetricShimmer";
+import ErrorPage from '@/components/ErrorPage';
 
 const handleRatingChange = (e, newValue, dataObject, setDataObject, metricId) => {
   const newDataObject = dataObject.map(record => {
@@ -26,27 +32,38 @@ const handleCommentChange = (e, dataObject, setDataObject, metricId) => {
   setDataObject(newDataObject);
 };
 
-const handleSubmit = async (e, dataObject)=>{
+const handleSubmit = async (e, dataObject, mentee_id, handleNewAverage, setErrorPage5)=>{
+  const id = toast.loading("Please wait...");
   try{
     e.preventDefault();
-    console.log(dataObject);
+    // console.log(dataObject);
     const URL = "http://localhost:8000";
     const responce = await axios.post(`${URL}/api/feedback`, dataObject);
     if(responce.status === 200)
-      alert(responce.data.message);
-    else{
-      alert("ERROR");
+    {
+      const sumOfRatings = dataObject.reduce((sum, item) => sum + item.rating, 0);
+      const averageRating = sumOfRatings / dataObject.length;
+      handleNewAverage(mentee_id, averageRating);
+      // alert(responce.data.message);
+      toast.update(id, {render: `${responce.data.message}`, type: "success", isLoading: false, autoClose: 2000});
     }
-    console.log("REsponce: ", responce);
+    else{
+      // alert("ERROR");
+      toast.update(id, {render: `${responce.data.message}`, type: "error", isLoading: false, autoClose: 2000});
+    }
+    setErrorPage5(false);
+    // console.log("REsponce: ", responce);
   }catch(err){
     console.log("Error at sending Feedback data: ", err);
+    setErrorPage5(true);
+    toast.update(id, {render: `${err?.message}`, type: "error", isLoading: false, autoClose: 2000});
   }
 }
 
-const Metric = ({ mentee_id, mentee_metrics})=>{
+const Metric = ({ mentee_id, mentee_metrics, handleNewAverage, setErrorPage4, setErrorPage5})=>{
   const URL = "http://localhost:8000";
-  const [loding1, setLoding1] = useState(true);
-  const [loding2, setLoding2] = useState(true);
+  const [loading1, setLoading1] = useState(true);
+  const [loading2, setLoading2] = useState(true);
 
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(()=>{
@@ -56,9 +73,11 @@ const Metric = ({ mentee_id, mentee_metrics})=>{
         setFeedbacks(feedback_data.data.allFeedbacks);
         // console.log("feedbacks: "); 
         // console.log(feedback_data.data.allFeedbacks);
-        setLoding1(false);
+        setLoading1(false);
+        setErrorPage4(false);
       }catch(err){
         console.log("Error in fetching feedbacks ",err);
+        setErrorPage4(true);
       }
     };
     fetchData();
@@ -76,27 +95,15 @@ const Metric = ({ mentee_id, mentee_metrics})=>{
       obj.given_to_user_id = mentee_id;
       return obj;
     }));
-    setLoding2(false);
+    setLoading2(false);
   },[feedbacks]);
 
-  if(loding1 && loding2) // TODO : IMPLEMENT LODING SKELETON
+  if(loading1 && loading2) // LOADING SKELETON
   {
-    return(
-      // <div>Loding......</div>
-      <div className="feedback_content">
-      {mentee_metrics.map((metric) => {
-        return (
-          <div className="feedback_metric-box" key={metric.id}>
-          </div>
-        );
-      })}
-      <div className="flex flex-row-reverse">
-        <span className="feedback_btn">submit</span>
-      </div>
-    </div>
-    )
+    return <FeedbackMetricShimmer/>
   }
   
+
   return (<div className="feedback_content">
       {mentee_metrics.map((metric) => {
         return (
@@ -125,20 +132,33 @@ const Metric = ({ mentee_id, mentee_metrics})=>{
         );
       })}
       <div className="flex flex-row-reverse">
-        <span className="feedback_btn" onClick={(e)=>handleSubmit(e,dataObject)}>submit</span>
+        <span className="feedback_btn" onClick={(e)=>handleSubmit(e, dataObject, mentee_id, handleNewAverage, setErrorPage5)}>submit</span>
       </div>
     </div>
 )};
 
 const MentorFeedback = () => {
-  const role = "Mentee";
   const URL = "http://localhost:8000";
-  const mentee_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics)
-    .filter((metric)=> metric.role === role);
 
-  const [loding1, setLoding1] = useState(true);
-  const [loding2, setLoding2] = useState(true);
-  const [loding3, setLoding3] = useState(true);
+  const dispatch = useDispatch();
+  const mentee_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics)
+    .filter((metric)=> metric.role === "Mentee");
+  const status = useSelector((state) => state.feedbackMetric.status);
+  const error = useSelector((state) => state.feedbackMetric.error);
+  useEffect(()=>{ // CALLING ASYNC THUNK 
+    if(status === 'idle'){
+      dispatch(fetchFeedbackMetrics());
+    }
+  },[dispatch]);
+
+  const [loading1, setLoading1] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [loading3, setLoading3] = useState(true);
+  const [errorPage1, setErrorPage1] = useState(false);
+  const [errorPage2, setErrorPage2] = useState(false);
+  // const [errorPage3, setErrorPage3] = useState(false);
+  const [errorPage4, setErrorPage4] = useState(false);
+  const [errorPage5, setErrorPage5] = useState(false);
 
   const [teamId, setTeamId] = useState(null);
   useEffect(()=>{
@@ -146,10 +166,13 @@ const MentorFeedback = () => {
       try{
         const team_id = await axios.get(`${URL}/api/getTeamId`);
         // console.log("Team id: ", team_id);
-        setTeamId(team_id.data.team_id);
-        setLoding1(false);
+        setTeamId(team_id.data?.team_id);
+        setLoading1(false);
+        setErrorPage1(false);
       }catch(err){
         console.log('Error fetching teamid: ', err);
+        toast.error(err?.response?.data?.message);
+        setErrorPage1(true);
       }
     }
     fetchData();
@@ -163,10 +186,12 @@ const MentorFeedback = () => {
         setMentees(menteesData.data.allMentees);
         // console.log("All mentees");
         // console.log(menteesData.data.allMentees);
-        setLoding2(false);
+        setLoading2(false);
+        setErrorPage2(false);
       } 
       catch (error) {
         console.error('Error fetching mentee data:', error);
+        setErrorPage2(true);
       }
     };
     if(teamId !== null)
@@ -181,15 +206,34 @@ const MentorFeedback = () => {
         setAvgRating(averageRating.data.avgRating);
         // console.log("avg rating");
         // console.log(averageRating.data.avgRating);
-        setLoding3(false);
+        setLoading3(false);
+        // setErrorPage3(false);
       } 
       catch (error) {
-        console.error('Error fetching mentee data:', error);
+        console.error('Error fetching avg rating data:', error);
+        // setErrorPage3(true);
+        setAvgRating([]);   // NO FEEDBACK FOUND
       }
     };
 
     fetchData(); // Fetch data on component mount
   },[]);
+  const handleNewAverage = (mentee_id, newAverage)=>{
+    // console.log("New Avg");
+    // console.log(mentee_id, newAverage);
+    if(avgRating.find((record=> record.given_to_user_id === mentee_id)) === undefined){
+      setAvgRating([...avgRating,{"given_to_user_id":mentee_id, "average_rating":newAverage}]);
+    }else{
+      const newAvgRating = avgRating.map(record => {
+        if (record.given_to_user_id === mentee_id) {
+          return { ...record, average_rating: newAverage };
+        }
+        return record;
+      });
+      // console.log(newAvgRating);
+      setAvgRating(newAvgRating);
+    }
+  }
 
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropDown = (e, mentee) => {
@@ -200,26 +244,34 @@ const MentorFeedback = () => {
   setActiveDropdown(mentee.user_id);
 };
 
-if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
-  return (<div>loding.........</div>);
+if((status === "loading") || (loading1 && loading2 && loading3)){  // LOADING SKELETON
+  return <FeedbackShimmer/>
+}
+if(errorPage1 || errorPage2 || errorPage4 || errorPage5 || status === "failed"){
+  return <ErrorPage/>;
 }
 
   return (
     <>
       <div className="feedback_container">
-        <div className="feedback_title"> Feedback </div>
+      <ToastContainer/>
+        <div className="feedback_title_container"> 
+          <span className="feedback_title_bar"></span>
+          <span className="feedback_title">Feedback</span>
+          <span className="feedback_title_bar"></span>
+        </div>
         <div className="feedback_component">
           {mentees.map((mentee) => {
             return (
               <>
                 <div className="feedback_box" key={mentee.id}>
                   <span className="feedback_name">
-                    {mentee.first_name + " " + mentee.last_name}
+                    {mentee.first_name + " " + (mentee.last_name || "")}
                   </span>
                   <span className="feedback_rating">
                     <Rating
                       name="half-rating-read"
-                      defaultValue={parseFloat(avgRating.find((ele)=> ele.given_to_user_id === mentee.user_id).average_rating)}
+                      value={parseFloat(avgRating.find((ele)=> ele.given_to_user_id === mentee.user_id)?.average_rating)}
                       precision={0.5}
                       readOnly
                     />
@@ -235,7 +287,7 @@ if(loding1 && loding2 && loding3){ // TODO : IMPLEMENT LODING SKELETON
                 </div>
 
                 {activeDropdown === mentee.user_id && (
-                  <Metric mentee_id={mentee.user_id} mentee_metrics={mentee_metrics}/>
+                  <Metric mentee_id={mentee.user_id} mentee_metrics={mentee_metrics} handleNewAverage={handleNewAverage}  setErrorPage4={setErrorPage4} setErrorPage5={setErrorPage5}/>
                 )}
               </>
             );

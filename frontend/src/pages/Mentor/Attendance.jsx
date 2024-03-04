@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from '@/lib/utils'
 import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Table,
   TableBody,
@@ -157,32 +158,67 @@ const Attendance = () => {
     // console.log(userData);
   }, [userData]);
 
+  // const onSubmit = async (data) => {
+  //   console.log(data);
+
+  //   if (data.date == null | data.attendance == null) {
+  //     Swal.fire({
+  //       title: 'Error!',
+  //       text: 'Select correct date and mentees',
+  //       icon: 'error',
+  //       confirmButtonText: 'Retry'
+  //     })
+  //     setOpen(false);
+  //   } else {
+  //     const id = crypto.randomUUID()
+  //     data.id = id;
+  //     data.name = "Harsh Verma";
+  //     attendanceData.push(data);
+  //     try {
+  //       // CreateAttendance(data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //     attendanceData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  //     setAttendanceData([...attendanceData]); // Trigger re-render
+  //   }
+  //   setOpen(false);
+  // };
   const onSubmit = async (data) => {
 
-    if (data.date == null | data.attendance == null) {
+    // Extract radio button keys and values
+    const radioEntries = Object.entries(data)
+      .filter(([key]) => key.startsWith("radio-") && data[key] !== undefined);
+
+    // Construct attendance object
+    const attendance = {};
+    radioEntries.forEach(([key, value]) => {
+      const userId = key.replace("radio-", "");
+      attendance[userId] = value;
+      delete data[key]; // Remove the radio button field
+    });
+
+    data.attendance = attendance;
+    if (data.date == null || data.attendance == null) {
       Swal.fire({
         title: 'Error!',
         text: 'Select correct date and mentees',
         icon: 'error',
         confirmButtonText: 'Retry'
-      })
+      });
       setOpen(false);
-    } else {
-      const id = crypto.randomUUID()
-      data.id = id;
-      data.name = "Harsh Verma";
-      console.log(data);
-      attendanceData.push(data);
-      try {
-        CreateAttendance(data);
-      } catch (error) {
-        console.log(error);
-      }
-      attendanceData.sort((a, b) => new Date(a.date) - new Date(b.date));
-      setAttendanceData([...attendanceData]); // Trigger re-render
+      return;
     }
+    try {
+      const response = await CreateAttendance(data);
+      console.log(response);
+    } catch (error) {
+      console.log("Failed to create attendance ", error);
+    }
+    setAttendanceData([...attendanceData]);
     setOpen(false);
   };
+
 
 
 
@@ -261,7 +297,7 @@ const Attendance = () => {
                       <FormField
                         key={item.id}
                         control={form.control}
-                        name="attendance"
+                        name={`radio-${item.id}`} // Include user ID in the name
                         render={({ field }) => {
                           return (
                             <FormItem
@@ -269,23 +305,33 @@ const Attendance = () => {
                               className="flex flex-row items-start space-x-3 space-y-0"
                             >
                               <FormControl>
-                                <Checkbox
-                                  checked={Array.isArray(field.value) ? field.value.includes(item.id) : false}
-                                  onCheckedChange={(checked) => {
-                                    if (Array.isArray(field.value)) {
-                                      field.onChange(
-                                        checked
-                                          ? [...field.value, item.id]
-                                          : field.value.filter((value) => value !== item.id)
-                                      );
-                                    } else {
-                                      field.onChange([item.id]);
-                                    }
-                                  }}
-                                />
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  className="flex flex-row"
+                                >
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="Present" />
+                                    </FormControl>
+                                    <span className="text-sm font-normal">Present</span> {/* Radio label */}
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="Absent" />
+                                    </FormControl>
+                                    <span className="text-sm font-normal">Absent</span> {/* Radio label */}
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="Permitted" />
+                                    </FormControl>
+                                    <span className="text-sm font-normal">Permitted</span> {/* Radio label */}
+                                  </FormItem>
+                                </RadioGroup>
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
-                                {item.first_name + " " + item.last_name}
+                                {item.name} {item.first_name} {item.last_name} {/* Display user's name and email */}
                               </FormLabel>
                             </FormItem>
                           )
@@ -319,59 +365,6 @@ const Attendance = () => {
         </DialogContent>
 
       </Dialog>
-      {/* attendance table */}
-      {/* <div className='w-9/12 flex justify-center mx-auto'>
-        <Table >
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]  text-left">Mentor Name</TableHead>
-              <TableHead className="w-[100px]  text-left">Date</TableHead>
-              <TableHead className="w-[100px]  text-left">Description</TableHead>
-              <TableHead className="w-[100px]  text-center">Total Present</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {attendanceData.map((at) => (
-              <TableRow key={at.id}>
-                <TableCell className="border border-gray-300 p-2 text-center">{at.name}</TableCell>
-                <TableCell className="border border-gray-300 p-2 text-left">
-                  <Dialog>
-                    <DialogTrigger>{`${at.date.getDate()}-${at.date.getMonth() + 1}-${at.date.getFullYear()}`}</DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader className={"flex flex-row justify-center items-center"}>
-                        <DialogTitle className="m-auto">List of Present Students</DialogTitle>
-                        <Button className="m-auto">Remove</Button>
-                      </DialogHeader>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[100px]">Name</TableHead>
-                            <TableHead className="text-center">Email</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {at.attendance.map((id) => (
-                            <TableRow key={id}>
-                              <TableCell className="font-medium">
-                                {userData.users.find(user => user.id === id)?.name}
-                              </TableCell>
-                              <TableCell className="font-medium text-center">
-                                {userData.users.find(user => user.id === id)?.email}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-                <TableCell className="border border-gray-300 p-2 text-center">{at.description}</TableCell>
-                <TableCell className="border border-gray-300 p-2 text-center">{at.attendance.length}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div> */}
 
       {userData.users != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div >
@@ -380,3 +373,4 @@ const Attendance = () => {
 }
 
 export default Attendance
+
