@@ -45,7 +45,7 @@ function Tasks() {
  
   return (
     <div>
-      <h2>Tasks</h2>
+     
       <Dialog open={open} onOpenChange={setOpen}>
       <div className='flex justify-end mx-10'>
         <DialogTrigger asChild>
