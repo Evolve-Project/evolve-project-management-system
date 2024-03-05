@@ -37,7 +37,7 @@ async function getTasksByMilestoneId(milestoneDescId, teamId) {
         });
 
         // console.log(tasks);
-        return res.json(tasks);
+        return tasks;
     } catch (error) {
         console.log("Error in getTasksByMilestoneId service:", error);
         throw error;
