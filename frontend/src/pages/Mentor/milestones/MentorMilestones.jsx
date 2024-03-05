@@ -68,11 +68,16 @@ function MentorMilestones() {
           
 
 
-          <ChakraProvider theme={theme}>
+          
             <Box maxW={1000} mx="auto" px={6} frontSize="sm">
-              <div>
-                <div><Heading ab={8}>Milestones</Heading></div>
-              </div>
+              
+              <div className="feedback_title_container"> 
+          <span className="feedback_title_bar"></span>
+          <span className="feedback_title">Milestones</span>
+          <span className="feedback_title_bar"></span>
+        </div>
+               
+              
 
 
               <br />
@@ -122,16 +127,23 @@ function MentorMilestones() {
 
 
             </Box>
-          </ChakraProvider>
+         
         </div>
       ) : (
-        <div className="max-w-md mx-auto mt-11">
+        
+        <div className="max-w-xlg mx-auto mt-11">
+          <div className="feedback_title_container"> 
+          
+          <span className="feedback_title">Task</span>
+          
+        </div>
+        
           <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Tasks</h1>
+            
             <Tasks />
           </div>
           <button
-            className="fixed top-5 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            className="fixed top-2 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
             onClick={() => setToggle(true)}
           >
             Back
