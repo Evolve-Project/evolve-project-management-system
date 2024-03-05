@@ -12,14 +12,17 @@ const Query = () => {
   const [toggle, setToggle] = useState(true);
   const dispatch = useDispatch();
   const handleAskQuery = async () => {
-    const team = mentor?.teamInfo?.id;
+  const team = mentor?.teamInfo?.id;
+  if (query.length > 0) {
     await axios.post("http://localhost:8000/api/createQuery", {
       text: query,
       team_id: team,
     });
     setQuery("");
     setUsername("");
-  };
+  }
+};
+
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
@@ -37,7 +40,7 @@ const Query = () => {
 
           <h1 className="text-2xl font-bold mb-4">Ask a Query</h1>
 
-          <div className="mb-4">
+          <div className="mb-4" >
             <label className="block text-sm font-medium text-gray-600">
               Your Query
             </label>
@@ -48,7 +51,7 @@ const Query = () => {
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center" >
          <button
             className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-600 transition duration-300 ease-in-out transform"
             onClick={handleAskQuery}
@@ -58,7 +61,7 @@ const Query = () => {
           </div>
         </div>
       ) : (
-        <div className="max-w-md mx-auto mt-11">
+        <div className=" mx-auto mt-11" >
           <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">Chat History</h1>
             <History />
