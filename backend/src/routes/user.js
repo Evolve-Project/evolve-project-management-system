@@ -8,7 +8,9 @@ const {
   mentorDetails,
   createQuery,
   allQuery,
-  menteeDetails
+  menteeDetails,
+  updateMentor,
+  updateMentee,
 } = require("../controllers/user");
 
 const { userAuth } = require("../middlewares/passport-middleware");
@@ -23,6 +25,8 @@ router.post("/addSingleUser", userAuth, addSingleUser);
 router.get("/removeid", userAuth, removeid);
 router.get("/mentorDetails", userAuth, mentorDetails);
 router.get("/menteeDetails", userAuth, menteeDetails);
+router.post("/updateMentor", userAuth, updateMentor);
+router.post("/updateMentee", userAuth, updateMentee);
 
 
 router.post("/createQuery", userAuth, createQuery);

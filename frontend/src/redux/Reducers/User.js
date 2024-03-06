@@ -23,6 +23,29 @@ export const mentorReducer = createReducer(initialState, (builder) => {
       state.error = null;
     });
 });
+
+export const menteeReducer = createReducer(initialState, (builder) => {
+  builder
+    //----------------------------------------------
+    .addCase("GetMenteeDetailsRequest", (state) => {
+      state.loading = true;
+    })
+    .addCase("GetMenteeDetailsSuccess", (state, action) => {
+      state.loading = false;
+      state.mentee = action.payload;
+      state.isAuthenticated = true;
+    })
+    .addCase("GetMenteeDetailsFailure", (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.isAuthenticated = false;
+    })
+    //----------------------------------------------
+    .addCase("clearErrors", (state) => {
+      state.error = null;
+    });
+});
+
 export const messageReducer = createReducer(initialState, (builder) => {
   builder
     //----------------------------------------------
