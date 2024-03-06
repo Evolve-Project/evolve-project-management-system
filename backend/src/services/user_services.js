@@ -226,8 +226,9 @@ async function fetchTeamId(uid, role) {
             const mentor = await Mentor.findOne({ where: { user_id: uid } });
             return mentor.team_id;
         }
+        // console.log("Team ID:", teamId);
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         throw error;
     }
 }

@@ -18,6 +18,8 @@ function MentorMilestones() {
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
 
+ 
+  const [milestoneDescId, setMilestoneDescId] = useState('');
 
   useEffect(() => {
     async function fetchMilestoneDesc() {
@@ -43,32 +45,40 @@ function MentorMilestones() {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US');
   };
-
-  const handleViewClick = async (id) => {
-
+ 
+const [tasks, setTasks] = useState([]);
+const fetchTasks = async (milestoneDescId) => {
     try {
-      // Send the milestone name to the server
-
-      await axios.post('http://localhost:8000/api/get-tasks', { id });
-      // Handle success or any further action
-
+      const response = await axios.post('http://localhost:8000/api/get-tasks', { milestoneDescId });
+      setTasks(response.data);
+      console.log(response.data);
     } catch (error) {
-      console.error('Error sending milestone name:', error);
+      console.error('Error fetching tasks:', error);
     }
   };
+
+  
+
+ 
 
   return (
     <>
       {toggle ? (
+        <ChakraProvider theme={theme}>
         <div>
-          <Button></Button>
+          
 
 
-          <ChakraProvider theme={theme}>
+          
             <Box maxW={1000} mx="auto" px={6} frontSize="sm">
-              <div>
-                <div><Heading ab={8}>Milestones</Heading></div>
-              </div>
+              
+              <div className="feedback_title_container"> 
+          <span className="feedback_title_bar"></span>
+          <span className="feedback_title">Milestones</span>
+          <span className="feedback_title_bar"></span>
+        </div>
+               
+              
 
 
               <br />
@@ -104,8 +114,8 @@ function MentorMilestones() {
 
                         <div className="">
                           <button
-                            className=" mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-                            onClick={() => { setToggle(false); handleViewClick(milestone.id); }}
+                            className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+                            onClick={() => { setToggle(false); fetchTasks(milestone.id); }}
                           >
                             view
                           </button>
@@ -118,24 +128,60 @@ function MentorMilestones() {
 
 
             </Box>
-          </ChakraProvider>
+         
         </div>
+        </ChakraProvider>
       ) : (
-        <div className="max-w-md mx-auto mt-11">
+        <ChakraProvider theme={theme}>
+        <div className="max-w-xlg mx-auto mt-11">
+          <div className="feedback_title_container"> 
+          <span className="feedback_title">Task</span>
+        </div>
           <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Tasks</h1>
-            <Tasks />
+            
+          <Tasks/>
+          <table className="table-auto border-collapse w-full">
+                <thead>
+                  <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
+                    <th className="py-3 px-6 text-left">Name</th>
+                    <th className="py-3 px-6 text-left">Description</th>
+                    <th className="py-3 px-6 text-left">Due Date</th>
+                    <th className="py-3 px-6 text-left">Status</th>
+                    <th className="py-3 px-6 text-left">Mentee Assigned</th>
+                  </tr>
+                </thead>
+                <tbody className="text-black-600 text-bg font-dark">
+                  {tasks.map((task, index) => (
+                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                      <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
+                      <td className="py-2 px-3 text-left">{task.task_desc}</td>
+                      <td className="py-2 px-3 text-left"></td>
+                      <td className="py-2 px-3 text-left"><Select placeholder='In Progress'>
+                          <option value='option1'>Completed</option>
+                        </Select></td>
+                      <td className="py-2 px-3 text-left relative">
+                        
+
+                      </td>
+                      
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
           </div>
           <button
-            className="fixed top-5 right-5 mt-2 mr-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            className="fixed top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
             onClick={() => setToggle(true)}
           >
             Back
           </button>
         </div>
+        </ChakraProvider>
       )}
     </>
   )
+  
 }
 
-export default MentorMilestones
+export { MentorMilestones as default };
+

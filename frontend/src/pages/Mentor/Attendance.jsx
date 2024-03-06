@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/form"
 import { CalendarIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
-import { CreateAttendance, FetchMentees } from '@/api/attendanceApi';
+import { CreateAttendance, FetchAttendance, FetchMentees } from '@/api/attendanceApi';
 import { Textarea } from "@/components/ui/textarea"
 import AttendanceDatatable from '@/components/DataTable/AttendanceDataTable';
 import { useEffect } from 'react';
@@ -83,65 +83,66 @@ const Attendance = () => {
   const form = useForm()
 
   const [open, setOpen] = useState(false);
-  const [attendanceData, setAttendanceData] = useState([
-    {
-      id: 1,
-      name: "Harsh",
-      description: "Project meeting",
-      date: new Date("2024-02-22"),
-      attendance: [1, 2, 3] // Assuming these are user IDs present on this date
-    },
-    {
-      id: 2,
-      name: "Verma",
-      description: "Project meeting",
-      date: new Date("2024-02-21"),
-      attendance: [4, 5, 6]
-    },
-    {
-      id: 3,
-      name: "Harsh",
-      description: "Project meeting",
-      date: new Date("2024-02-20"),
-      attendance: [2, 3, 7]
-    },
-    {
-      id: 4,
-      name: "Verma",
-      description: "Project meeting",
-      date: new Date("2024-02-19"),
-      attendance: [1, 4, 6]
-    },
-    {
-      id: 5,
-      name: "Harsh",
-      description: "Project meeting",
-      date: new Date("2024-02-18"),
-      attendance: [3, 5, 7]
-    },
-    {
-      id: 6,
-      name: "Verma",
-      description: "Project meeting",
-      date: new Date("2024-02-17"),
-      attendance: [1, 2, 6]
-    },
-    {
-      id: 7,
-      name: "Harsh",
-      description: "Project meeting",
-      date: new Date("2024-02-16"),
-      attendance: [3, 4, 5]
-    },
-    {
-      id: 8,
-      name: "Verma",
-      description: "Project meeting",
-      date: new Date("2024-02-15"),
-      attendance: [1, 4, 7]
-    }
-  ]);
+  // const [attendanceData, setAttendanceData] = useState([
+  //   {
+  //     id: 1,
+  //     name: "Harsh",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-22"),
+  //     attendance: [1, 2, 3] // Assuming these are user IDs present on this date
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Verma",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-21"),
+  //     attendance: [4, 5, 6]
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Harsh",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-20"),
+  //     attendance: [2, 3, 7]
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Verma",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-19"),
+  //     attendance: [1, 4, 6]
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Harsh",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-18"),
+  //     attendance: [3, 5, 7]
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Verma",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-17"),
+  //     attendance: [1, 2, 6]
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Harsh",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-16"),
+  //     attendance: [3, 4, 5]
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Verma",
+  //     description: "Project meeting",
+  //     date: new Date("2024-02-15"),
+  //     attendance: [1, 4, 7]
+  //   }
+  // ]);
   const [userData, setUserData] = useState({});
+  const [attendanceData, setAttendanceData] = useState({});
 
   useEffect(() => {
     // Fetch user data from API when component mounts
@@ -157,6 +158,22 @@ const Attendance = () => {
     // Log userData whenever it changes
     // console.log(userData);
   }, [userData]);
+
+  useEffect(() => {
+    // Fetch user data from API when component mounts
+    const fetchAttendanceData = async () => {
+      const response = await FetchAttendance();
+      setAttendanceData(response.data);
+      // console.log(oldUserData);
+    };
+    fetchAttendanceData();
+  }, []); // Empty dependency array ensures the effect runs only once on mount
+
+  useEffect(() => {
+    // Log userData whenever it changes
+    // console.log(userData);
+  }, [attendanceData]);
+
 
   // const onSubmit = async (data) => {
   //   console.log(data);
@@ -366,7 +383,7 @@ const Attendance = () => {
 
       </Dialog>
 
-      {userData.users != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
+      {userData.users != null && attendanceData != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div >
 
   )

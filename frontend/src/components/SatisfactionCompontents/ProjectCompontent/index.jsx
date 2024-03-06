@@ -4,14 +4,19 @@ import "@/styles/satisfaction.css";
 import axios from 'axios';
 // import { teams_projects } from '@/dummyData';
 
-const ProjectNames = ({handleTeamId}) => {
-    const URL = "http://localhost:8000/api";
+const api = axios.create({
+    baseURL: import.meta.env.VITE_SERVER_URL,
+    withCredentials: true,
+  });
+
+const ProjectNames = ({handleTeamId, setProjectLoading}) => {
+    // const URL = "http://localhost:8000/";
     const [projectName, setProjectName] = useState('');
     const [teams_projects , setTeamProjects] = useState([]);
     useEffect(()=>{
         const fetchData = async () =>{
             try{
-                const data = await axios.get(`${URL}/project_details`);
+                const data = await api.get(`/api/project_details`);
                 // console.log(data);
                 // console.log(data.data.allTeamsNames);
                 if(data.status === 200)
@@ -24,16 +29,26 @@ const ProjectNames = ({handleTeamId}) => {
         }
         fetchData();
     },[]);
+
+    if(teams_projects === undefined)
+    {
+        setProjectLoading(true);
+        return;
+    }else{
+        setProjectLoading(false);
+    }
+
     return (
         <div className='satisfaction_input pt-1'>
             <span className='satisfaction_text_title'>Project :</span>
             <span>
                 <TextField
                     select
-                    label="project name"
+                    label={projectName=== "" ? "project name": ""}
+                    InputLabelProps={{shrink: false}}
                     value={projectName}
                     onChange={(e)=>setProjectName(e.target.value)}
-                    sx={{ minWidth: 225}}
+                    sx={{ minWidth: 250}}
                     size="small"
                     >
                     {teams_projects.map((team)=>{

@@ -9,41 +9,40 @@ const {
   Mentee,
   Feedback,
 } = require("../models/");
+const { fetchTeamId } = require('../services/user_services');
 
 const getTeamId = async (req, res) => {
-    try{
-        const user_id = req.user.id;
-        const role = req.user.role;
-        if(role === "Admin")
-            res.status(404).json({message: "Admin does not have any team"});
-        else if(role === "Mentor")
-        {
-            const mentor_record = await Mentor.findOne({
-                where: {user_id}
-            });
-            const team_id = mentor_record.team_id;
-            if(team_id === null){
-              res.status(404).json({message: "No team assigned"});
-            }else
-              res.status(200).json({team_id});
-        }
-        else if(role === "Mentee")
-        {
-            const mentee_record = await Mentee.findOne({
-                where: {user_id}
-            });
-            const team_id = mentee_record.team_id;
-            if(team_id === null){
-              res.status(404).json({message: "No team assigned"});
-            }else
-              res.status(200).json({team_id});
-        }else{
-            res.status(400).json({message: "Bad request"});
-        }
-    }catch(err){
-        console.log("error in getTeamid: ", err);
-        res.status(500).json({ message: "Internal server error" });
+  try {
+    const user_id = req.user.id;
+    const role = req.user.role;
+    if (role === "Admin")
+      res.status(404).json({ message: "Admin does not have any team" });
+    else if (role === "Mentor") {
+      const mentor_record = await Mentor.findOne({
+        where: { user_id }
+      });
+      const team_id = mentor_record.team_id;
+      if (team_id === null) {
+        res.status(404).json({ message: "No team assigned" });
+      } else
+        res.status(200).json({ team_id });
     }
+    else if (role === "Mentee") {
+      const mentee_record = await Mentee.findOne({
+        where: { user_id }
+      });
+      const team_id = mentee_record.team_id;
+      if (team_id === null) {
+        res.status(404).json({ message: "No team assigned" });
+      } else
+        res.status(200).json({ team_id });
+    } else {
+      res.status(400).json({ message: "Bad request" });
+    }
+  } catch (err) {
+    console.log("error in getTeamid: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 const getMetrics = async (req, res) => {
@@ -51,11 +50,11 @@ const getMetrics = async (req, res) => {
     const metrics = await FeedbackMetric.findAll({
       attributes: ["id", "metric_name", "role"],
     });
-    
+
     // IF NOT EXITS 404 NOT FOUND
-    if(metrics.length === 0){
-      res.status(404).json({message: "No Metric found"});
-    }else
+    if (metrics.length === 0) {
+      res.status(404).json({ message: "No Metric found" });
+    } else
       res.status(200).json({ metrics });
   } catch (err) {
     console.log("error in getMetrics: ", err);
@@ -70,11 +69,11 @@ const getMentorMetrics = async (req, res) => {
       where: { role: "Mentor" },
       attributes: ["id", "metric_name"],
     });
-    
+
     // IF NOT EXITS 404 NOT FOUND
-    if(mentor_metrics.length === 0){
-      res.status(404).json({message: "No Mentor Metric found"});
-    }else
+    if (mentor_metrics.length === 0) {
+      res.status(404).json({ message: "No Mentor Metric found" });
+    } else
       res.status(200).json({ mentor_metrics });
   } catch (err) {
     console.log("error in getMentorMetrics: ", err);
@@ -89,11 +88,11 @@ const getMenteeMetrics = async (req, res) => {
       where: { role: "Mentee" },
       attributes: ["id", "metric_name"],
     });
-    
+
     // IF NOT EXITS 404 NOT FOUND
-    if(mentee_metrics.length === 0){
-      res.status(404).json({message: "No Mentee Metric found"});
-    }else
+    if (mentee_metrics.length === 0) {
+      res.status(404).json({ message: "No Mentee Metric found" });
+    } else
       res.status(200).json({ mentee_metrics });
   } catch (err) {
     console.log("error in getMenteeMetrics: ", err);
@@ -115,9 +114,9 @@ const getAllProjectDetails = async (req, res) => {
     });
     // console.log(allTeamsNames);
     // IF NOT EXITS 404 NOT FOUND
-    if(allTeamsNames.length === 0){
-      res.status(404).json({message: "No Team found"});
-    }else
+    if (allTeamsNames.length === 0) {
+      res.status(404).json({ message: "No Team found" });
+    } else
       res.status(200).json({ allTeamsNames });
   } catch (err) {
     console.log("error in getAllProjectDetails: ", err);
@@ -150,7 +149,7 @@ const getMentees = async (req, res) => {
     const team_id = req.params.team_id;
     const allMentees = await Mentee.findAll({
       where: { team_id },
-      attributes: ["id","user_id", "first_name", "last_name", "team_id"]
+      attributes: ["id", "user_id", "first_name", "last_name", "team_id"]
     });
 
     res.status(200).json({ allMentees });
@@ -191,21 +190,21 @@ const getAllFeedbacksGivenByUserTo = async (req, res) => {
 };
 
 const getAvgRating = async (req, res) => {
-    try{
-        const user_id = req.user.id;
-        const avgRating = await Feedback.findAll({
-            where: {given_by_user_id: user_id},
-            attributes : ["given_to_user_id", [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating']],
-            group : ["given_by_user_id", "given_to_user_id"]
-        });
-        if(avgRating.length === 0)
-          res.status(404).json({message: "No feedback found"});
-        else
-          res.status(200).json({avgRating});
-    }catch(err){
-        console.log("error in getAvgRating: ", err);
-        res.status(500).json({ message: "Internal server error" });
-    }
+  try {
+    const user_id = req.user.id;
+    const avgRating = await Feedback.findAll({
+      where: { given_by_user_id: user_id },
+      attributes: ["given_to_user_id", [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating']],
+      group: ["given_by_user_id", "given_to_user_id"]
+    });
+    if (avgRating.length === 0)
+      res.status(404).json({ message: "No feedback found" });
+    else
+      res.status(200).json({ avgRating });
+  } catch (err) {
+    console.log("error in getAvgRating: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 const postFeedback = async (req, res) => {
@@ -248,26 +247,26 @@ const add_metric = async (req, res) => {
         message: "UnAuthorized Request",
       });
     }
-    else{
-        const existingMetric = await FeedbackMetric.findOne({
-          where: { metric_name:{[Op.iLike] : req.body.metric_name}, role: req.body.role },  // metric_name - CASE IN SENSITIVE
-        });
-        if (existingMetric) {
-          // Metric already exists
-          return res
-            .status(409)
-            .json({ status: "alreadyExists", message: "Metric already exists" });
-        } else {
-          // User doesn't exist, create a new record
-          const newMetric = await FeedbackMetric.create(req.body);
-          return res
-            .status(201)
-            .json({
-              status: "created",
-              message: "Metric created successfully",
-              newMetric,
-            });
-        }
+    else {
+      const existingMetric = await FeedbackMetric.findOne({
+        where: { metric_name: { [Op.iLike]: req.body.metric_name }, role: req.body.role },  // metric_name - CASE IN SENSITIVE
+      });
+      if (existingMetric) {
+        // Metric already exists
+        return res
+          .status(409)
+          .json({ status: "alreadyExists", message: "Metric already exists" });
+      } else {
+        // User doesn't exist, create a new record
+        const newMetric = await FeedbackMetric.create(req.body);
+        return res
+          .status(201)
+          .json({
+            status: "created",
+            message: "Metric created successfully",
+            newMetric,
+          });
+      }
     }
   } catch (err) {
     console.log("error in add_metric: ", err);
@@ -276,69 +275,68 @@ const add_metric = async (req, res) => {
 };
 
 const delete_metric = async (req, res) => {
-    try{
-        if (req.user.role !== "Admin") {
-            res.status(400).json({
-              success: false,
-              message: "UnAuthorized Request",
-            });
-        }
-        const metric_id = req.params.id;
-        const metric_record = await FeedbackMetric.findOne({
-            where: {id: metric_id}
-        });
-        //IF NOT EXITS ...............
-        if(metric_record === null)
-            res.status(404).json({message: "Metric record not Found"});
-        else{
-            // const del_metric = await FeedbackMetric.destroy({
-            //     where: {id: metric_id}
-            // });
-            await Feedback.destroy({  // DELETING FEEDBACK WITH METRIC_ID TO AVOID CONFLICT OF FOREIGN KEY IN METRIC_RECORD
-              where: {metric_id}
-            });
-            await metric_record.destroy();
-            res.status(200).json({status: "deleted", message:"Metric Deleted successfully"});
-        }
-    }catch(err){
-        console.log("error in delete_metric: ", err);
-        res.status(500).json({ message: "Internal server error" });
+  try {
+    if (req.user.role !== "Admin") {
+      res.status(400).json({
+        success: false,
+        message: "UnAuthorized Request",
+      });
     }
+    const metric_id = req.params.id;
+    const metric_record = await FeedbackMetric.findOne({
+      where: { id: metric_id }
+    });
+    //IF NOT EXITS ...............
+    if (metric_record === null)
+      res.status(404).json({ message: "Metric record not Found" });
+    else {
+      // const del_metric = await FeedbackMetric.destroy({
+      //     where: {id: metric_id}
+      // });
+      await Feedback.destroy({  // DELETING FEEDBACK WITH METRIC_ID TO AVOID CONFLICT OF FOREIGN KEY IN METRIC_RECORD
+        where: { metric_id }
+      });
+      await metric_record.destroy();
+      res.status(200).json({ status: "deleted", message: "Metric Deleted successfully" });
+    }
+  } catch (err) {
+    console.log("error in delete_metric: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 const update_metric = async (req, res) => {
-    try{
-        if (req.user.role !== "Admin") {
-            res.status(400).json({
-              success: false,
-              message: "UnAuthorized Request",
-            });
-        }
-        const existingMetric = await FeedbackMetric.findOne({
-          where: { metric_name:{[Op.iLike] : req.body.metric_name}, role: req.body.role },  // metric_name - CASE IN SENSITIVE
-        });
-        if (existingMetric) {
-          // Metric already exists
-          return res
-            .status(409)
-            .json({ status: "alreadyExists", message: "Metric already exists" });
-        }else{
-          const metric_id = req.body.id;
-          const metric_record = await FeedbackMetric.findOne({
-              where : {id: metric_id}
-          });
-          if(metric_record === null)
-          {
-              res.status(404).json({status: "Not found",message: "Metric record not found"});
-          }else{
-              await metric_record.update({metric_name: req.body.metric_name});
-              res.status(200).json({status: "Updated" ,message: "Metric updated successfully"});
-          }
-        }
-    }catch(err){
-        console.log("error in update_metric: ", err);
-        res.status(500).json({ message: "Internal server error" });
+  try {
+    if (req.user.role !== "Admin") {
+      res.status(400).json({
+        success: false,
+        message: "UnAuthorized Request",
+      });
     }
+    const existingMetric = await FeedbackMetric.findOne({
+      where: { metric_name: { [Op.iLike]: req.body.metric_name }, role: req.body.role },  // metric_name - CASE IN SENSITIVE
+    });
+    if (existingMetric) {
+      // Metric already exists
+      return res
+        .status(409)
+        .json({ status: "alreadyExists", message: "Metric already exists" });
+    } else {
+      const metric_id = req.body.id;
+      const metric_record = await FeedbackMetric.findOne({
+        where: { id: metric_id }
+      });
+      if (metric_record === null) {
+        res.status(404).json({ status: "Not found", message: "Metric record not found" });
+      } else {
+        await metric_record.update({ metric_name: req.body.metric_name });
+        res.status(200).json({ status: "Updated", message: "Metric updated successfully" });
+      }
+    }
+  } catch (err) {
+    console.log("error in update_metric: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 module.exports = {

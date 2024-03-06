@@ -4,8 +4,10 @@ const { fetchTeamId } = require('../services/user_services');
 async function getTasks(req, res) {
   try {
     const { milestoneDescId } = req.body
-    const uid = req.user.id;
-    const teamId = await fetchTeamId(uid, "Mentor");
+    // console.log("request body:", req.body);
+    const teamId = await fetchTeamId(req.user.id, req.user.role);
+    // console.log("Team ID:", teamId);
+    // console.log("Milestone Desc ID:", milestoneDescId);
     const tasks = await getTasksByMilestoneId(milestoneDescId, teamId);
 
     return res.json(tasks);

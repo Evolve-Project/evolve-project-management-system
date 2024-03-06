@@ -40,10 +40,10 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
 
   const mentor_metrics = useSelector(
     (state) => state.feedbackMetric.feedback_metrics
-  ).filter((record) => record.role === "Mentor");
+  )?.filter((record) => record.role === "Mentor");
   const mentee_metrics = useSelector(
     (state) => state.feedbackMetric.feedback_metrics
-  ).filter((record) => record.role === "Mentee");
+  )?.filter((record) => record.role === "Mentee");
 
   const [editableId, setEditableId] = useState(null);
   const [editedName, setEditedName] = useState("");
@@ -57,6 +57,10 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   const handleEditSave = async (index, name, role) =>{  // UPDATE
     // console.log("edited");
     const toastId = toast.loading("Please wait...");
+    if(name.length === 0){
+      toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
+      return;
+    }
     try{
       const successData = await dispatch(updateMetric({id: index, metric_name : name, role})).unwrap();
       // console.log(successData);
@@ -124,6 +128,10 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
       toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
     }
   }
+
+  if(mentor_metrics === undefined || mentee_metrics === undefined)  // NO DATA
+    return;
+
   return (
     <React.Fragment>
     <ToastContainer/>

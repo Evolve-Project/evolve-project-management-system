@@ -350,12 +350,32 @@ exports.mentorDetails = async (req, res) => {
             },
           ],
         },
+        {
+          model: User,
+          attributes: ["email"],
+        },
       ],
     });
+    const mentorsList = await Mentor.findAll({
+      where: {team_id: mentorDetails?.Team?.id},
+      attributes: ["id", "first_name", "last_name"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ]
+    })
     // console.log(mentorDetails);
     const menteesList = await Mentee.findAll({
       where: { team_id: mentorDetails?.Team?.id },
-      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
+      attributes: ["id", "team_id", "first_name", "last_name"], // Specify the properties you want to retrieve
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        }
+      ]
     });
     // console.log(menteesList);
     if (mentorDetails) {
@@ -364,7 +384,8 @@ exports.mentorDetails = async (req, res) => {
           id: mentorDetails.id,
           user_id: mentorDetails.user_id,
           first_name: mentorDetails.first_name,
-          last_name: mentorDetails.last_name,
+          last_name: mentorDetails?.last_name,
+          email: mentorDetails.User.email,
           Experience: mentorDetails.Experience,
           createdAt: mentorDetails.createdAt,
           updatedAt: mentorDetails.updatedAt,
@@ -385,7 +406,8 @@ exports.mentorDetails = async (req, res) => {
           git: mentorDetails.Team.Project?.git_repository_link,
           trello: mentorDetails.Team.Project?.trello_board_link,
         },
-        menteeInfo: {
+        teamMembersInfo: {
+          mentorsList,
           menteesList,
         },
       };
@@ -411,9 +433,10 @@ exports.mentorDetails = async (req, res) => {
 exports.menteeDetails = async (req, res) => {
   try {
     const userId = req.user.id;
-
+    // console.log("------------------------------------------------------------------");
+    // console.log(userId);
     // Fetch mentor details and include the associated team
-    const mentorDetails = await Mentee.findOne({
+    const menteeDetails = await Mentee.findOne({
       where: { user_id: userId },
       include: [
         {
@@ -433,52 +456,76 @@ exports.menteeDetails = async (req, res) => {
             },
           ],
         },
+        {
+          model: User,
+          attributes: ["email"],
+        },
       ],
     });
-    // console.log(mentorDetails);
+    const mentorsList = await Mentor.findAll({
+      where: {team_id: menteeDetails?.Team?.id},
+      attributes: ["id", "first_name", "last_name"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ]
+    })
+    // console.log(menteeDetails);
     const menteesList = await Mentee.findAll({
-      where: { team_id: mentorDetails?.Team?.id },
-      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
+      where: { team_id: menteeDetails?.Team?.id },
+      attributes: ["id", "team_id", "first_name", "last_name"], // Specify the properties you want to retrieve
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        }
+      ]
     });
     // console.log(menteesList);
-    if (mentorDetails) {
+    if (menteeDetails) {
       const formattedResponse = {
-        mentorInfo: {
-          id: mentorDetails.id,
-          user_id: mentorDetails.user_id,
-          first_name: mentorDetails.first_name,
-          last_name: mentorDetails.last_name,
-          Experience: mentorDetails.Experience,
-          createdAt: mentorDetails.createdAt,
-          updatedAt: mentorDetails.updatedAt,
+        menteeInfo: {
+          id: menteeDetails.id,
+          user_id: menteeDetails.user_id,
+          first_name: menteeDetails.first_name,
+          last_name: menteeDetails?.last_name,
+          email: menteeDetails.User.email,
+          University: menteeDetails.University,
+          dob: menteeDetails.dob,
+          home_city: menteeDetails?.home_city,
+          createdAt: menteeDetails.createdAt,
+          updatedAt: menteeDetails.updatedAt,
         },
         teamInfo: {
-          id: mentorDetails.Team?.id,
-          team_name: mentorDetails.Team?.team_name,
-          project_id: mentorDetails.Team?.project_id,
-          total_team_members: mentorDetails.Team?.total_team_members,
+          id: menteeDetails.Team?.id,
+          team_name: menteeDetails.Team?.team_name,
+          project_id: menteeDetails.Team?.project_id,
+          total_team_members: menteeDetails.Team?.total_team_members,
         },
         projectInfo: {
-          id: mentorDetails.Team.Project?.id,
-          name: mentorDetails.Team.Project?.name,
-          description: mentorDetails.Team.Project?.description,
-          start_date: mentorDetails.Team.Project?.start_date,
-          end_date: mentorDetails.Team.Project?.end_date,
-          status: mentorDetails.Team.Project?.status,
+          id: menteeDetails.Team.Project?.id,
+          name: menteeDetails.Team.Project?.name,
+          description: menteeDetails.Team.Project?.description,
+          start_date: menteeDetails.Team.Project?.start_date,
+          end_date: menteeDetails.Team.Project?.end_date,
+          status: menteeDetails.Team.Project?.status,
         },
-        menteeInfo: {
+        teamMembersInfo: {
+          mentorsList,
           menteesList,
         },
       };
       return res.status(200).json({
         success: true,
-        message: "Mentor details fetched successfully",
+        message: "Mentee details fetched successfully",
         formattedResponse,
       });
     } else {
       res.status(404).json({
         success: false,
-        message: "Mentor not found",
+        message: "Mentee not found",
       });
     }
   } catch (error) {
@@ -489,6 +536,79 @@ exports.menteeDetails = async (req, res) => {
     });
   }
 };
+
+// UPDATE MENTOR DETAILS FROM MENTOR DASHBOARD
+exports.updateMentor = async (req, res) => {
+  try{
+    const {user_id, email, ...data} = req.body;
+    const mentor_record = await Mentor.findOne({
+      where: {user_id}
+    });
+    const user_record = await User.findOne({
+      where: {id : user_id}
+    });
+    // console.log("---------------------------------------------------------------");
+    // console.log(mentor_record);
+    // console.log(user_record);
+    if(mentor_record && user_record)
+    {
+      const updatedUser = await user_record.update({email});
+      const updatedMentor = await mentor_record.update({...data});
+      console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentor.toJSON());
+      res.status(200).json({
+        success: true,
+        message: "Mentor details updated successfully!",
+      })
+    }else{
+      res.status(404).json({
+        success: false,
+        message: "Mentor details Not Found",
+      })
+    }
+  }catch(error){
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+// UPDATE MENTEE DETAILS FROM MENTOR DASHBOARD
+exports.updateMentee = async (req, res) => {
+  try{
+    const {user_id, email, ...data} = req.body;
+    const mentee_record = await Mentee.findOne({
+      where: {user_id}
+    });
+    const user_record = await User.findOne({
+      where: {id : user_id}
+    });
+    if(mentee_record && user_record)
+    {
+      const updatedUser = await user_record.update({email});
+      const updatedMentee = await mentee_record.update({...data});
+      console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentee.toJSON());
+      res.status(200).json({
+        success: true,
+        message: "Mentee details updated successfully!",
+      })
+    }else{
+      res.status(404).json({
+        success: false,
+        message: "Mentee details Not Found",
+      })
+    }
+  }catch(error){
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+
 exports.createQuery = async (req, res) => {
   try {
     const { text, reply_id, team_id } = req.body;

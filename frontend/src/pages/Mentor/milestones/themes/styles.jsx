@@ -1,7 +1,7 @@
 const styles = {
     global: {
       "html, body": {
-        backgroundColor: "#8880ff",
+        backgroundColor: "#FFFFFF",
         color: "#000000",
       },
       svg: {

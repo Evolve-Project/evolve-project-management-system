@@ -12,6 +12,11 @@ import FeedbackShimmer from "@/components/FeedbackShimmer";
 import FeedbackMetricShimmer from "@/components/FeedbackShimmer/FeedbackMetricShimmer";
 import ErrorPage from '@/components/ErrorPage';
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL,
+  withCredentials: true,
+});
+
 const handleRatingChange = (e, newValue, dataObject, setDataObject, metricId) => {
   const newDataObject = dataObject.map(record => {
     if (record.metric_id === metricId) {
@@ -37,22 +42,22 @@ const handleSubmit = async (e, dataObject, mentor_id, handleNewAverage, setError
   try{
     e.preventDefault();
     // console.log(dataObject);
-    const URL = "http://localhost:8000";
-    const responce = await axios.post(`${URL}/api/feedback`, dataObject);
-    if(responce.status === 200)
+    // const URL = "http://localhost:8000";
+    const response = await api.post(`/api/feedback`, dataObject);
+    if(response.status === 200)
     {
       const sumOfRatings = dataObject.reduce((sum, item) => sum + item.rating, 0);
       const averageRating = sumOfRatings / dataObject.length;
       handleNewAverage(mentor_id, averageRating);
-      // alert(responce.data.message);
-      toast.update(id, {render: `${responce.data.message}`, type: "success", isLoading: false, autoClose: 2000});
+      // alert(response.data.message);
+      toast.update(id, {render: `${response.data.message}`, type: "success", isLoading: false, autoClose: 2000});
     }
     else{
       // alert("ERROR");
-      toast.update(id, {render: `${responce.data.message}`, type: "error", isLoading: false, autoClose: 2000});
+      toast.update(id, {render: `${response.data.message}`, type: "error", isLoading: false, autoClose: 2000});
     }
     setErrorPage5(false);
-    // console.log("REsponce: ", responce);
+    // console.log("REsponse: ", response);
   }catch(err){
     console.log("Error at sending Feedback data: ", err);
     setErrorPage5(true);
@@ -61,7 +66,7 @@ const handleSubmit = async (e, dataObject, mentor_id, handleNewAverage, setError
 }
 
 const Metric = ({ mentor_id, mentor_metrics, handleNewAverage, setErrorPage4, setErrorPage5})=>{
-  const URL = "http://localhost:8000";
+  // const URL = "http://localhost:8000";
   const [loading1, setLoading1] = useState(true);
   const [loading2, setLoading2] = useState(true);
 
@@ -69,7 +74,7 @@ const Metric = ({ mentor_id, mentor_metrics, handleNewAverage, setErrorPage4, se
   useEffect(()=>{
     const fetchData = async ()=>{
       try{
-        const feedback_data = await axios.get(`${URL}/api/getAllFeedbacksByUserTo/${mentor_id}`);
+        const feedback_data = await api.get(`/api/getAllFeedbacksByUserTo/${mentor_id}`);
         setFeedbacks(feedback_data.data.allFeedbacks);
         // console.log("feedbacks: "); 
         // console.log(feedback_data.data.allFeedbacks);
@@ -98,7 +103,7 @@ const Metric = ({ mentor_id, mentor_metrics, handleNewAverage, setErrorPage4, se
     setLoading2(false);
   },[feedbacks]);
 
-  if(loading1 && loading2) // LOADING SKELETON
+  if(loading1 || loading2 || feedbacks === undefined || dataObject === undefined) // LOADING SKELETON
   {
     return <FeedbackMetricShimmer/>;
   }
@@ -138,11 +143,11 @@ const Metric = ({ mentor_id, mentor_metrics, handleNewAverage, setErrorPage4, se
 )};
 
 const MenteeFeedback = () => {
-  const URL = "http://localhost:8000";
+  // const URL = "http://localhost:8000";
 
   const dispatch = useDispatch();
   const mentor_metrics = useSelector((state)=> state.feedbackMetric.feedback_metrics)
-    .filter((metric)=> metric.role === "Mentor");
+    ?.filter((metric)=> metric.role === "Mentor");
   const status = useSelector((state) => state.feedbackMetric.status);
   const error = useSelector((state) => state.feedbackMetric.error);
 
@@ -165,7 +170,7 @@ const MenteeFeedback = () => {
   useEffect(()=>{
     const fetchData = async ()=>{
       try{
-        const team_id = await axios.get(`${URL}/api/getTeamId`);
+        const team_id = await api.get(`/api/getTeamId`);
         // console.log("Team id: ", team_id);
         setTeamId(team_id.data?.team_id);
         setLoading1(false);
@@ -183,7 +188,7 @@ const MenteeFeedback = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const mentorsData = await axios.get(`${URL}/api/getMentors/${teamId}`);
+        const mentorsData = await api.get(`/api/getMentors/${teamId}`);
         setMentors(mentorsData.data.allMentors);
         // console.log("All mentors");
         // console.log(menteesData.data.allMentees);
@@ -203,7 +208,7 @@ const MenteeFeedback = () => {
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        const averageRating = await axios.get(`${URL}/api/getAvgRatingByUser`);
+        const averageRating = await api.get(`/api/getAvgRatingByUser`);
         setAvgRating(averageRating.data.avgRating);
         // console.log("avg rating");
         // console.log(averageRating.data.avgRating);
@@ -245,10 +250,10 @@ const handleDropDown = (e, mentor) => {
     setActiveDropdown(mentor.user_id);
 };
 
-if((status === "loading") || (loading1 && loading2 && loading3)){ // LOADING SKELETON
+if(status === "loading" || loading1 || loading2 || loading3 || teamId === undefined || mentors === undefined || avgRating === undefined){ // LOADING SKELETON
   return <FeedbackShimmer/>
 }
-if(errorPage1 || errorPage2 || errorPage4 || errorPage5 || status === "failed"){
+if(error || errorPage1 || errorPage2 || errorPage4 || errorPage5 || status === "failed"){
   return <ErrorPage/>;
 }
 
