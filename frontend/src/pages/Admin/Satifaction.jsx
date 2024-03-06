@@ -21,8 +21,14 @@ import ChartShimmer from '@/components/SatisfactionCompontents/SatisfactionShimm
 import DetailedShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer';
 import ErrorPage from '@/components/ErrorPage';
 
+const api = axios.create({
+    baseURL: import.meta.env.VITE_SERVER_URL,
+    withCredentials: true,
+});
+
 const Satisfaction = ()=>{
-    const URL = "http://localhost:8000/api";
+    // const URL = "http://localhost:8000/";
+    const [projectLoading, setProjectLoading] = useState(false);
     const [teamId, setTeamId] = useState(null);
     const [userId, setUserId] = useState(null);
     const handleTeamId = (id)=>{
@@ -41,9 +47,9 @@ const Satisfaction = ()=>{
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const mentors = await axios.get(`${URL}/getMentors/${teamId}`);
+                const mentors = await api.get(`/api/getMentors/${teamId}`);
                 setMentorRecords(mentors.data.allMentors);
-                const mentees = await axios.get(`${URL}/getMentees/${teamId}`);
+                const mentees = await api.get(`/api/getMentees/${teamId}`);
                 setMenteeRecords(mentees.data.allMentees);
                 setErrorPage(false);
             }catch(err){
@@ -72,7 +78,7 @@ const Satisfaction = ()=>{
     const [loading2, setLoading2] = useState(true);
     useEffect(()=>{
         const fetchData = async ()=>{
-            const feedbacks = await axios.get(`${URL}/getAllFeedbacksTo/${userId}`);
+            const feedbacks = await api.get(`/api/getAllFeedbacksTo/${userId}`);
             // console.log(feedbacks.data.allFeedbacks);
             setFeedbacks(feedbacks.data.allFeedbacks);
             setLoading2(false);
@@ -89,11 +95,12 @@ const Satisfaction = ()=>{
         setIsPopOpen(prev => !prev);
     }
 
-    if(loading1 || (status === "Initial-loading")){ // LOADING PAGE
+
+    if(loading1 || status === "Initial-loading" || projectLoading){ // LOADING PAGE
         return <SatisfactionShimmer/>;
     }
 
-    if(errorPage || status === "Initail-failed") { // ERROR PAGE
+    if(error || errorPage || status === "Initail-failed") { // ERROR PAGE
         return <ErrorPage/>;
     }
 
@@ -108,10 +115,10 @@ const Satisfaction = ()=>{
                 </div>
                 <div className='satisfaction_content'>
                     <div className="satisfaction_input justify-between">
-                        <ProjectNames handleTeamId = {handleTeamId}/>
+                        <ProjectNames handleTeamId = {handleTeamId} setProjectLoading={setProjectLoading}/>
 
                         <CustomizedDialogs isOpen={isPopOpen} handlePop={handlePop} />
-                        <div className={`satisfaction_edit mr-10`} onClick={handlePop}>
+                        <div className={`satisfaction_edit`} onClick={handlePop}>
                             <span className='satisfaction_edit_text' >Edit metrics &nbsp;</span>
                             <span className='satisfaction_edit_btn' ><FontAwesomeIcon icon={faEdit} /></span>
                         </div>
@@ -139,7 +146,7 @@ const Satisfaction = ()=>{
                             </div>
                             <UserNames handleUserId={handleUserId} userRecords={role === "Mentor" ? mentorRecords : menteeRecords}/>
                         </div>
-                        <div className='satisfaction_input mr-10' >
+                        <div className='satisfaction_input' >
                             <span>
                                 <ToggleButtonGroup
                                     color="primary"

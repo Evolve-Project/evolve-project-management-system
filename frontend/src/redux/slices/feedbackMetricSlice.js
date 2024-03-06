@@ -1,13 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 // import { feedback_metrics } from "@/dummyData";
+const api = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL,
+  withCredentials: true,
+});
 
 export const fetchFeedbackMetrics = createAsyncThunk(
     "feedbackMetric/fetchFeedbackMetrics",
     async () => {
       try {
-        const URL = "http://localhost:8000";
-        const response = await axios.get(`${URL}/api/feedback_metrics`);
+        // const URL = "http://localhost:8000";
+        const response = await api.get(`/api/feedback_metrics`);
         return response.data.metrics;
       } catch (err) {
         console.log("metric fetch err: ",err);
@@ -25,7 +29,7 @@ export const addMetric = createAsyncThunk(
   "feedbackMetric/addMetric",
   async (newMetric, { getState, rejectWithValue }) => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/add_metric`, newMetric);
+      const response = await api.post(`/api/add_metric`, newMetric);
       const id = response.data.newMetric.id;
       return { ...newMetric, id };
     } catch (err) {
@@ -44,7 +48,7 @@ export const deleteMetric = createAsyncThunk(
   "feedbackMetric/deleteMetric",
   async ({id}, { getState, rejectWithValue }) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/delete_metric/${id}`);
+      const response = await api.delete(`/api/delete_metric/${id}`);
       return id;
     } catch (err) {
       console.log("del metric err: ",err);
@@ -62,7 +66,7 @@ export const updateMetric = createAsyncThunk(
   "feedbackMetric/updateMetric",
   async (updatedMetric, { getState, rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:8000/api/update_metric`, updatedMetric);
+      const response = await api.put(`/api/update_metric`, updatedMetric);
       return updatedMetric;
     } catch (err) {
       console.log("update metric err: ",err);
@@ -72,32 +76,6 @@ export const updateMetric = createAsyncThunk(
         data: err.response?.data,
       };
       return rejectWithValue(errorPayload);
-//       response
-// : 
-// config
-// : 
-// {transitional: {…}, adapter: Array(2), transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}
-// data
-// : 
-// {status: 'alreadyExists', message: 'Metric already exists'}
-// headers
-// : 
-// AxiosHeaders {content-length: '60', content-type: 'application/json; charset=utf-8'}
-// request
-// : 
-// XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: true, upload: XMLHttpRequestUpload, …}
-// status
-// : 
-// 409
-// statusText
-// : 
-// "Conflict"
-// [[Prototype]]
-// : 
-// Object
-// type
-// : 
-// "feedbackMetric/updateMetric/rejected"
     }
   }
 );

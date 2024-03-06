@@ -8,10 +8,11 @@ const UserNames = ({handleUserId, userRecords}) => {
     return (
         <div className='satisfaction_input'>
             <span className='satisfaction_text_title'>Name :</span>
-            <span className='pt-2'>
+            <span>
                 <TextField
                     select
-                    label="name"
+                    label={userName=== "" ? "name": ""}
+                    InputLabelProps={{shrink: false}}
                     value={userName}
                     onChange={(e)=>setUserName(e.target.value)}
                     sx={{ minWidth: 220}}
