@@ -24,12 +24,14 @@ import {
 } from "@/components/ui/form"
 import { Select } from '@chakra-ui/react'
 
+
 function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
 
+  
   const handleCreateTask = (e) => {
     e.preventDefault();
     const taskData = {
@@ -45,7 +47,6 @@ function Tasks() {
  
   return (
     <div>
-      <h2>Tasks</h2>
       <Dialog open={open} onOpenChange={setOpen}>
       <div className='flex justify-end mx-10'>
         <DialogTrigger asChild>
@@ -103,11 +104,10 @@ function Tasks() {
         </Form>
       </DialogContent>
     </Dialog>
-      <ul>
-        {tasks.map(task => (
-          <li key={task.id}>{task.name}</li>
-        ))}
-      </ul>
+    <br />
+    
+
+    
     </div>
   )
 }

@@ -5,6 +5,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
   const [inputValue, setInputValue] = useState("");
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [answers, setAnswers] = useState([]);
+  
   const handleAskQuery = async (inputValue) => {
     await axios.post("http://localhost:8000/api/createQuery", {
       text: inputValue,
@@ -12,13 +13,14 @@ const MyComponent = ({ item, teamId, parentId }) => {
       reply_id: parentId,
     });
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if(inputValue.trim()==="")return;
     handleAskQuery(inputValue);
     setInputValue("");
   };
-  const fetchAnswersForQuestion = async (questionId) => {
+const fetchAnswersForQuestion = async (questionId) => {
     try {
       const { data } = await axios.get(
         `http://localhost:8000/api/allQuery?id=${questionId}`
@@ -30,24 +32,26 @@ const MyComponent = ({ item, teamId, parentId }) => {
     }
   };
 
+
   return (
    <div
       key={item.id}
-      className="flex flex-col items-center justify-center border p-4 my-3 rounded-lg shadow-md"
-    >
-      <div className="text-lg font-bold text-gray-900 mb-4">{item.text}</div>
+      className="flex flex-col items-start justify-center border p-4 my-3 rounded-lg shadow-md"  >
+        
+      <div className="flex flex-row text-lg font-bold text-gray-900 gap-2"><img className="rounded-lg -mt-1" width={35} height={27} src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png" alt="" />{item.text}</div>
       {selectedQuestion === item.id ? (
-        <div>
+        <div className="w-full">
           <div style={{maxHeight:'150px',overflow:'auto',WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin', scrollbarColor: 'rgb(183, 70, 225) violet',  borderRadius: '8px', boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)', padding: '10px' }} className="mt-2 mb-2">
-          {answers.map((answer) => (
-                <div key={answer.id} className="mt-2">
-                  <div className="flex items-start">
-                    <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 max-w-xs">
-                      {answer.text}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                {answers.map((answer) => (    
+          <div key={answer.id} className="mt-2">
+            <div className="flex items-start">
+              <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 ">
+                {answer.text}
+              </div>
+            </div>
+          </div>
+        
+      ))}
               </div>
           <form onSubmit={handleSubmit} className="mt-4 flex items-center">
            <input
@@ -89,6 +93,7 @@ const AddQuery = () => {
   const apiCall = async () => {
     const { data } = await axios.get("http://localhost:8000/api/allQuery");
     setfirst(data.queries);
+
   };
   const load = async () => {
     const { data } = await axios.get("http://localhost:8000/api/menteeDetails");
@@ -100,21 +105,30 @@ const AddQuery = () => {
     apiCall();
     load();
   }, []);
-  console.log(first);
+
   return first.length == 0 ?(
     <div>No Query Asked </div>
   ): (
-    <div className="max-w-md mx-auto mt-11">
-      {first &&
-        first.map((item) => (
+    <div className=" mx-auto mt-11" >
+  {first &&
+    first.map((item) => {
+      if (item.text && item.text.length > 0) {
+        
+        return (
           <MyComponent
             teamId={teamId}
             parentId={item.id}
             key={item.id}
             item={item}
           />
-        ))}
-    </div>
+        );
+      } else {
+        return null; // or any other action if needed
+      }
+    })}
+</div>
+
+
   );
 };
 
