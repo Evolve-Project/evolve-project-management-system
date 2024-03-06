@@ -3,7 +3,7 @@
 const multer = require('multer');
 const path = require('path');
 const storage = multer.memoryStorage();
-const upload = multer({
+exports.upload = multer({
     storage: storage,
     fileFilter: function (req, file, cb) {
         const ext = path.extname(file.originalname);
@@ -13,5 +13,3 @@ const upload = multer({
         cb(null, true);
     }
 }).single('file');
-
-module.exports = { upload };

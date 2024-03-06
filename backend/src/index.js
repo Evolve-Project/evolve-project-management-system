@@ -20,6 +20,7 @@ const milestoneRoutes = require('./routes/milestones_desc')
 const feedbackRoutes = require('./routes/feedback')
 const tasksRoutes = require('./routes/tasks')
 const registerUserRoutes = require('./routes/register_users')
+const dashboardRoutes = require('./routes/dashboard')
 
 //initialize routes
 app.use('/api', userRoutes);
@@ -29,6 +30,7 @@ app.use('/api', milestoneRoutes);
 app.use('/api', feedbackRoutes);
 app.use('/api', tasksRoutes);
 app.use('/api', registerUserRoutes);
+app.use('/api', dashboardRoutes);
 
 
 

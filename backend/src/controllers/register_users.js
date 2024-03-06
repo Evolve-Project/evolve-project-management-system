@@ -1,8 +1,8 @@
 // Import necessary modules
 const xlsx = require('xlsx');
-const { User, Mentee, Mentor } = require('../models');
-const { hash } = require('bcrypt');
-const validator = require('validator');
+// const { User, Mentee, Mentor } = require('../models');
+// const { hash } = require('bcrypt');
+// const validator = require('validator');
 const { addUser, validateColumns } = require('../services/user_services');
 
 
@@ -20,14 +20,15 @@ exports.addBulkUsers = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Invalid role' });
         }
 
-
+        // console.log("req.file in addBulkUsers in register_users controller: ", req.file);
+        // console.log("request in addBulkUsers in register_users controller: ", req);
         // Check if the file is an excel file
-        if (!req.file.mimetype.includes('excel')) {
-            return res.status(400).json({
-                success: false,
-                error: 'Please upload an excel file'
-            });
-        }
+        // if (!req.file.mimetype.includes('excel')) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Please upload an excel file'
+        //     });
+        // }
 
         // Access the uploaded file from req.file.buffer
         const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
@@ -80,8 +81,8 @@ exports.addBulkUsers = async (req, res) => {
             status: 'success',
             message: 'Users processed',
             details: {
-                totalUsersProcessed: data.length,
-                successfulAdds: data.length - userAlreadyExists.length - userFieldsMissing.length,
+                totalUsersProcessed: usersInfo.length,
+                successfulAdds: usersInfo.length - userAlreadyExists.length - userFieldsMissing.length,
                 userAlreadyExists: userAlreadyExists, // return the emails of the users that already exist
                 userFieldsMissing: userFieldsMissing // return the indices of the rows with missing fields
             }

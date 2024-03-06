@@ -87,7 +87,7 @@ async function addUser(userInfo, role) {
 
     // function to check if a attribute is null, undefined or empty
     function isInvalid(value) {
-        return value === null || value === undefined || validator.isEmpty(value);
+        return value === null || value === undefined || validator.isEmpty(String(value));
     }
     // console.log("userInfo in addUser in user_services: ", userInfo);
     try {
@@ -232,6 +232,7 @@ async function fetchTeamId(uid, role) {
         throw error;
     }
 }
+
 
 
 
