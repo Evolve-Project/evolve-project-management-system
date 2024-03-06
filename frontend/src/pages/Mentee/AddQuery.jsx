@@ -39,7 +39,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
         <div>
           {answers.map((answer) => (
             <div key={answer.id} className="mt-2">
-              {answer.text}
+              {answer.User.email.split("@")[0]}:::{answer.text}
             </div>
           ))}
           <form onSubmit={handleSubmit}>
@@ -85,10 +85,9 @@ const AddQuery = () => {
     apiCall();
     load();
   }, []);
-  console.log(first);
-  return first.length == 0 ?(
+  return first.length == 0 ? (
     <div>No Query Asked </div>
-  ): (
+  ) : (
     <div className="max-w-md mx-auto mt-11">
       {first &&
         first.map((item) => (

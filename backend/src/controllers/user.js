@@ -171,14 +171,8 @@ exports.addSingleUser = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const {
-      email,
-      first_name,
-      last_name,
-      University,
-      home_city,
-      dob,
-    } = req.body;
+    const { email, first_name, last_name, University, home_city, dob } =
+      req.body;
     const password = Math.random().toString(36).slice(-8);
     const hashedPassword = await hash(password, 10);
     const user = await User.create({
@@ -530,6 +524,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentor.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     } else {
       const mentee = await Mentee.findOne({
@@ -539,6 +539,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentee.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     }
     console.log(teamId);

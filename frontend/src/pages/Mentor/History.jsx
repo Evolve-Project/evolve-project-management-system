@@ -15,7 +15,6 @@ const History = () => {
     try {
       const { data } = await axios.get("http://localhost:8000/api/allQuery");
       setQuestions(data.queries);
-      console.log(data.queries);
     } catch (error) {
       console.error("Error fetching questions:", error);
     }
@@ -31,7 +30,6 @@ const History = () => {
       console.error("Error fetching answers:", error);
     }
   };
-  console.log(questions);
   return (
     <div className="space-y-4">
       {questions.map((question) => (
@@ -47,7 +45,7 @@ const History = () => {
             <div>
               {answers.map((answer) => (
                 <div key={answer.id} className="mt-2">
-                  {answer.text}
+                  {answer.User.email.split('@')[0]}:::{answer.text}
                 </div>
               ))}
             </div>
