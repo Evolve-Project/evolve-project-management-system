@@ -81,7 +81,7 @@ const Dashboard = () => {
     arrows: true,
   };
 
-  if (loading || loading1 === true || mentor === undefined) 
+  if (loading1 === true || mentor === undefined) 
     return (<UserDashboardShimmer/>);
   if (error || error1 === true)
     return (<ErrorPage/>);
@@ -139,7 +139,7 @@ const Dashboard = () => {
       <ToastContainer/>
       <div className="dashboard_title_container"> 
           <span className="dashboard_title_bar"></span>
-          <span className='dashboard_title'> Dashboard </span>
+          <span className='dashboard_title'>Dashboard </span>
           <span className="dashboard_title_bar"></span>
       </div>
     <div className="w-full p-4 box-border">
@@ -275,11 +275,11 @@ const Dashboard = () => {
                       <li className="flex flex-row items-center">
                         <div className="w-20 text-lg font-semibold">Role </div>
                         <div className="text-lg">
-                          :<span className="ml-4"> Mentor</span>
+                          :<span className="ml-4">Mentor</span>
                         </div>
                       </li>
                       <li className="flex flex-row items-start">
-                      <div className="w-20 text-lg font-semibold">Email </div>
+                      <div className="w-20 text-lg font-semibold">Email</div>
                       <div className="text-lg">
                           :<span className="ml-4">{user.User.email}</span>
                         </div>
@@ -300,7 +300,7 @@ const Dashboard = () => {
                       <li className="flex flex-row items-center">
                         <div className="w-20 text-lg font-semibold">Role </div>
                         <div className="text-lg">
-                          :<span className="ml-4"> Mentor</span>
+                          :<span className="ml-4">Mentor</span>
                         </div>
                       </li>
                       <li className="flex flex-row items-start">
