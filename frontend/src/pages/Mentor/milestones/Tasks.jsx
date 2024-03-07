@@ -46,7 +46,7 @@ function Tasks() {
     
     
     // Send data to the backend
-    axios.post('/create-task', taskData)
+    axios.post('http://localhost:8000/api/create-task', taskData)
       .then((response) => {
         // Handle success
         console.log('Task created successfully:', response.data);
