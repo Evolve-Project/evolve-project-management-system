@@ -9,22 +9,37 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 export function Bulkmentor() {
   const form = useForm({
     defaultValues: {
-      username: "",
+      file: undefined,
     },
   });
-  function onSubmit(values) {
-    // Do something with the form values.
-    console.log(values);
-  }
+
+  const onSubmit = (values) => {
+    const formData = new FormData();
+    formData.append('file', values.file[0]); // 'file' is the name of your input field
+
+    axios.post('http://localhost:8000/api/add-bulk-users', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+      console.log(response);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Upload File</FormLabel>

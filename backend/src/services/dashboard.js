@@ -170,53 +170,48 @@ async function getTotalCountsService() {
 // send user management table info
 async function getUsersWithRolesAndProjects() {
     try {
-        const mentees = await User.findAll({
-            attributes: ['name', 'role'],
+        const mentees = await Mentee.findAll({
+            attributes: ['first_name', 'last_name', 'University', 'dob', 'home_city'],
             include: [
                 {
-                    model: Mentee,
-                    attributes: [],
+                    model: Team,
+                    attributes: ['team_name'],
                     include: [
                         {
-                            model: Team,
-                            attributes: [],
-                            include: [
-                                {
-                                    model: Project,
-                                    attributes: ['name', 'project_name']
-                                }
-                            ]
-
+                            model: Project,
+                            attributes: ['name']
                         }
                     ]
-                }
+                },
+                {
+                    model: User,
+                    attributes: ["email"],
+                },
             ]
         });
 
 
-        const mentors = await User.findAll({
-            attributes: ['name', 'role'],
+        const mentors = await Mentor.findAll({
+            attributes: ['first_name', 'last_name', 'Experience'],
             include: [
                 {
-                    model: Mentor,
-                    attributes: [],
+                    model: Team,
+                    attributes: [ 'team_name'],
                     include: [
                         {
-                            model: Team,
-                            attributes: [],
-                            include: [
-                                {
-                                    model: Project,
-                                    attributes: ['name', 'project_name']
-                                }
-                            ]
-
+                            model: Project,
+                            attributes: ['name']
                         }
                     ]
-                }
+                },
+                {
+                    model: User,
+                    attributes: ["email"],
+                },
             ]
         });
-
+        console.log("-----------------------------------------------------");
+        console.log(mentors);
         return {
             mentors,
             mentees
