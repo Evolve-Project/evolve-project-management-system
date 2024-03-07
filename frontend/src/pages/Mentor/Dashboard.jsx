@@ -12,6 +12,8 @@ import "@/styles/userDashboard.css";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserDashboardShimmer from "@/components/UserDashboardShimmer";
+import ErrorPage from '@/components/ErrorPage';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -21,15 +23,17 @@ const api = axios.create({
 const Dashboard = () => {
   // const URL = "http://localhost:8000";
   const dispatch = useDispatch();
-  const { mentor } = useSelector((state) => state.mentor);
-  const [loading, setLoading] = useState(true);
+  const {loading, mentor, error } = useSelector((state) => state.mentor);
+  // console.log(loading, mentor, error);
+  const [loading1, setLoading1] = useState(true);
+  const [error1, setError1] = useState(false);
   const [enableEdit, setEnableEdit] = useState(false);
 
   useEffect(() => {
     dispatch(loadUser());
-    setLoading(false);
+    setLoading1(false);
   }, [dispatch, enableEdit]);
-  console.log(mentor);
+  // console.log(mentor);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -53,10 +57,11 @@ const Dashboard = () => {
       // console.log(data);
       const response = await api.post(`/api/updateMentor`, data);
       // console.log(response?.data?.message);
-      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
       editHandle();
+      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
     }catch(error){
       console.log(error);
+      setError1(true);
       toast.update(toastId, {render: `${error?.message}`, type: "error", isLoading: false, autoClose: 2000});
     }
   }
@@ -76,8 +81,11 @@ const Dashboard = () => {
     arrows: true,
   };
 
-  if (loading === true || mentor === undefined) 
-    return <div>Loading...!</div>;
+  if (loading || loading1 === true || mentor === undefined) 
+    return (<UserDashboardShimmer/>);
+  if (error || error1 === true)
+    return (<ErrorPage/>);
+
   return (
     // mentor && (
     //   <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-md">
@@ -234,14 +242,14 @@ const Dashboard = () => {
               <li className="flex flex-row items-center">
                 <div className="w-40 text-lg font-semibold">Project Name </div>
                 <div className="text-lg">
-                  :<span className="ml-4">{mentor.projectInfo.name}</span>
+                  :<span className="ml-4">{mentor.projectInfo?.name ? (mentor.projectInfo?.name) : "NO PROJECT ASSIGNED"}</span>
                 </div>
               </li>
               <li className="flex flex-row items-start">
                 <div className="min-w-40 text-lg font-semibold">Description </div>
                 <div className="text-lg flex flex-row">
                   <div>:</div>
-                  <div className="ml-4">{mentor.projectInfo.description}</div>
+                  <div className="ml-4">{mentor.projectInfo?.description ? (mentor.projectInfo?.description) : "NO PROJECT ASSIGNED"}</div>
                 </div>
               </li>
             </ul>
@@ -261,7 +269,7 @@ const Dashboard = () => {
                 mentor.teamMembersInfo.mentorsList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">
@@ -286,7 +294,7 @@ const Dashboard = () => {
                 mentor.teamMembersInfo.menteesList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">

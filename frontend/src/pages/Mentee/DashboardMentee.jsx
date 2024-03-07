@@ -12,6 +12,8 @@ import "@/styles/userDashboard.css";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserDashboardShimmer from "@/components/UserDashboardShimmer";
+import ErrorPage from '@/components/ErrorPage';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -21,15 +23,16 @@ const api = axios.create({
 const DashboardMentee = () => {
   // const URL = "http://localhost:8000";
   const dispatch = useDispatch();
-  const { mentee } = useSelector((state) => state.mentee);
-  const [loading, setLoading] = useState(true);
+  const {loading, mentee, error } = useSelector((state) => state.mentee);
+  const [loading1, setLoading1] = useState(true);
+  const [error1, setError1] = useState(false);
   const [enableEdit, setEnableEdit] = useState(false);
 
   useEffect(() => {
     dispatch(loadMenteeDetails());
-    setLoading(false);
+    setLoading1(false);
   }, [dispatch, enableEdit]);
-  console.log(mentee);
+  // console.log(mentee);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -64,10 +67,11 @@ const DashboardMentee = () => {
       // console.log(data);
       const response = await api.post(`/api/updateMentee`, data);
       // console.log(response?.data?.message);
-      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
       editHandle();
+      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
     }catch(error){
       console.log(error);
+      setError1(true);
       toast.update(toastId, {render: `${error?.message}`, type: "error", isLoading: false, autoClose: 2000});
     }
   }
@@ -87,8 +91,11 @@ const DashboardMentee = () => {
     arrows: true,
   };
 
-  if (loading === true || mentee === undefined) 
-    return <div>Loading...!</div>;
+  if (loading || loading1 === true || mentee === undefined) 
+    return (<UserDashboardShimmer/>);
+  if(error || error1 === true)
+    return (<ErrorPage/>);
+
   return (
     <div className='dashboard_container'>
       <ToastContainer/>
@@ -182,7 +189,7 @@ const DashboardMentee = () => {
                   :<span className="ml-4">{
                     enableEdit ? 
                       <input type="text" value={home_city} onChange={(e)=> setHome_City(e.target.value)} className="px-2 py-[2px] border-2 rounded-sm " /> :
-                      mentee.menteeInfo.home_city
+                      mentee.menteeInfo?.home_city
                   }</span>
                 </div>
               </li>
@@ -217,14 +224,14 @@ const DashboardMentee = () => {
               <li className="flex flex-row items-center">
                 <div className="w-40 text-lg font-semibold">Project Name </div>
                 <div className="text-lg">
-                  :<span className="ml-4">{mentee.projectInfo.name}</span>
+                  :<span className="ml-4">{mentee.projectInfo?.name ? (mentee.projectInfo?.name) : "NO PROJECT ASSIGNED"}</span>
                 </div>
               </li>
               <li className="flex flex-row items-start">
                 <div className="min-w-40 text-lg font-semibold">Description </div>
                 <div className="text-lg flex flex-row">
                   <div>:</div>
-                  <div className="ml-4">{mentee.projectInfo.description}</div>
+                  <div className="ml-4">{mentee.projectInfo?.description ? (mentee.projectInfo?.description) : "NO PROJECT ASSIGNED"}</div>
                 </div>
               </li>
             </ul>
@@ -244,7 +251,7 @@ const DashboardMentee = () => {
                 mentee.teamMembersInfo.mentorsList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">
@@ -269,7 +276,7 @@ const DashboardMentee = () => {
                 mentee.teamMembersInfo.menteesList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">

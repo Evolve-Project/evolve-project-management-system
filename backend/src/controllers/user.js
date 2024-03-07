@@ -403,14 +403,14 @@ exports.mentorDetails = async (req, res) => {
           total_team_members: mentorDetails.Team?.total_team_members,
         },
         projectInfo: {
-          id: mentorDetails.Team.Project?.id,
-          name: mentorDetails.Team.Project?.name,
-          description: mentorDetails.Team.Project?.description,
-          start_date: mentorDetails.Team.Project?.start_date,
-          end_date: mentorDetails.Team.Project?.end_date,
-          status: mentorDetails.Team.Project?.status,
-          git: mentorDetails.Team.Project?.git_repository_link,
-          trello: mentorDetails.Team.Project?.trello_board_link,
+          id: mentorDetails.Team?.Project?.id,
+          name: mentorDetails.Team?.Project?.name,
+          description: mentorDetails.Team?.Project?.description,
+          start_date: mentorDetails.Team?.Project?.start_date,
+          end_date: mentorDetails.Team?.Project?.end_date,
+          status: mentorDetails.Team?.Project?.status,
+          git: mentorDetails.Team?.Project?.git_repository_link,
+          trello: mentorDetails.Team?.Project?.trello_board_link,
         },
         teamMembersInfo: {
           mentorsList,
@@ -511,12 +511,12 @@ exports.menteeDetails = async (req, res) => {
           total_team_members: menteeDetails.Team?.total_team_members,
         },
         projectInfo: {
-          id: menteeDetails.Team.Project?.id,
-          name: menteeDetails.Team.Project?.name,
-          description: menteeDetails.Team.Project?.description,
-          start_date: menteeDetails.Team.Project?.start_date,
-          end_date: menteeDetails.Team.Project?.end_date,
-          status: menteeDetails.Team.Project?.status,
+          id: menteeDetails.Team?.Project?.id,
+          name: menteeDetails.Team?.Project?.name,
+          description: menteeDetails.Team?.Project?.description,
+          start_date: menteeDetails.Team?.Project?.start_date,
+          end_date: menteeDetails.Team?.Project?.end_date,
+          status: menteeDetails.Team?.Project?.status,
         },
         teamMembersInfo: {
           mentorsList,
@@ -563,7 +563,7 @@ exports.updateMentor = async (req, res) => {
       console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentor.toJSON());
       res.status(200).json({
         success: true,
-        message: "Mentor details updated successfully!",
+        message: "Updated successfully!",
       })
     }else{
       res.status(404).json({
@@ -597,7 +597,7 @@ exports.updateMentee = async (req, res) => {
       console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentee.toJSON());
       res.status(200).json({
         success: true,
-        message: "Mentee details updated successfully!",
+        message: "Updated successfully!",
       })
     }else{
       res.status(404).json({
