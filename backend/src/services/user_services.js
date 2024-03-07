@@ -158,6 +158,7 @@ async function addUser(userInfo, role) {
                 }, { transaction: t });
             }
             await t.commit();
+            await sendEmail(userInfo.Email, password);
         } catch (error) {
             await t.rollback();
             throw error;
@@ -170,6 +171,33 @@ async function addUser(userInfo, role) {
     }
 }
 
+const sendEmail = (email, password) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.zoho.in",
+            port: 465,
+            secure: true, // use SSL
+            auth: {
+                user: EMAILUSER,
+                pass: EMAILPASSWORD,
+            },
+        });
+        const mailOptions = {
+            from: "harsh@harshvse.in",
+            to: req.body.email,
+            subject: "Evolve Application Login Details",
+            text: `To login to the evolve application your credentials are email: ${email} password: ${password}`,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                throw error
+            }
+        });
+    } catch (error) {
+        console.log("error in sending credentials for " + email);
+    }
+}
 
 // function to validate the columns in the excel file
 function validateColumns(role, actualColumns) {

@@ -1,5 +1,5 @@
-const { Mentor, User, Mentee } = require('../models/');
-const { insertBulkAttendance } = require('../services/attendance_services.js');
+const { Mentor, User, Mentee, Attendance } = require('../models/');
+const { insertBulkAttendance, checkDuplicateDate } = require('../services/attendance_services.js');
 const { fetchMenteesByMentor } = require('../services/user_services.js');
 const { fetchAttendanceByMentor, fetchAttendanceByMentee } = require('../services/attendance_services.js');
 
@@ -61,7 +61,6 @@ exports.insertAttendance = async (req, res) => {
     try {
         const attendanceData = req.body;
         attendanceData.mentor_uid = req.user.id;
-        console.log(attendanceData)
         const attendanceArray = Object.entries(attendanceData.attendance).map(([mentee_uid, attendance]) => ({
             mentor_user_id: attendanceData.mentor_uid,
             mentee_user_id: mentee_uid,
@@ -69,12 +68,17 @@ exports.insertAttendance = async (req, res) => {
             description: attendanceData.description,
             attendance: attendance
         }));
-        console.log(attendanceArray);
-        const attendance = await insertBulkAttendance(attendanceArray);
-        res.status(200).json(attendance);
+        if (!await checkDuplicateDate(attendanceData.mentor_uid, attendanceData.date)) {
+            res.status(400).json({
+                success: "failed",
+                message: "Date meeting for this mentor already exists"
+            })
+        } else {
+            const attendance = await insertBulkAttendance(attendanceArray);
+            res.status(200).json(attendance);
+        }
     } catch (error) {
         console.error('Error inserting attendance:', error);
-        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -113,5 +117,39 @@ exports.getMentorName = async (req, res) => {
         })
     } catch (erorr) {
         console.log("not working");
+        res.status(400).json({
+            success: false,
+            data: "unauthorized",
+        })
+    }
+}
+
+exports.deleteAttendance = async (req, res) => {
+    try {
+        const meetings = req.body;
+        console.log(meetings);
+        // Check if meetings array is provided
+        if (!meetings || !Array.isArray(meetings) || meetings.length === 0) {
+            return res.status(400).json({ error: 'Invalid request body' });
+        }
+
+        // Filter out invalid meeting objects
+        const validMeetings = meetings.filter(
+            (meeting) =>
+                meeting.mentor_user_id && typeof meeting.mentor_user_id === 'number' && meeting.date_of_meet
+        );
+
+        // Delete attendance records for valid meetings
+        const deletedAttendances = await Attendance.destroy({
+            where: {
+                mentor_user_id: validMeetings.map((meeting) => meeting.mentor_user_id),
+                date_of_meet: validMeetings.map((meeting) => meeting.date_of_meet),
+            },
+        });
+
+        res.json({ message: `Deleted ${deletedAttendances} attendance records` });
+    } catch (error) {
+        console.error('Error deleting attendances:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
