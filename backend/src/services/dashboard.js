@@ -183,7 +183,7 @@ async function getUsersWithRolesAndProjects() {
                             include: [
                                 {
                                     model: Project,
-                                    attributes: [['name', 'project_name']]
+                                    attributes: ['name', 'project_name']
                                 }
                             ]
 
@@ -207,7 +207,7 @@ async function getUsersWithRolesAndProjects() {
                             include: [
                                 {
                                     model: Project,
-                                    attributes: [['name', 'project_name']]
+                                    attributes: ['name', 'project_name']
                                 }
                             ]
 

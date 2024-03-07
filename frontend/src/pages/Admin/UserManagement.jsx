@@ -2,7 +2,6 @@
 import React, { useState, useMemo,useEffect } from 'react';
 import "@/styles/title.css";
 import { UserCOLUMNS } from "@/components/AdminComponents/Columns";
-import userdata from "@/components/AdminComponents/userdata.json";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 import "@/styles/table.css";
 import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
@@ -17,7 +16,23 @@ import "../../styles/dropdown.css";
 import { Addmentee } from '@/components/forms/addnewmentee';
 import { Addmentor } from '@/components/forms/addnewmentor';
 import { Bulkmentee, Bulkmentor } from '@/components/forms/bulkusers';
+import axios from "axios";
 const UserManagement = () => {
+  const [userdata, setuserData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user-management-table"
+        );
+        setuserData(response.data);
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   let columns = useMemo(() => UserCOLUMNS, []);
   let data = useMemo(() => userdata, []);
   const [params] = useSearchParams();
