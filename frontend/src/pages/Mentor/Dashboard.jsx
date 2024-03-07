@@ -227,32 +227,48 @@ const Dashboard = () => {
         <div>
           <div className="border-blue-800 border-l-4 bg-blue-100 p-2 rounded-sm flex flex-row justify-between items-center pl-4 pr-8">
               <div className=" text-2xl font-medium">Project Information</div>
-              <div className=" p-[6px] px-3 bg-[#7B76F1] text-white rounded-md cursor-pointer flex flex-row gap-2" onClick={()=> navigate("/project")}>
-                <span>View More</span>
-              </div>
+              {
+                mentor.projectInfo?.name &&
+                <div className=" p-[6px] px-3 bg-[#7B76F1] text-white rounded-md cursor-pointer flex flex-row gap-2" onClick={()=> navigate("/project")}>
+                  <span>View More</span>
+                </div>
+              }
           </div>
           <div className=" bg-slate-100 rounded-sm py-4 px-10">
-            <ul className="flex flex-col gap-2">
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Team Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentor.teamInfo.team_name}</span>
+            {
+              mentor.projectInfo?.name ?
+              <ul className="flex flex-col gap-2">
+                <li className="flex flex-row items-center">
+                  <div className="w-40 text-lg font-semibold">Team Name </div>
+                  <div className="text-lg">
+                    :<span className="ml-4">{mentor.teamInfo.team_name}</span>
+                  </div>
+                </li>
+                <li className="flex flex-row items-center">
+                  <div className="w-40 text-lg font-semibold">Project Name </div>
+                  <div className="text-lg">
+                    :<span className="ml-4">{mentor.projectInfo?.name}</span>
+                  </div>
+                </li>
+                <li className="flex flex-row items-start">
+                  <div className="min-w-40 text-lg font-semibold">Description </div>
+                  <div className="text-lg flex flex-row">
+                    <div>:</div>
+                    <div className="ml-4">{mentor.projectInfo?.description}</div>
+                  </div>
+                </li>
+              </ul> :
+              <div className="flex flex-col items-center justify-center text-lg gap-2 p-6">
+                <div>No Project assigned !!</div>
+                <div>
+                  <span>Click here to assign a </span>
+                  <span className=" p-2 bg-[#7B76F1] text-white rounded-md cursor-pointer" onClick={()=> navigate("/project")}>
+                    <span>New Project</span>
+                  </span>
                 </div>
-              </li>
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Project Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentor.projectInfo?.name ? (mentor.projectInfo?.name) : "NO PROJECT ASSIGNED"}</span>
-                </div>
-              </li>
-              <li className="flex flex-row items-start">
-                <div className="min-w-40 text-lg font-semibold">Description </div>
-                <div className="text-lg flex flex-row">
-                  <div>:</div>
-                  <div className="ml-4">{mentor.projectInfo?.description ? (mentor.projectInfo?.description) : "NO PROJECT ASSIGNED"}</div>
-                </div>
-              </li>
-            </ul>
+              </div>
+
+            }
           </div>
         </div>
 
