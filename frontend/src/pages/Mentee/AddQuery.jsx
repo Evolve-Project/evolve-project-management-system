@@ -12,6 +12,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
       team_id: teamId,
       reply_id: parentId,
     });
+    fetchAnswersForQuestion(parentId);
   };
 
   const handleSubmit = (event) => {
@@ -47,6 +48,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
           src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png"
           alt=""
         />
+        {item.User.email.split("@")[0]}::
         {item.text}
       </div>
       {selectedQuestion === item.id ? (
@@ -69,7 +71,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
                 <div key={answer.id} className="mt-2">
                   <div className="flex items-start">
                     <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 ">
-                      {answer.text}
+                      {answer.User.email.split("@")[0]}::{answer.text}
                     </div>
                   </div>
                 </div>
