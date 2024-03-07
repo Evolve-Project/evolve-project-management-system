@@ -62,11 +62,13 @@ function Tasks() {
         console.error('Error creating task:', error);
       });
   };
+
+  
  
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <div className='flex justify-end mx-10'>
+        <div className='flex justify-left mx-10'>
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>Create Task</Button>
           </DialogTrigger>

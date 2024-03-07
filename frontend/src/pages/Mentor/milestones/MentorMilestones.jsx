@@ -20,7 +20,7 @@ function MentorMilestones() {
 
  
   const [milestoneDescId, setMilestoneDescId] = useState('');
-
+  const [tasks, setTasks] = useState([]);
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
@@ -36,7 +36,31 @@ function MentorMilestones() {
     }
 
     fetchMilestoneDesc();
-  }, []);
+  }, [tasks]);
+
+  const [menteeNames, setMenteeNames] = useState({}); // State to store mentee names
+
+  useEffect(() => {
+    // Function to fetch mentee names for each task
+    const fetchMenteeNames = async (menteeIds) => {
+      try {
+        const response = await fetch('/api/mentee/names', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ menteeIds }),
+        });
+        const data = await response.json();
+        setMenteeNames(data); // Update menteeNames state with fetched data
+      } catch (error) {
+        console.error('Error fetching mentee names:', error);
+      }
+    };
+
+    // Extract menteeIds from tasks
+     // Fetch mentee names when component mounts
+  }, [tasks]);
 
 
 
@@ -46,7 +70,7 @@ function MentorMilestones() {
     return date.toLocaleDateString('en-US');
   };
  
-const [tasks, setTasks] = useState([]);
+
 const fetchTasks = async (milestoneDescId) => {
     try {
       const response = await axios.post('http://localhost:8000/api/get-tasks', { milestoneDescId });
@@ -134,10 +158,8 @@ const fetchTasks = async (milestoneDescId) => {
       ) : (
         <ChakraProvider theme={theme}>
         <div className="max-w-xlg mx-auto mt-11">
-          <div className="feedback_title_container"> 
-          <span className="feedback_title">Task</span>
-        </div>
-          <div className="p-4">
+          
+          
             
           <Tasks/>
           <table className="table-auto border-collapse w-full">
@@ -155,12 +177,12 @@ const fetchTasks = async (milestoneDescId) => {
                     <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
                       <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
                       <td className="py-2 px-3 text-left">{task.task_desc}</td>
-                      <td className="py-2 px-3 text-left"></td>
+                      <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                       <td className="py-2 px-3 text-left"><Select placeholder='In Progress'>
                           <option value='option1'>Completed</option>
                         </Select></td>
                       <td className="py-2 px-3 text-left relative">
-                        
+                      {}
 
                       </td>
                       
@@ -170,12 +192,12 @@ const fetchTasks = async (milestoneDescId) => {
               </table>
           </div>
           <button
-            className="fixed top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            className="flex top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
             onClick={() => setToggle(true)}
           >
             Back
           </button>
-        </div>
+        
         </ChakraProvider>
       )}
     </>
