@@ -28,7 +28,6 @@ import MentorMilestones from "./pages/Mentor/milestones/MentorMilestones";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
-  console.log(role);
   return (
     <BrowserRouter>
       <Routes>

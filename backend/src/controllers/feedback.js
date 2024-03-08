@@ -108,7 +108,7 @@ const getAllProjectDetails = async (req, res) => {
         {
           model: Project,
           require: true,
-          attributes: ["name"],
+          attributes: ["name","description","git_repository_link","trello_board_link"],
         },
       ],
     });

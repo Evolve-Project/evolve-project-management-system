@@ -26,88 +26,106 @@ import { Select } from '@chakra-ui/react'
 
 
 function Tasks() {
-  const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
+  const [assignee, setAssignee] = useState('');
+  const [taskname, setTaskname] = useState('');
 
   
   const handleCreateTask = (e) => {
+    {console.log("create task called")}
     e.preventDefault();
     const taskData = {
+      taskname,
       date,
-      attendance,
-      description
+      description,
+      assignee
     };
     console.log('Task data:', taskData);
-    // Here, you can perform any client-side operations like validation before submitting
-    // Alternatively, you can send this data to your backend API for processing
-    // axios.post('/create-task', taskData).then((response) => { handle success or error });
+    
+    
+    // Send data to the backend
+    axios.post('http://localhost:8000/api/create-task', taskData)
+      .then((response) => {
+        // Handle success
+        console.log('Task created successfully:', response.data);
+        // Optionally, you can close the dialog here
+        setTaskname('');
+      setDate('');
+      setDescription('');
+      setAssignee('');
+        setOpen(false);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error creating task:', error);
+      });
   };
+
+  
  
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-      <div className='flex justify-end mx-10'>
-        <DialogTrigger asChild>
-          <Button onClick={() => setOpen(true)}>Create Task</Button>
-        </DialogTrigger>
-      </div>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create a new Task</DialogTitle>
-          <DialogDescription>Create Task</DialogDescription>
-        </DialogHeader>
-        <Form onSubmit={handleCreateTask}>
-          <div className="space-y-8">
-            <div className="flex flex-col">
-              <label className="text-black">Name of the task</label>
-              <textarea
-                placeholder="Task Name"
-                value={name}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+        <div className='flex justify-left mx-10'>
+          <DialogTrigger asChild>
+            <Button onClick={() => setOpen(true)}>Create Task</Button>
+          </DialogTrigger>
+        </div>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create a new Task</DialogTitle>
+            <DialogDescription>Create Task</DialogDescription>
+          </DialogHeader>
+          <Form >
+            <div className="space-y-8">
+              <div className="flex flex-col">
+                <label className="text-black">Name of the task</label>
+                <textarea
+                  placeholder="Task Name"
+                  value={taskname}
+                  onChange={(e) => setTaskname(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-black">Description</label>
+                <textarea
+                  placeholder="Task description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="text-black">Assign Mentee</label>
+                <Select
+                  value={assignee}
+                  onChange={(e) => setAssignee(e.target.value)}
+                  placeholder='Choose'>
+                  <option value='Purnima'>Purnima</option>
+                  <option value='Harsha'>Harsha</option>
+                  <option value='Ashutosh'>Ashutosh</option>
+                  <option value='Monish'>Monish</option>
+                  <option value='Shubham'>Shubham</option>
+                </Select>
+              </div>
+              <div className="mb-4flex flex-col">
+                <label className="text-black">Due Date</label>
+                <br />
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+              <Button type="submit" onClick={(e) => { handleCreateTask(e); setOpen(false); }}>Submit</Button>
+              
             </div>
-
-            <div className="flex flex-col" >
-              <label className="text-black">Description</label>
-              <textarea
-                placeholder="Task description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-4">
-            <label className="text-black">  Assign Mentee</label>
-            <Select placeholder='Choose'>
-                          <option value='option1'>Purnima</option>
-                          <option value='option1'>Harsha</option>
-                          <option value='option1'>Ashutosh</option>
-                          <option value='option1'>Monish</option>
-                          <option value='option1'>Shubham</option>
-            </Select>
-                
-            </div>
-            <div className="mb-4flex flex-col">
-            <label className="text-black">  Due Date</label>
-            <br />
-            <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
-            
-            <Button type="submit">Submit</Button>
-          </div>
-        </Form>
-      </DialogContent>
-    </Dialog>
-    <br />
-    
-
-    
+            {console.log("this should call create task")}
+          </Form>
+        </DialogContent>
+      </Dialog>
+      <br />
     </div>
   )
 }

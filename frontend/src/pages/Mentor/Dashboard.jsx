@@ -12,6 +12,8 @@ import "@/styles/userDashboard.css";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserDashboardShimmer from "@/components/UserDashboardShimmer";
+import ErrorPage from '@/components/ErrorPage';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -21,15 +23,17 @@ const api = axios.create({
 const Dashboard = () => {
   // const URL = "http://localhost:8000";
   const dispatch = useDispatch();
-  const { mentor } = useSelector((state) => state.mentor);
-  const [loading, setLoading] = useState(true);
+  const {loading, mentor, error } = useSelector((state) => state.mentor);
+  // console.log(loading, mentor, error);
+  const [loading1, setLoading1] = useState(true);
+  const [error1, setError1] = useState(false);
   const [enableEdit, setEnableEdit] = useState(false);
 
   useEffect(() => {
     dispatch(loadUser());
-    setLoading(false);
+    setLoading1(false);
   }, [dispatch, enableEdit]);
-  console.log(mentor);
+  // console.log(mentor);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -53,10 +57,11 @@ const Dashboard = () => {
       // console.log(data);
       const response = await api.post(`/api/updateMentor`, data);
       // console.log(response?.data?.message);
-      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
       editHandle();
+      toast.update(toastId, {render: `${response?.data?.message}`, type: "success", isLoading: false, autoClose: 2000});
     }catch(error){
       console.log(error);
+      setError1(true);
       toast.update(toastId, {render: `${error?.message}`, type: "error", isLoading: false, autoClose: 2000});
     }
   }
@@ -76,8 +81,11 @@ const Dashboard = () => {
     arrows: true,
   };
 
-  if (loading === true || mentor === undefined) 
-    return <div>Loading...!</div>;
+  if (loading1 === true || mentor === undefined) 
+    return (<UserDashboardShimmer/>);
+  if (error || error1 === true)
+    return (<ErrorPage/>);
+
   return (
     // mentor && (
     //   <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-md">
@@ -131,7 +139,7 @@ const Dashboard = () => {
       <ToastContainer/>
       <div className="dashboard_title_container"> 
           <span className="dashboard_title_bar"></span>
-          <span className='dashboard_title'> Dashboard </span>
+          <span className='dashboard_title'>Dashboard </span>
           <span className="dashboard_title_bar"></span>
       </div>
     <div className="w-full p-4 box-border">
@@ -219,32 +227,48 @@ const Dashboard = () => {
         <div>
           <div className="border-blue-800 border-l-4 bg-blue-100 p-2 rounded-sm flex flex-row justify-between items-center pl-4 pr-8">
               <div className=" text-2xl font-medium">Project Information</div>
-              <div className=" p-[6px] px-3 bg-[#7B76F1] text-white rounded-md cursor-pointer flex flex-row gap-2" onClick={()=> navigate("/project")}>
-                <span>View More</span>
-              </div>
+              {
+                mentor.projectInfo?.name &&
+                <div className=" p-[6px] px-3 bg-[#7B76F1] text-white rounded-md cursor-pointer flex flex-row gap-2" onClick={()=> navigate("/project")}>
+                  <span>View More</span>
+                </div>
+              }
           </div>
           <div className=" bg-slate-100 rounded-sm py-4 px-10">
-            <ul className="flex flex-col gap-2">
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Team Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentor.teamInfo.team_name}</span>
+            {
+              mentor.projectInfo?.name ?
+              <ul className="flex flex-col gap-2">
+                <li className="flex flex-row items-center">
+                  <div className="w-40 text-lg font-semibold">Team Name </div>
+                  <div className="text-lg">
+                    :<span className="ml-4">{mentor.teamInfo.team_name}</span>
+                  </div>
+                </li>
+                <li className="flex flex-row items-center">
+                  <div className="w-40 text-lg font-semibold">Project Name </div>
+                  <div className="text-lg">
+                    :<span className="ml-4">{mentor.projectInfo?.name}</span>
+                  </div>
+                </li>
+                <li className="flex flex-row items-start">
+                  <div className="min-w-40 text-lg font-semibold">Description </div>
+                  <div className="text-lg flex flex-row">
+                    <div>:</div>
+                    <div className="ml-4">{mentor.projectInfo?.description}</div>
+                  </div>
+                </li>
+              </ul> :
+              <div className="flex flex-col items-center justify-center text-lg gap-2 p-6">
+                <div>No Project assigned !!</div>
+                <div>
+                  <span>Click here to assign a </span>
+                  <span className=" p-2 bg-[#7B76F1] text-white rounded-md cursor-pointer" onClick={()=> navigate("/project")}>
+                    <span>New Project</span>
+                  </span>
                 </div>
-              </li>
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Project Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentor.projectInfo.name}</span>
-                </div>
-              </li>
-              <li className="flex flex-row items-start">
-                <div className="min-w-40 text-lg font-semibold">Description </div>
-                <div className="text-lg flex flex-row">
-                  <div>:</div>
-                  <div className="ml-4">{mentor.projectInfo.description}</div>
-                </div>
-              </li>
-            </ul>
+              </div>
+
+            }
           </div>
         </div>
 
@@ -261,17 +285,17 @@ const Dashboard = () => {
                 mentor.teamMembersInfo.mentorsList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">
                         <div className="w-20 text-lg font-semibold">Role </div>
                         <div className="text-lg">
-                          :<span className="ml-4"> Mentor</span>
+                          :<span className="ml-4">Mentor</span>
                         </div>
                       </li>
                       <li className="flex flex-row items-start">
-                      <div className="w-20 text-lg font-semibold">Email </div>
+                      <div className="w-20 text-lg font-semibold">Email</div>
                       <div className="text-lg">
                           :<span className="ml-4">{user.User.email}</span>
                         </div>
@@ -286,13 +310,13 @@ const Dashboard = () => {
                 mentor.teamMembersInfo.menteesList.map((user)=>{
                   return (
                   <div className="dashboard_card  min-w-96">
-                    <div className="text-lg font-semibold">{user.first_name+" "+user.last_name}</div>
+                    <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
                       <li className="flex flex-row items-center">
                         <div className="w-20 text-lg font-semibold">Role </div>
                         <div className="text-lg">
-                          :<span className="ml-4"> Mentor</span>
+                          :<span className="ml-4">Mentor</span>
                         </div>
                       </li>
                       <li className="flex flex-row items-start">

@@ -10,6 +10,25 @@ exports.insertBulkAttendance = async (dataArray) => {
     }
 };
 
+exports.checkDuplicateDate = async (mentor_uid, date) => {
+    const existingRecord = await Attendance.findOne({
+        where: {
+            mentor_user_id: mentor_uid,
+            date_of_meet: date
+        }
+    });
+
+    if (existingRecord) {
+        // A record with the same mentor_uid and date already exists
+        console.log('Record already exists');
+        return false
+    } else {
+        // No existing record found, you can proceed to create a new one
+        console.log('No existing record, you can create a new one')
+        return true
+    }
+}
+
 
 
 // fetch attendance of all the mentees having same team id as the mentor
