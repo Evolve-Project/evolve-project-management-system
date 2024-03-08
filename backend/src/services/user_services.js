@@ -67,6 +67,7 @@ async function fetchMentorsByMentee(menteeUid) {
 
 // service to add a user to the database
 async function addUser(userInfo, role) {
+
     // sample userInfo object
     // {
     //     "role": "Mentee",
@@ -79,7 +80,7 @@ async function addUser(userInfo, role) {
     // }
     // or
     // {
-    //     "email": "mentor@example.com",
+    //     "Email": "mentor@example.com",
     //     "First Name": "Jane",
     //     "Last Name": "Doe",
     //     "Experience": "5 years"
@@ -87,7 +88,7 @@ async function addUser(userInfo, role) {
 
     // function to check if a attribute is null, undefined or empty
     function isInvalid(value) {
-        return value === null || value === undefined || validator.isEmpty(value);
+        return value === null || value === undefined || validator.isEmpty(String(value));
     }
     // console.log("userInfo in addUser in user_services: ", userInfo);
     try {
@@ -120,6 +121,7 @@ async function addUser(userInfo, role) {
                 return { error: 'Required field is missing' };
             }
         }
+
 
         // generate a random password for each user
         const password = Math.random().toString(36).slice(-8);
@@ -158,18 +160,46 @@ async function addUser(userInfo, role) {
                 }, { transaction: t });
             }
             await t.commit();
+            await sendEmail(userInfo.Email, password);
         } catch (error) {
             await t.rollback();
             throw error;
         }
 
-        return { success: true };
+        return { success: true, message: 'User added successfully', role: role };
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
 
+const sendEmail = (email, password) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.zoho.in",
+            port: 465,
+            secure: true, // use SSL
+            auth: {
+                user: EMAILUSER,
+                pass: EMAILPASSWORD,
+            },
+        });
+        const mailOptions = {
+            from: "harsh@harshvse.in",
+            to: req.body.email,
+            subject: "Evolve Application Login Details",
+            text: `To login to the evolve application your credentials are email: ${email} password: ${password}`,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                throw error
+            }
+        });
+    } catch (error) {
+        console.log("error in sending credentials for " + email);
+    }
+}
 
 // function to validate the columns in the excel file
 function validateColumns(role, actualColumns) {
@@ -232,6 +262,7 @@ async function fetchTeamId(uid, role) {
         throw error;
     }
 }
+
 
 
 
