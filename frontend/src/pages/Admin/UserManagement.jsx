@@ -1,15 +1,13 @@
-'use client'
+
 import React, { useState, useMemo,useEffect } from 'react';
 import "@/styles/title.css";
 import { UserCOLUMNS } from "@/components/AdminComponents/Columns";
-import userdata from "@/components/AdminComponents/userdata.json";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 import "@/styles/table.css";
 import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import Popup from '@/components/AdminComponents/popup';
-import { useLocation,useSearchParams } from 'react-router-dom';
-
+import { useLocation,useSearchParams } from 'react-router-dom'
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -17,9 +15,28 @@ import "../../styles/dropdown.css";
 import { Addmentee } from '@/components/forms/addnewmentee';
 import { Addmentor } from '@/components/forms/addnewmentor';
 import { Bulkmentee, Bulkmentor } from '@/components/forms/bulkusers';
+import axios from "axios";
+
 const UserManagement = () => {
-  let columns = useMemo(() => UserCOLUMNS, []);
-  let data = useMemo(() => userdata, []);
+  const [userdata, setuserData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user-management-table"
+        );
+        const mentors = response.data.mentors.map(mentor => ({ ...mentor, role: 'Mentor' }));
+        const mentees = response.data.mentees.map(mentee => ({ ...mentee, role: 'Mentee' }));
+        setuserData([...mentors, ...mentees]);
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);  
+  let columns =  UserCOLUMNS;
+  let data =  userdata;
   const [params] = useSearchParams();
   const roleFromParams = params.get("role");
   const [role, setRole] = useState(roleFromParams || "All");
