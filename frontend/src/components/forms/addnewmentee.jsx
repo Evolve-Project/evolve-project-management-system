@@ -16,7 +16,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addMentee } from "@/redux/Actions/User";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export function Addmentee() {
   const { message, error } = useSelector((state) => state.message);
   const dispatch = useDispatch();
@@ -27,14 +28,15 @@ export function Addmentee() {
 
   useEffect(() => {
     if (message) {
-      // alert.success(message);
+      toast.success(message);
       dispatch({ type: "clearMessage" });
     }
     if (error) {
-      // alert.error(error);
+      toast.error(error);
       dispatch({ type: "clearErrors" });
     }
   }, [message, error, dispatch]);
+  
   const formSchema = z.object({
     first_name: z.string().min(2, {
       message: "First Name must be at least 2 characters.",
@@ -67,6 +69,8 @@ export function Addmentee() {
     },
   });
   return (
+    <>
+    <ToastContainer position="top-right"/>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
@@ -150,5 +154,6 @@ export function Addmentee() {
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+    </>
   );
 }
