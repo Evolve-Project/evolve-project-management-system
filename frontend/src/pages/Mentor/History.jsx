@@ -39,16 +39,18 @@ const MyComponent = ({ item, teamId, parentId }) => {
       key={item.id}
       className="flex flex-col items-start justify-center border p-4 my-3 rounded-lg shadow-md"
     >
-      <div className="flex flex-row text-lg font-bold text-gray-900 gap-2">
-        <img
-          className="rounded-lg -mt-1"
-          width={35}
-          height={27}
-          src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png"
-          alt=""
-        />
-        {item.User.email.split("@")[0]}::
-        {item.text}
+      <div className="flex flex-col text-lg font-bold text-gray-900 gap-2">
+        <div className="flex flex-row gap-2">
+          <img
+            className="rounded-lg -mt-1"
+            width={35}
+            height={27}
+            src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png"
+            alt=""
+          />
+          {item.User.email.split("@")[0]}
+        </div>
+        <div className="text-2xl">{item.text}</div>
       </div>
       {selectedQuestion === item.id ? (
         <div className="w-full">
@@ -67,9 +69,9 @@ const MyComponent = ({ item, teamId, parentId }) => {
               className="mt-2 mb-2"
             >
               {answers.map((answer) => (
-                <div key={answer.id} className="mt-2">
+                <div key={answer.id}>
                   <div className="flex items-start">
-                    <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 ">
+                    <div className="text-black p-1">
                       {answer.User.email.split("@")[0]}::{answer.text}
                     </div>
                   </div>
@@ -78,10 +80,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
             </div>
           )}
 
-          <form
-            onSubmit={handleSubmit}
-            className="mt-4 flex items-center"
-          >
+          <form onSubmit={handleSubmit} className="mt-4 flex items-center">
             <input
               type="text"
               value={inputValue}
@@ -99,7 +98,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
         </div>
       ) : (
         <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-4 bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={() => fetchAnswersForQuestion(item.id)}
         >
           See more
@@ -108,51 +107,4 @@ const MyComponent = ({ item, teamId, parentId }) => {
     </div>
   );
 };
-
-const History = () => {
-  const [first, setfirst] = useState([]);
-  const [mentee, setMentee] = useState([]);
-  const [teamId, setTeamId] = useState();
-  const [inputValue, setInputValue] = useState("");
-  // console.log("ok");
-  // mentor.teamInfo.id
-
-  const apiCall = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/allQuery");
-    setfirst(data.queries);
-  };
-  const load = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/mentorDetails");
-    setMentee(data.formattedResponse);
-    setTeamId(data.formattedResponse.teamInfo.id);
-  };
-  // console.log(teamId);
-  useEffect(() => {
-    apiCall();
-    load();
-  }, []);
-
-  return first.length == 0 ? (
-    <div>No Query Asked </div>
-  ) : (
-    <div className=" mx-auto mt-11">
-      {first &&
-        first.map((item) => {
-          if (item.text && item.text.length > 0) {
-            return (
-              <MyComponent
-                teamId={teamId}
-                parentId={item.id}
-                key={item.id}
-                item={item}
-              />
-            );
-          } else {
-            return null; // or any other action if needed
-          }
-        })}
-    </div>
-  );
-};
-
-export default History;
+export default MyComponent;
