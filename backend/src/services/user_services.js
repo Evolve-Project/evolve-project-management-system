@@ -79,7 +79,7 @@ async function addUser(userInfo, role) {
     // }
     // or
     // {
-    //     "email": "mentor@example.com",
+    //     "Email": "mentor@example.com",
     //     "First Name": "Jane",
     //     "Last Name": "Doe",
     //     "Experience": "5 years"
