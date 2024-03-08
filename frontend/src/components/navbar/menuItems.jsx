@@ -63,18 +63,12 @@ const mentor = [
   },
   {
     id: 4,
-    title: "Projects",
-    icon: <IoIosGlobe/>,
-    link: "/project",
-  },
-  {
-    id: 5,
     title: "Query",
     icon: <FaClipboardQuestion/>,
     link: "/query",
   },
   {
-    id: 4,
+    id: 5,
     title: "Milestones",
     icon: <IoIosGlobe/>,
     link: "/milestones",
@@ -99,12 +93,6 @@ const mentee = [
     title: "Ask Query",
     icon: <IoCheckboxOutline/>,
     link: "/query",
-  },
-  {
-    id: 4,
-    title: "Projects",
-    icon: <IoIosGlobe/>,
-    link: "/project",
   }
 ];
 export { admin, mentee, mentor };
