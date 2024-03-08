@@ -102,18 +102,22 @@ exports.addOneUser = async (req, res) => {
 
     // need to know the format of the request body
     try {
+        // console.log("req.body in addOneUser in register_users controller: ", req.body);
         const { role, ...userInfo } = req.body;
         if (role !== "Mentee" && role !== "Mentor") {
             return res.status(400).json({ success: false, error: 'Invalid role' });
         }
         // console.log("userinfo in addOneUser in register_users controller: ", userInfo);
         // console.log("role in addOneUser in register_users controller: ", role);
+        // console.log("debugger in addOneUser in register_users controller");
 
         const result = await addUser(userInfo, role);
         if (result.error) {
+            console.log("result.error in addOneUser in register_users controller: ", result.error);
             return res.status(400).json({ success: false, error: result.error });
         }
-        res.status(201).json({ success: true });
+        console.log("result in addOneUser in register_users controller: ", result);
+        return res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }

@@ -17,8 +17,17 @@ export function Addmentor() {
 
   function onSubmit(values) {
     // Do something with the form values.
-    console.log(values);
-   axios.post('http://localhost:8000/api/add-user', values)
+    // console.log(values);
+    const data = {
+      "First Name": values.first_name,
+      "Last Name": values.last_name,
+      "Email": values.email,
+      "Experience": values.Experience,
+      "role": "Mentor"
+    };
+
+
+    axios.post('http://localhost:8000/api/add-user', data)
       .then((response) => {
         // Handle success
         console.log('successful:', response.data);
@@ -35,14 +44,14 @@ export function Addmentor() {
     last_name: z.string().min(1, {
       message: "Name must be at least 1 characters.",
     }),
-    Experience:z
-    .string()
-    .min(1)
-    .refine((val) => !isNaN(val), {
-      message: "Input should be a number",
-    }),
+    Experience: z
+      .string()
+      .min(1)
+      .refine((val) => !isNaN(val), {
+        message: "Input should be a number",
+      }),
     email: z.string().email(),
-   
+
   })
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -56,7 +65,7 @@ export function Addmentor() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-      <FormField
+        <FormField
           control={form.control}
           name="first_name"
           render={({ field }) => (
@@ -95,7 +104,7 @@ export function Addmentor() {
             </FormItem>
           )}
         />
-         <FormField
+        <FormField
           control={form.control}
           name="Experience"
           render={({ field }) => (
