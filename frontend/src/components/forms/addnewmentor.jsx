@@ -22,7 +22,8 @@ export function Addmentor() {
       "First Name": values.first_name,
       "Last Name": values.last_name,
       "Email": values.email,
-      "Experience": values.Experience
+      "Experience": values.Experience,
+      "role": "Mentor"
     };
 
 

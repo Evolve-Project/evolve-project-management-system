@@ -67,6 +67,7 @@ async function fetchMentorsByMentee(menteeUid) {
 
 // service to add a user to the database
 async function addUser(userInfo, role) {
+
     // sample userInfo object
     // {
     //     "role": "Mentee",
@@ -121,6 +122,7 @@ async function addUser(userInfo, role) {
             }
         }
 
+
         // generate a random password for each user
         const password = Math.random().toString(36).slice(-8);
         const hashedPassword = await hash(password, 10);
@@ -164,7 +166,7 @@ async function addUser(userInfo, role) {
             throw error;
         }
 
-        return { success: true };
+        return { success: true, message: 'User added successfully', role: role };
     } catch (error) {
         console.error(error);
         throw error;
