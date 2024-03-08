@@ -48,7 +48,7 @@ const Query = () => {
       </div>
       <div className=" mx-20 mt-11">
         {questions.length === 0 ? (
-          <div>no data</div>
+          <div>No Query is raised</div>
         ) : (
           questions?.map((item) => {
             if (item.text && item.text.length > 0) {
