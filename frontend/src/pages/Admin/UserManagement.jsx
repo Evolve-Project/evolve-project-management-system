@@ -2,7 +2,7 @@
 import React, { useState, useMemo,useEffect } from 'react';
 import "@/styles/title.css";
 import { UserCOLUMNS } from "@/components/AdminComponents/Columns";
-import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
+import { useTable, useGlobalFilter, usePagination, useSortBy,useRowSelect } from "react-table";
 import "@/styles/table.css";
 import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { Addmentee } from '@/components/forms/addnewmentee';
 import { Addmentor } from '@/components/forms/addnewmentor';
 import { Bulkmentee, Bulkmentor } from '@/components/forms/bulkusers';
 import axios from "axios";
+import { Checkbox } from '@/components/ui/checkbox';
 
 const UserManagement = () => {
   const [userdata, setuserData] = useState([]);
@@ -45,6 +46,10 @@ const UserManagement = () => {
     if (role === 'Mentor') return data.filter(user => user.role !== 'Mentee');
     return data.filter(user => user.role === role);
   }, [data, role]);
+  const [isDeleteActive, setIsDeleteActive] = useState(false);
+  const handleCheckboxClick = () => {
+    setIsDeleteActive(true);
+  };
   const tableInstance = useTable(
     {
       columns,
@@ -53,7 +58,20 @@ const UserManagement = () => {
     },
     useGlobalFilter,
     useSortBy,
-    usePagination
+    usePagination,
+    useRowSelect,
+    hooks => {
+      hooks.visibleColumns.push(columns => [
+        {
+          id: 'selection',
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <Checkbox {...getToggleAllRowsSelectedProps()} onClick={handleCheckboxClick}/>
+          ),
+          Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps()} />
+        },
+        ...columns
+      ])
+    }
   );
   const {
     getTableBodyProps,
@@ -71,6 +89,8 @@ const UserManagement = () => {
     prepareRow,
     state,
     setGlobalFilter,
+    selectedFlatRows,
+    toggleRowSelected
   } = tableInstance;
 
   const { globalfilter, pageIndex, pageSize } = state;
@@ -84,6 +104,31 @@ const UserManagement = () => {
   
   const dropdownTriggerRef = React.useRef(null);
   const focusRef = React.useRef(null);
+  useEffect(() => {
+    console.log(
+      JSON.stringify(
+        {
+          selectedFlatRows: selectedFlatRows.map(row => row.original)
+        },
+        null,
+        2
+      )
+    );
+  }, [selectedFlatRows]);
+  // Function to handle delete button click
+const handleDeleteClick = async () => {
+  if (window.confirm('Are you sure you want to delete the selected users?')) {
+    for (const row of selectedFlatRows) {
+      try {
+        const response = await axios.delete(`http://localhost:8000/api/user/${row.original.email}`);//example api 
+        console.log(response.data);
+        // Update your state here to remove the user from the table
+      } catch (error) {
+        console.error(`Error deleting user ${row.original.email}:`, error);
+      }
+    }
+  }
+};
 
   return (
     <div>
@@ -103,6 +148,7 @@ const UserManagement = () => {
               <option value="Mentor">Mentor</option>
             </select>
             <div className='mr-20 '>
+            <Button bonClick={handleDeleteClick} disabled={!isDeleteActive} className="bg-red-600">Delete</Button>
             <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="Button violet">Add Users</button>
@@ -174,7 +220,18 @@ const UserManagement = () => {
                     <tr {...row.getRowProps()} onClick={() => getRowDetails(row)}>
                       {row.cells.map((cell) => {
                         return (
-                          <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                          <td{...cell.getCellProps()}>
+                          {cell.column.id === 'selection' ? (
+                            <Checkbox
+                              {...row.getToggleRowSelectedProps()}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleRowSelected(row.index);
+                              }}
+                            />
+                          ) : (
+                            cell.render("Cell")
+                          )}</td>
                         );
                       })}
                     </tr>

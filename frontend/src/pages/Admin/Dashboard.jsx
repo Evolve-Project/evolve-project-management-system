@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMemo } from "react";
+import { useEffect,useState,useMemo } from "react";
 import { COLUMNS } from "@/components/AdminComponents/Columns";
 import MOCK_DATA from "@/components/AdminComponents/MOCK_DATA.json";
 import { useTable, useGlobalFilter, usePagination } from "react-table";
@@ -15,6 +15,7 @@ import GlobalFilter from "@/components/AdminComponents/GlobalFilter";
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import "@/styles/title.css"
+import axios from "axios";
 const DashboardAdmin = () => {
 
   let columns = useMemo(() => COLUMNS, []);
@@ -38,14 +39,28 @@ const DashboardAdmin = () => {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    gotoPage,
-    pageCount,
-    setPageSize,
     prepareRow,
     state,
     setGlobalFilter,
   } = tableInstance;
   const { globalfilter, pageIndex, pageSize } = state;
+  const [count, setCount] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/total-counts"
+        );
+        console.log(response.data);
+        setCount(response.data);
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(count);
   return (
     <>
     <div >
@@ -58,7 +73,7 @@ const DashboardAdmin = () => {
           </CardHeader>
           <CardContent>
             <div className="flex justify-center items-center h-full">
-              <p className="text-4xl">45</p>
+              <p className="text-4xl">{count.data?.totalMentors ?? 0}</p>
             </div>
           </CardContent>
           <CardFooter>
@@ -77,7 +92,7 @@ const DashboardAdmin = () => {
           </CardHeader>
           <CardContent>
             <div className="flex justify-center items-center h-full">
-              <p className="text-4xl">145</p>
+              <p className="text-4xl">{count.data?.totalMentees ?? 0}</p>
             </div>
           </CardContent>
           <CardFooter>
@@ -95,7 +110,7 @@ const DashboardAdmin = () => {
           </CardHeader>
           <CardContent>
             <div className="flex justify-center items-center h-full">
-              <p className="text-4xl">25</p>
+              <p className="text-4xl">{count.data?.totalProjects ?? 0}</p>
             </div>
           </CardContent>
           <CardFooter>
