@@ -19,7 +19,7 @@ function MentorMilestones() {
   const [toggle, setToggle] = useState(true);
 
  
-  
+  const [milestoneDescId, setMilestoneDescId] = useState('');
   const [tasks, setTasks] = useState([]);
   useEffect(() => {
     async function fetchMilestoneDesc() {
@@ -38,24 +38,31 @@ function MentorMilestones() {
     fetchMilestoneDesc();
   }, [tasks]);
 
- 
-  const [milestoneId, setMilestoneId] = useState('');
+  const [menteeNames, setMenteeNames] = useState({}); // State to store mentee names
+
   useEffect(() => {
-    async function fetchMilestoneForStatus() {
+    // Function to fetch mentee names for each task
+    const fetchMenteeNames = async (menteeIds) => {
       try {
-        console.log("Fetching milestonesforStatus..."); // Check if useEffect is triggered
-        const response = await axios.get('http://localhost:8000/api/get-milestonesForStatus');
-
-        console.log("Milestones response:", response.data); // Check the response from the API
-        setMilestoneId(response.data);
+        const response = await fetch('/api/mentee/names', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ menteeIds }),
+        });
+        const data = await response.json();
+        setMenteeNames(data); // Update menteeNames state with fetched data
       } catch (error) {
-        console.error('Error fetching milestone for status:', error);
+        console.error('Error fetching mentee names:', error);
       }
+    };
 
-    }
-
-    fetchMilestoneForStatus();
+    // Extract menteeIds from tasks
+     // Fetch mentee names when component mounts
   }, [tasks]);
+
+
 
 
   const formatDate = (dateString) => {
@@ -119,12 +126,12 @@ const fetchTasks = async (milestoneDescId) => {
                       <td className="py-2 px-4 text-left">{milestone.description}</td>
                       <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
                       <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
-                      
                       <td className="py-2 px-4 text-left relative">
-                      <Select value={milestoneId[index] ? 'true' : 'false'} onChange={(e) => handleStatusChange(milestone.id, e.target.value === 'true')} >
-        <option value='false'>Completed</option>
-        <option value='true'>In Progress</option>
-      </Select>
+                        <Select placeholder='In Progress'>
+                          <option value='option1'>Completed</option>
+
+
+                        </Select>
 
                       </td>
                       <td className="">

@@ -10,7 +10,7 @@ const {getMilestones} = require("../controllers/milestones")
 const router = Router();
 
 router.post("/get-tasks", userAuth, getTasks);
-router.post("/create-task",userAuth ,createTask , getMilestones)
+router.post("/create-task",userAuth ,createTask )
 
 
 module.exports = router; 
