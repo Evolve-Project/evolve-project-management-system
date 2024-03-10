@@ -7,10 +7,8 @@ import { loadMilestones } from "@/api/milestoneApi.js";
 import { Select } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import theme from "./themes/theme.jsx";
-import AddMilestone from "./AddMilestone.jsx";
-import Tasks from "./Tasks.jsx";
 
-function MentorMilestones() {
+function MenteeMilestones() {
   const [status, setStatus] = useState([]);
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
@@ -152,8 +150,13 @@ function MentorMilestones() {
         </ChakraProvider>
       ) : (
         <ChakraProvider theme={theme}>
+          
           <div className="fixed top-2  mt-2 mr-2">
-            <Tasks />
+          
+                
+                <span className="feedback_title">Tasks</span>
+               
+              
             <table className="table-auto border-collapse w-full">
               <thead>
                 <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -215,4 +218,4 @@ function MentorMilestones() {
   );
 }
 
-export { MentorMilestones as default };
+export { MenteeMilestones as default };

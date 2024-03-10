@@ -105,6 +105,12 @@ const mentee = [
     title: "Projects",
     icon: <IoIosGlobe/>,
     link: "/dashboard",
+  },
+  {
+    id: 5,
+    title: "Milestones",
+    icon: <IoIosGlobe/>,
+    link: "/milestones",
   }
 ];
 export { admin, mentee, mentor };
