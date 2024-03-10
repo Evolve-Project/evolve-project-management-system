@@ -15,17 +15,19 @@ function MentorMilestones() {
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
   const [tasks, setTasks] = useState([]);
-  const [milestoneId, setMilestoneId] = useState("");
+  const [milestoneId, setMilestoneId] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
-
+ var milestone_id;
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
         console.log("Fetching milestones...");
+        
         const response = await axios.get("http://localhost:8000/api/get-milestones");
         console.log("Milestones response:", response.data);
         setMilestoneDesc(response.data);
+        
       } catch (error) {
         console.error("Error fetching milestone description:", error);
       }
@@ -56,9 +58,12 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
+      
       const response = await axios.post("http://localhost:8000/api/get-tasks", { milestoneDescId });
       setTasks(response.data);
       console.log(response.data);
+     console.log(tasks[0].milestone_id)
+     milestone_id = tasks[0].milestone_id;
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -93,7 +98,7 @@ function MentorMilestones() {
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  
   return (
     <>
       {toggle ? (
@@ -153,7 +158,7 @@ function MentorMilestones() {
       ) : (
         <ChakraProvider theme={theme}>
           <div className="fixed top-2  mt-2 mr-2">
-            <Tasks />
+            <Tasks milestoneId={milestone_id} />
             <table className="table-auto border-collapse w-full">
               <thead>
                 <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -165,12 +170,13 @@ function MentorMilestones() {
                 </tr>
               </thead>
               <tbody className="text-black-600 text-bg font-dark">
-                {currentTasks.map((task, index) => (
+                { currentTasks.map((task, index) => (
                   <tr
                     key={index}
                     className="border-b border-gray-200 hover:bg-gray-100"
                   >
-                    <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
+                    
+                    <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name }</td>
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
                     <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                     <td className="py-2 px-3 text-left">
@@ -182,6 +188,7 @@ function MentorMilestones() {
                         <option value="true">Completed</option>
                       </Select>
                     </td>
+                    
                   </tr>
                 ))}
               </tbody>
@@ -204,9 +211,9 @@ function MentorMilestones() {
             </div>
             <button
               className="fixed top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-              onClick={() => setToggle(true)}
+              onClick={() => setToggle(true) }
             >
-              Back
+              Back 
             </button>
           </div>
         </ChakraProvider>
