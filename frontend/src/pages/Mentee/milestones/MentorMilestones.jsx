@@ -19,7 +19,7 @@ function MentorMilestones() {
   const [toggle, setToggle] = useState(true);
 
  
-  
+  const [milestoneDescId, setMilestoneDescId] = useState('');
   const [tasks, setTasks] = useState([]);
   useEffect(() => {
     async function fetchMilestoneDesc() {
@@ -38,24 +38,31 @@ function MentorMilestones() {
     fetchMilestoneDesc();
   }, [tasks]);
 
- 
-  const [milestoneId, setMilestoneId] = useState('');
+  const [menteeNames, setMenteeNames] = useState({}); // State to store mentee names
+
   useEffect(() => {
-    async function fetchMilestoneForStatus() {
+    // Function to fetch mentee names for each task
+    const fetchMenteeNames = async (menteeIds) => {
       try {
-        console.log("Fetching milestonesforStatus..."); // Check if useEffect is triggered
-        const response = await axios.get('http://localhost:8000/api/get-milestonesForStatus');
-
-        console.log("Milestones response:", response.data); // Check the response from the API
-        setMilestoneId(response.data);
+        const response = await fetch('/api/mentee/names', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ menteeIds }),
+        });
+        const data = await response.json();
+        setMenteeNames(data); // Update menteeNames state with fetched data
       } catch (error) {
-        console.error('Error fetching milestone for status:', error);
+        console.error('Error fetching mentee names:', error);
       }
+    };
 
-    }
-
-    fetchMilestoneForStatus();
+    // Extract menteeIds from tasks
+     // Fetch mentee names when component mounts
   }, [tasks]);
+
+
 
 
   const formatDate = (dateString) => {
@@ -74,31 +81,6 @@ const fetchTasks = async (milestoneDescId) => {
     }
   };
 
-  const handleStatusChange = async (taskId, newStatus) => {
-    try {
-      // Update the status locally
-      setTasks(tasks.map(task => {
-        if (task.id === taskId) {
-          return {
-            ...task, // Spread the task object
-            status: newStatus === 'true'
-          };
-        }
-        return task;
-      }));
-  
-      // Send a request to the backend to update the status
-      const response = await axios.post('http://localhost:8000/api/update-task-status', {
-        taskId: taskId, // Corrected property name
-        newStatus: newStatus === 'true'
-      });
-      console.log("Update status response:", response.data); // Check the response from the API
-      // Handle success if needed
-    } catch (error) {
-      console.error('Error updating task status:', error);
-      // Handle error if needed
-    }
-  };
   
 
  
@@ -144,16 +126,14 @@ const fetchTasks = async (milestoneDescId) => {
                       <td className="py-2 px-4 text-left">{milestone.description}</td>
                       <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
                       <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
-                      
                       <td className="py-2 px-4 text-left relative">
-                      <Select value={milestoneId[index] ? 'true' : 'false'}  >
-                      
-        <option value='false'>Completed</option>
-        <option value='true'>In Progress</option>
-      </Select>
+                        <Select placeholder='In Progress'>
+                          <option value='option1'>Completed</option>
+
+
+                        </Select>
 
                       </td>
-                      
                       <td className="">
 
                         <div className="">
@@ -198,10 +178,11 @@ const fetchTasks = async (milestoneDescId) => {
                       <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
                       <td className="py-2 px-3 text-left">{task.task_desc}</td>
                       <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
-                      <td className="py-2 px-3 text-left">   <Select value={task.status ? 'true' : 'false'} onChange={(e) => handleStatusChange(task.id, e.target.value === 'true')}>
-          <option value='false'>In Progress</option>
-          <option value='true'>Completed</option>
-        </Select>
+                      <td className="py-2 px-3 text-left"><Select placeholder='In Progress'>
+                          <option value='option1'>Completed</option>
+                        </Select></td>
+                      <td className="py-2 px-3 text-left relative">
+                      {}
 
                       </td>
                       
@@ -209,7 +190,6 @@ const fetchTasks = async (milestoneDescId) => {
                   ))}
                 </tbody>
               </table>
-              
           </div>
           <button
             className="flex top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"

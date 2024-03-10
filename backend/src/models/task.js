@@ -10,7 +10,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, { foreignKey: 'mentee_user_id' }); // this is the mentee_user_id in task table. Each Task is assigned to one mentee user
       this.belongsTo(models.User, { foreignKey: 'mentor_user_id' }); // this is the mentor_user_id in task table. Each Task is assigned to one mentor user
     }
-  }
+
+    
+
+  
+}
+  
+
+
   Task.init({
     task_name: {
       type: DataTypes.STRING,
@@ -56,7 +63,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Task',
-    tableName: 'tasks'
+    tableName: 'tasks',
+   
   });
   return Task;
 };
