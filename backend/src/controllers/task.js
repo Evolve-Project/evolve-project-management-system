@@ -25,6 +25,31 @@ async function createTask(req,res){
       }
 }
 
+
+const updateTaskStatus = async (req, res) => {
+  const { taskId, newStatus } = req.body;
+  try {
+    // Update the task status in the database
+    const [rowsAffected, [updatedTask]] = await Task.update(
+      { status: true },
+      { where: { id: taskId }, returning: true }
+    );
+
+    // Check if the task was updated successfully
+    if (rowsAffected === 0) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    // Return the updated task
+    return res.json(updatedTask);
+  } catch (error) {
+    // Handle any errors and send a 500 error response
+    console.error('Error updating task status:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
-    createTask
+    createTask,
+    updateTaskStatus
   };

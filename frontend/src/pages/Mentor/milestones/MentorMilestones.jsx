@@ -74,6 +74,31 @@ const fetchTasks = async (milestoneDescId) => {
     }
   };
 
+  const handleStatusChange = async (taskId, newStatus) => {
+    try {
+      // Update the status locally
+      setTasks(tasks.map(task => {
+        if (task.id === taskId) {
+          return {
+            ...task, // Spread the task object
+            status: newStatus === 'true'
+          };
+        }
+        return task;
+      }));
+  
+      // Send a request to the backend to update the status
+      const response = await axios.post('http://localhost:8000/api/update-task-status', {
+        taskId: taskId, // Corrected property name
+        newStatus: newStatus === 'true'
+      });
+      console.log("Update status response:", response.data); // Check the response from the API
+      // Handle success if needed
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      // Handle error if needed
+    }
+  };
   
 
  
@@ -121,12 +146,14 @@ const fetchTasks = async (milestoneDescId) => {
                       <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
                       
                       <td className="py-2 px-4 text-left relative">
-                      <Select value={milestoneId[index] ? 'true' : 'false'} onChange={(e) => handleStatusChange(milestone.id, e.target.value === 'true')} >
+                      <Select value={milestoneId[index] ? 'true' : 'false'}  >
+                      
         <option value='false'>Completed</option>
         <option value='true'>In Progress</option>
       </Select>
 
                       </td>
+                      
                       <td className="">
 
                         <div className="">
@@ -171,11 +198,10 @@ const fetchTasks = async (milestoneDescId) => {
                       <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
                       <td className="py-2 px-3 text-left">{task.task_desc}</td>
                       <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
-                      <td className="py-2 px-3 text-left"><Select placeholder='In Progress'>
-                          <option value='option1'>Completed</option>
-                        </Select></td>
-                      <td className="py-2 px-3 text-left relative">
-                      {}
+                      <td className="py-2 px-3 text-left">   <Select value={task.status ? 'true' : 'false'} onChange={(e) => handleStatusChange(task.id, e.target.value === 'true')}>
+          <option value='false'>In Progress</option>
+          <option value='true'>Completed</option>
+        </Select>
 
                       </td>
                       
@@ -183,6 +209,7 @@ const fetchTasks = async (milestoneDescId) => {
                   ))}
                 </tbody>
               </table>
+              
           </div>
           <button
             className="flex top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
