@@ -228,11 +228,20 @@ const Attendance = () => {
     }
     try {
       const response = await CreateAttendance(data);
-      console.log(response);
     } catch (error) {
+      if (data.date == null || data.attendance == null) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Another meeting with that date already exists',
+          icon: 'error',
+          confirmButtonText: 'Retry'
+        });
+        setOpen(false);
+        return;
+      }
       console.log("Failed to create attendance ", error);
     }
-    setAttendanceData([...attendanceData]);
+    // setAttendanceData([...attendanceData]);
     setOpen(false);
   };
 
