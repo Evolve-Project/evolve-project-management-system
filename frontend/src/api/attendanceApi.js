@@ -18,3 +18,8 @@ export async function FetchAttendance() {
 export async function FetchMentorName(mentorId) {
     return await axios.post('http://localhost:8000/api/getMentorName', mentorId);
 }
+
+
+export async function DeleteAttendance(attendanceArray) {
+    return await axios.post('http://localhost:8000/api/deleteAttendance', attendanceArray);
+}

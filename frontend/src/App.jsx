@@ -29,7 +29,6 @@ import MenteeMilestones from "./pages/Mentee/milestones/MenteeMilestones";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
-  console.log(role);
   return (
     <BrowserRouter>
       <Routes>

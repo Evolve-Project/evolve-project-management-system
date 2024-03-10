@@ -1,8 +1,10 @@
 import axios from "axios";
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: import.meta.env.VITE_SERVER_URL,
   withCredentials: true,
 });
+
+//GET MENTOR DETAILS
 export const loadUser = () => async (dispatch) => {
   try {
     dispatch({
@@ -21,6 +23,26 @@ export const loadUser = () => async (dispatch) => {
     });
   }
 };
+// GET MENTEE DETAILS FOR DASHBOARD
+export const loadMenteeDetails = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "GetMenteeDetailsRequest",
+    });
+
+    const { data } = await api.get("/api/menteeDetails");
+    dispatch({
+      type: "GetMenteeDetailsSuccess",
+      payload: data.formattedResponse,
+    });
+  } catch (error) {
+    dispatch({
+      type: "GetMenteeDetailsFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
 export const createProject = (formData) => async (dispatch) => {
   try {
     dispatch({

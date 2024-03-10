@@ -139,7 +139,7 @@ export function Addmentee() {
           name="dob"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>BOD</FormLabel>
+              <FormLabel>DOB</FormLabel>
               <FormControl>
                 <Input type="date" placeholder="Enter The dob" {...field} />
               </FormControl>

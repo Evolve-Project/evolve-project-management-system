@@ -15,14 +15,14 @@ exports.teamidToMentee = async (req, res) => {
   try {
     console.log(req.user.role);
     if (req.user.role !== "Admin") {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Only Admin can access",
       });
     }
     const teams = await Team.findAll();
     if (teams.length) {
-      return res.status(400).json({
-        message: "Add all students manually.",
+      return res.status(200).json({
+        message: "Please add all mentees manually.",
       });
     }
     const listOfUser = await Mentee.findAll({
@@ -31,7 +31,7 @@ exports.teamidToMentee = async (req, res) => {
     });
 
     if (listOfUser.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are already created",
       });
     }
@@ -40,7 +40,7 @@ exports.teamidToMentee = async (req, res) => {
     const NoOfTeam = Math.floor(length / 5);
 
     if (NoOfTeam == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Please upload more then 5 mentee",
       });
     }
@@ -112,13 +112,13 @@ exports.teamidToMentee = async (req, res) => {
 exports.teamidToMentor = async (req, res) => {
   try {
     if (req.user.role !== "Admin") {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Only Admin can access",
       });
     }
     const createdTeams = await Team.findAll();
     if (createdTeams.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are not created",
       });
     }
@@ -129,7 +129,7 @@ exports.teamidToMentor = async (req, res) => {
       order: [["Experience", "ASC"]],
     });
     if (mentorList.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are already assigned",
       });
     }
@@ -155,8 +155,9 @@ exports.teamidToMentor = async (req, res) => {
       mentorIndex1 = (mentorIndex1 + 1) % mentorList.length;
       mentorIndex2 = (mentorIndex2 + 1) % mentorList.length;
     }
-
-    res.json({ message: "Teams are successfully assigned to mentors" });
+    return res.status(200).json({
+      message: "Teams are successfully assigned to mentors",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -171,14 +172,8 @@ exports.addSingleUser = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const {
-      email,
-      first_name,
-      last_name,
-      University,
-      home_city,
-      dob,
-    } = req.body;
+    const { email, first_name, last_name, University, home_city, dob } =
+      req.body;
     const password = Math.random().toString(36).slice(-8);
     const hashedPassword = await hash(password, 10);
     const user = await User.create({
@@ -356,12 +351,32 @@ exports.mentorDetails = async (req, res) => {
             },
           ],
         },
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ],
+    });
+    const mentorsList = await Mentor.findAll({
+      where: { team_id: mentorDetails?.Team?.id },
+      attributes: ["id", "first_name", "last_name"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
       ],
     });
     // console.log(mentorDetails);
     const menteesList = await Mentee.findAll({
       where: { team_id: mentorDetails?.Team?.id },
-      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
+      attributes: ["id", "team_id", "first_name", "last_name"], // Specify the properties you want to retrieve
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ],
     });
     // console.log(menteesList);
     if (mentorDetails) {
@@ -370,7 +385,8 @@ exports.mentorDetails = async (req, res) => {
           id: mentorDetails.id,
           user_id: mentorDetails.user_id,
           first_name: mentorDetails.first_name,
-          last_name: mentorDetails.last_name,
+          last_name: mentorDetails?.last_name,
+          email: mentorDetails.User.email,
           Experience: mentorDetails.Experience,
           createdAt: mentorDetails.createdAt,
           updatedAt: mentorDetails.updatedAt,
@@ -382,16 +398,17 @@ exports.mentorDetails = async (req, res) => {
           total_team_members: mentorDetails.Team?.total_team_members,
         },
         projectInfo: {
-          id: mentorDetails.Team.Project?.id,
-          name: mentorDetails.Team.Project?.name,
-          description: mentorDetails.Team.Project?.description,
-          start_date: mentorDetails.Team.Project?.start_date,
-          end_date: mentorDetails.Team.Project?.end_date,
-          status: mentorDetails.Team.Project?.status,
-          git: mentorDetails.Team.Project?.git_repository_link,
-          trello: mentorDetails.Team.Project?.trello_board_link,
+          id: mentorDetails.Team?.Project?.id,
+          name: mentorDetails.Team?.Project?.name,
+          description: mentorDetails.Team?.Project?.description,
+          start_date: mentorDetails.Team?.Project?.start_date,
+          end_date: mentorDetails.Team?.Project?.end_date,
+          status: mentorDetails.Team?.Project?.status,
+          git: mentorDetails.Team?.Project?.git_repository_link,
+          trello: mentorDetails.Team?.Project?.trello_board_link,
         },
-        menteeInfo: {
+        teamMembersInfo: {
+          mentorsList,
           menteesList,
         },
       };
@@ -417,9 +434,10 @@ exports.mentorDetails = async (req, res) => {
 exports.menteeDetails = async (req, res) => {
   try {
     const userId = req.user.id;
-
+    // console.log("------------------------------------------------------------------");
+    // console.log(userId);
     // Fetch mentor details and include the associated team
-    const mentorDetails = await Mentee.findOne({
+    const menteeDetails = await Mentee.findOne({
       where: { user_id: userId },
       include: [
         {
@@ -439,52 +457,76 @@ exports.menteeDetails = async (req, res) => {
             },
           ],
         },
+        {
+          model: User,
+          attributes: ["email"],
+        },
       ],
     });
-    // console.log(mentorDetails);
+    const mentorsList = await Mentor.findAll({
+      where: { team_id: menteeDetails?.Team?.id },
+      attributes: ["id", "first_name", "last_name"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ],
+    });
+    // console.log(menteeDetails);
     const menteesList = await Mentee.findAll({
-      where: { team_id: mentorDetails?.Team?.id },
-      attributes: ["id", "team_id", "first_name"], // Specify the properties you want to retrieve
+      where: { team_id: menteeDetails?.Team?.id },
+      attributes: ["id", "team_id", "first_name", "last_name"], // Specify the properties you want to retrieve
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+        },
+      ],
     });
     // console.log(menteesList);
-    if (mentorDetails) {
+    if (menteeDetails) {
       const formattedResponse = {
-        mentorInfo: {
-          id: mentorDetails.id,
-          user_id: mentorDetails.user_id,
-          first_name: mentorDetails.first_name,
-          last_name: mentorDetails.last_name,
-          Experience: mentorDetails.Experience,
-          createdAt: mentorDetails.createdAt,
-          updatedAt: mentorDetails.updatedAt,
+        menteeInfo: {
+          id: menteeDetails.id,
+          user_id: menteeDetails.user_id,
+          first_name: menteeDetails.first_name,
+          last_name: menteeDetails?.last_name,
+          email: menteeDetails.User.email,
+          University: menteeDetails.University,
+          dob: menteeDetails.dob,
+          home_city: menteeDetails?.home_city,
+          createdAt: menteeDetails.createdAt,
+          updatedAt: menteeDetails.updatedAt,
         },
         teamInfo: {
-          id: mentorDetails.Team?.id,
-          team_name: mentorDetails.Team?.team_name,
-          project_id: mentorDetails.Team?.project_id,
-          total_team_members: mentorDetails.Team?.total_team_members,
+          id: menteeDetails.Team?.id,
+          team_name: menteeDetails.Team?.team_name,
+          project_id: menteeDetails.Team?.project_id,
+          total_team_members: menteeDetails.Team?.total_team_members,
         },
         projectInfo: {
-          id: mentorDetails.Team.Project?.id,
-          name: mentorDetails.Team.Project?.name,
-          description: mentorDetails.Team.Project?.description,
-          start_date: mentorDetails.Team.Project?.start_date,
-          end_date: mentorDetails.Team.Project?.end_date,
-          status: mentorDetails.Team.Project?.status,
+          id: menteeDetails.Team?.Project?.id,
+          name: menteeDetails.Team?.Project?.name,
+          description: menteeDetails.Team?.Project?.description,
+          start_date: menteeDetails.Team?.Project?.start_date,
+          end_date: menteeDetails.Team?.Project?.end_date,
+          status: menteeDetails.Team?.Project?.status,
         },
-        menteeInfo: {
+        teamMembersInfo: {
+          mentorsList,
           menteesList,
         },
       };
       return res.status(200).json({
         success: true,
-        message: "Mentor details fetched successfully",
+        message: "Mentee details fetched successfully",
         formattedResponse,
       });
     } else {
       res.status(404).json({
         success: false,
-        message: "Mentor not found",
+        message: "Mentee not found",
       });
     }
   } catch (error) {
@@ -495,6 +537,84 @@ exports.menteeDetails = async (req, res) => {
     });
   }
 };
+
+// UPDATE MENTOR DETAILS FROM MENTOR DASHBOARD
+exports.updateMentor = async (req, res) => {
+  try {
+    const { user_id, email, ...data } = req.body;
+    const mentor_record = await Mentor.findOne({
+      where: { user_id },
+    });
+    const user_record = await User.findOne({
+      where: { id: user_id },
+    });
+    // console.log("---------------------------------------------------------------");
+    // console.log(mentor_record);
+    // console.log(user_record);
+    if (mentor_record && user_record) {
+      const updatedUser = await user_record.update({ email });
+      const updatedMentor = await mentor_record.update({ ...data });
+      console.log(
+        "Record updated successfully: ",
+        updatedUser.toJSON(),
+        updatedMentor.toJSON()
+      );
+      res.status(200).json({
+        success: true,
+        message: "Updated successfully!",
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Mentor details Not Found",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// UPDATE MENTEE DETAILS FROM MENTOR DASHBOARD
+exports.updateMentee = async (req, res) => {
+  try {
+    const { user_id, email, ...data } = req.body;
+    const mentee_record = await Mentee.findOne({
+      where: { user_id },
+    });
+    const user_record = await User.findOne({
+      where: { id: user_id },
+    });
+    if (mentee_record && user_record) {
+      const updatedUser = await user_record.update({ email });
+      const updatedMentee = await mentee_record.update({ ...data });
+      console.log(
+        "Record updated successfully: ",
+        updatedUser.toJSON(),
+        updatedMentee.toJSON()
+      );
+      res.status(200).json({
+        success: true,
+        message: "Updated successfully!",
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Mentee details Not Found",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 exports.createQuery = async (req, res) => {
   try {
     const { text, reply_id, team_id } = req.body;
@@ -530,6 +650,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentor.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     } else {
       const mentee = await Mentee.findOne({
@@ -539,6 +665,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentee.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     }
     console.log(teamId);

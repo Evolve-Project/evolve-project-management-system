@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import "@/styles/title.css"
 const DashboardAdmin = () => {
-  console.log("ok");
+
   let columns = useMemo(() => COLUMNS, []);
   let data = useMemo(() => MOCK_DATA, []);
   const tableInstance = useTable(
@@ -62,9 +62,13 @@ const DashboardAdmin = () => {
             </div>
           </CardContent>
           <CardFooter>
-          <Link to="/usermanagement?role=Mentor" className="text-violet-700">
-                All Mentors -&gt;
-              </Link>
+          <Link to="/usermanagement?role=Mentor" className="text-violet-700 flex items-center">
+  All Mentors 
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right ml-2" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+  </svg>
+</Link>
+
           </CardFooter>
         </Card>
         <Card className="w-60 mr-20">
@@ -77,9 +81,12 @@ const DashboardAdmin = () => {
             </div>
           </CardContent>
           <CardFooter>
-          <Link to="/usermanagement?role=Mentee" className="text-violet-700">
-                All Mentee -&gt;
-              </Link>
+          <Link to="/usermanagement?role=Mentee" className="text-violet-700 flex items-center">
+  All Mentee 
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right ml-2" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+  </svg>
+</Link>
           </CardFooter>
         </Card>
         <Card className="w-60">
@@ -92,7 +99,11 @@ const DashboardAdmin = () => {
             </div>
           </CardContent>
           <CardFooter>
-            <p className=" text-violet-700">All Projects -&gt;</p>
+          <Link to="/projects" className="text-violet-700 flex items-center">
+  All Projects  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right ml-2" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+  </svg>
+              </Link>
           </CardFooter>
         </Card>
       </div>

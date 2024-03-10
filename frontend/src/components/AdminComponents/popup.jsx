@@ -1,6 +1,59 @@
-import React from 'react';
+
+
+import React,{ useState, useEffect } from 'react';
+import axios from "axios";
 
 const Popup = ({ user, onClose }) => {
+  const [userdata, setuserData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user-management-table"
+        );
+        const mentors = response.data.mentors.map(mentor => ({ ...mentor, role: 'Mentor' }));
+        const mentees = response.data.mentees.map(mentee => ({ ...mentee, role: 'Mentee' }));
+        setuserData([...mentors, ...mentees]);
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+  
+    fetchData();
+  }, []); 
+
+  const renderUserData = () => {
+    switch(user.role) {
+      case 'Mentor':
+        // Display mentor-specific data
+        return (
+          <>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Experience: {user.Experience}
+            </p>
+          </>
+        );
+      case 'Mentee':
+        // Display mentee-specific data
+        return (
+          <>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              DOB: {user.dob}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              University: {user.University}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Home City: {user.home_city}
+            </p>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div id="default-modal" tabIndex="-1" aria-hidden="true" className="fixed top-0 right-0 left-0 bottom-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative p-4 w-2/3 max-h-full bg-white rounded-lg shadow dark:bg-gray-700">
@@ -16,18 +69,22 @@ const Popup = ({ user, onClose }) => {
           </button>
         </div>
         <div className="p-4 md:p-5 space-y-4">
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Name: {user.name}
-          </p>
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Role: {user.role}
-          </p>
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Project Enrolled: {user.projectassigned}
-          </p>
-        </div>
-        <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-          <button onClick={onClose} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</button>
+        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              First Name: {user.first_name}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Last Name: {user.last_name}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Email: {user.User.email}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Project Name: {user.Team.Project.name}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Team Name: {user.Team.team_name}
+            </p>
+          {renderUserData()}
         </div>
       </div>
     </div>
@@ -35,3 +92,4 @@ const Popup = ({ user, onClose }) => {
 };
 
 export default Popup;
+
