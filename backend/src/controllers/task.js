@@ -14,7 +14,7 @@ async function createTask(req,res){
         const newTask = await Task.create({
           task_name: taskname,
           task_desc: description,
-          milestone_id: milestone_id, // Assuming milestone_id
+          milestone_id:milestone_id, // Assuming milestone_id
           mentee_user_id: assignee_id, // Assuming assignee is the user ID
           mentor_user_id: req.user.id, // Assuming mentor_user_id
           status: false,
@@ -54,7 +54,35 @@ const updateTaskStatus = async (req, res) => {
   }
 };
 
+
+const deleteTask = async (req, res) => {
+  const { taskId } = req.body; // Assuming taskId is passed as a URL parameter
+
+  try {
+    // Find the task by its ID and delete it
+    const deletedTaskCount = await Task.destroy({
+      where: { id: taskId }
+    });
+
+    // Check if any task was deleted
+    if (deletedTaskCount === 0) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    // Respond with a success message
+    return res.status(200).json({ message: 'Task deleted successfully' });
+  } 
+    catch (error) {
+      if (error instanceof TypeError) {
+        console.error('Network error:', error.message);
+      } else {
+        console.error('Error deleting task:', error.message);
+      }
+  }
+};
+
 module.exports = {
     createTask,
-    updateTaskStatus
+    updateTaskStatus,
+    deleteTask
   };

@@ -75,7 +75,7 @@ function MentorMilestones() {
       console.error("Error fetching tasks:", error);
     }
   };
-  
+
   const handleBackButtonClick = () => {
     setToggle(true); // Set toggle to true to show milestones
     setTasks([]); // Clear tasks
@@ -106,6 +106,28 @@ function MentorMilestones() {
       console.log("Update status response:", response.data);
     } catch (error) {
       console.error("Error updating task status:", error);
+    }
+  };
+
+  const deleteTask = async (taskId) => {
+    try {
+      // Make a DELETE request to the server
+      console.log(taskId)
+      const response = await axios.post(`http://localhost:8000/api/delete-task`, {
+        taskId
+      });
+  
+      // Check if the request was successful
+      if (response.status === 200) {
+        console.log('Task deleted successfully');
+        // Optionally, you can perform any additional actions after the task is deleted
+      } else {
+        // If the response status is not OK, throw an error
+        throw new Error('Failed to delete task');
+      }
+    } catch (error) {
+      // Handle any errors
+      console.error('Error deleting task:', error);
     }
   };
 
@@ -184,7 +206,7 @@ function MentorMilestones() {
         </ChakraProvider>
       ) : (
         <ChakraProvider theme={theme}>
-          <div className="fixed top-2  mt-2 mr-2">
+          
             <Tasks milestoneId={milestone_Id} />
             <table className="table-auto border-collapse w-full">
               <thead>
@@ -220,6 +242,28 @@ function MentorMilestones() {
                         <option value="true">Completed</option>
                       </Select>
                     </td>
+                    <td></td>
+                    <td className="py-2 px-3 text-left">
+                      <button
+                        className="text-red-600 hover:text-red-900 focus:outline-none"
+                        onClick={() => deleteTask(task.id)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 6l3 15h12l3-15H3zm9 2v8m-4-4h8"
+                          />
+                        </svg>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -246,7 +290,7 @@ function MentorMilestones() {
             >
               Back
             </button>
-          </div>
+          
         </ChakraProvider>
       )}
     </>
