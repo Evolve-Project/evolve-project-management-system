@@ -7,6 +7,15 @@ import { DeleteAttendance, FetchMentorName } from '@/api/attendanceApi';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const AttendanceDatatable = ({ attendanceData, userData }) => {
   const [sortBy, setSortBy] = useState(null);
@@ -15,6 +24,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMeetings, setSelectedMeetings] = useState([]);
   const [selectedAttendance, setSelectedAttendance] = useState([]);
+  const [position, setPosition] = useState("Present")
 
   useEffect(() => {
     const fetchMentorNames = async () => {
@@ -187,8 +197,22 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                       <DialogContent>
                         <DialogHeader className={"flex flex-row justify-center items-center"}>
                           <DialogTitle className="m-auto">List of Present Students</DialogTitle>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline">{position}</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+                                <DropdownMenuRadioItem value="Present">Present</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="Absent">Absent</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="Permitted">Permitted</DropdownMenuRadioItem>
+                              </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                           <Button className="mx-2 self-end" variant="outline" onClick={handleAttendanceDelete} disabled={selectedAttendance.length === 0}>
-                            Delete Selected Attendance
+                            Update Selected
                           </Button>
                         </DialogHeader>
                         <Table>
