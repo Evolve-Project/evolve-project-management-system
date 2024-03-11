@@ -6,34 +6,36 @@ const { fetchAttendanceByMentor, fetchAttendanceByMentee } = require('../service
 
 exports.fetchTeamData = async (req, res) => {
     try {
-        const mentorUid = req.user.id;
-        console.log(req.body);
-        const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
-        const mentorTeamId = mentor.team_id;
+        if (req.user.role == "Mentor") {
+            const mentorUid = req.user.id;
+            const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
+            const mentorTeamId = mentor.team_id;
 
-        const result = await Mentee.findAll({
-            where: { team_id: mentorTeamId },
-            include: [
-                {
-                    model: User, // Include the User model
-                    attributes: ['id', 'email']
-                }
-            ],
-            attributes: ['first_name', 'last_name']
-        });
+            const result = await Mentee.findAll({
+                where: { team_id: mentorTeamId },
+                include: [
+                    {
+                        model: User, // Include the User model
+                        attributes: ['id', 'email']
+                    }
+                ],
+                attributes: ['first_name', 'last_name']
+            });
 
-        // Check if the result is not empty
-        if (result.length > 0) {
-            const menteeData = result.map(r => ({
-                id: r.User.id, // Access User model using alias defined in association
-                email: r.User.email, // Access User model using alias defined in association
-                first_name: r.first_name,
-                last_name: r.last_name
-            }));
-            res.status(200).json({ users: menteeData });
-        } else {
-            res.status(404).json({ message: "No mentees found for this mentor's team" });
+            // Check if the result is not empty
+            if (result.length > 0) {
+                const menteeData = result.map(r => ({
+                    id: r.User.id, // Access User model using alias defined in association
+                    email: r.User.email, // Access User model using alias defined in association
+                    first_name: r.first_name,
+                    last_name: r.last_name
+                }));
+                res.status(200).json({ users: menteeData });
+            } else {
+                res.status(404).json({ message: "No mentees found for this mentor's team" });
+            }
         }
+
     } catch (error) {
         // Handle any errors that occur during the process
         console.error('Error fetching mentee data:', error);
@@ -107,7 +109,6 @@ exports.fetchAttendance = async (req, res) => {
 };
 
 exports.getMentorName = async (req, res) => {
-    console.log(req.body)
     try {
         const mentorUid = req.body.mentorId;
         const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
@@ -153,3 +154,45 @@ exports.deleteAttendance = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+
+exports.updateAttendance = async (req, res) => {
+    const { selectedAttendance, position } = req.body;
+
+    try {
+        // Loop through each attendance record in the selectedAttendance array
+        for (const attendanceData of selectedAttendance) {
+            const { mentor_user_id, date_of_meet, mentee_user_id } = attendanceData;
+
+            // Find the attendance record based on mentor_user_id, date_of_meet, and mentee_user_id
+            const existingAttendance = await Attendance.findOne({
+                where: {
+                    mentor_user_id,
+                    date_of_meet,
+                    mentee_user_id
+                }
+            });
+
+            // If the attendance record exists, update the attendance status
+            if (existingAttendance) {
+                existingAttendance.attendance = position;
+                await existingAttendance.save(); // Save the updated attendance record
+            } else {
+                // If the attendance record doesn't exist, create a new one with the provided data
+                await Attendance.create({
+                    mentor_user_id,
+                    date_of_meet,
+                    mentee_user_id,
+                    attendance: position
+                });
+            }
+        }
+
+        // Respond with a success message
+        return res.status(200).json({ message: 'Attendances updated successfully' });
+    } catch (error) {
+        // Handle errors
+        console.error('Error updating attendances:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

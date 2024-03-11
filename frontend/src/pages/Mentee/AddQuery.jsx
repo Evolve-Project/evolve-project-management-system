@@ -1,134 +1,122 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loadMenteeDetails, loadUser } from "@/redux/Actions/User";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import * as Dialog from "@radix-ui/react-dialog";
+import MyComponent from "../Mentor/History";
 
-const MyComponent = ({ item, teamId, parentId }) => {
-  const [inputValue, setInputValue] = useState("");
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  
-  const handleAskQuery = async (inputValue) => {
-    await axios.post("http://localhost:8000/api/createQuery", {
-      text: inputValue,
-      team_id: teamId,
-      reply_id: parentId,
-    });
+const api = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL,
+  withCredentials: true,
+});
+const AddQuery = () => {
+  const [query, setQuery] = useState("");
+  const [questions, setQuestions] = useState([]);
+  const dispatch = useDispatch();
+
+  const { mentee } = useSelector((state) => state.mentee);
+
+  const getAllQuery = async () => {
+    const { data } = await axios.get("http://localhost:8000/api/allQuery");
+    setQuestions(data.queries);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if(inputValue.trim()==="")return;
-    handleAskQuery(inputValue);
-    setInputValue("");
-  };
-const fetchAnswersForQuestion = async (questionId) => {
-    try {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/allQuery?id=${questionId}`
-      );
-      setAnswers(data.queries.filter(answer => answer.text.trim() !== ''));
-      setSelectedQuestion(questionId);
-    } catch (error) {
-      console.error("Error fetching answers:", error);
+  const handleAskQuery = async () => {
+    const team = mentee?.teamInfo?.id;
+    if (query.length > 0) {
+      await api.post("http://localhost:8000/api/createQuery", {
+        text: query,
+        team_id: team,
+      });
+      setQuery("");
+      getAllQuery();
     }
   };
 
+  useEffect(() => {
+    dispatch(loadMenteeDetails()); // mentor details
+    getAllQuery();
+  }, [dispatch]);
 
   return (
-   <div
-      key={item.id}
-      className="flex flex-col items-start justify-center border p-4 my-3 rounded-lg shadow-md"  >
-        
-      <div className="flex flex-row text-lg font-bold text-gray-900 gap-2"><img className="rounded-lg -mt-1" width={35} height={27} src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png" alt="" />{item.text}</div>
-      {selectedQuestion === item.id ? (
-        <div className="w-full">
-          <div style={{maxHeight:'150px',overflow:'auto',WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin', scrollbarColor: 'rgb(183, 70, 225) violet',  borderRadius: '8px', boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)', padding: '10px' }} className="mt-2 mb-2">
-                {answers.map((answer) => (    
-          <div key={answer.id} className="mt-2">
-            <div className="flex items-start">
-              <div className="rounded-lg bg-purple-500 bg-opacity-75 text-white p-2 ">
-                {answer.text}
-              </div>
-            </div>
-          </div>
-        
-      ))}
-              </div>
-          <form onSubmit={handleSubmit} className="mt-4 flex items-center">
-           <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 shadow-md"
-            placeholder="Type your reply here..."
-          />
+    <div className="mt-11">
+      <div className="dashboard_title_container">
+        <span className="dashboard_title_bar"></span>
+        <span className="dashboard_title"> Query History </span>
+        <span className="dashboard_title_bar"></span>
+      </div>
+      <div className=" mx-20 mt-11">
+        {questions.length === 0 ? (
+          <div>no data</div>
+        ) : (
+          questions?.map((item) => {
+            if (item.text && item.text.length > 0) {
+              return (
+                <MyComponent
+                  teamId={mentee?.teamInfo?.id}
+                  parentId={item.id}
+                  key={item.id}
+                  item={item}
+                />
+              );
+            } else {
+              return null;
+            }
+          })
+        )}
+      </div>
+      <div className="fixed top-5 right-5 mt-2 mr-2">
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
             <button
-              type="submit"
-              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="Button"
+              style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
             >
-              Reply
+              Ask Query
             </button>
-          </form>
-        </div>
-      ) : (
-        <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onClick={() => fetchAnswersForQuestion(item.id)}
-        >
-          See more
-        </button>
-      )}
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="DialogOverlay" />
+            <Dialog.Content className="DialogContent">
+              <Dialog.Title className="DialogTitle">Ask Query</Dialog.Title>
+              <Dialog.Description className="DialogDescription">
+                Make changes to your profile here. Click save when you're done.
+              </Dialog.Description>
+
+              <textarea
+                className="mt-1 p-2 border rounded-md w-full"
+                placeholder="Ask your query here"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  marginTop: 25,
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Dialog.Close asChild>
+                  <button
+                    className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-600 transition duration-300 ease-in-out transform"
+                    onClick={handleAskQuery}
+                  >
+                    Ask Query
+                  </button>
+                </Dialog.Close>
+              </div>
+              <Dialog.Close asChild>
+                <button className="IconButton" aria-label="Close">
+                  <Cross2Icon />
+                </button>
+              </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      </div>
     </div>
-
-  );
-};
-
-const AddQuery = () => {
-  const [first, setfirst] = useState([]);
-  const [mentee, setMentee] = useState([]);
-  const [teamId, setTeamId] = useState();
-  const [inputValue, setInputValue] = useState("");
-  // console.log("ok");
-  // mentor.teamInfo.id
-
-  const apiCall = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/allQuery");
-    setfirst(data.queries);
-
-  };
-  const load = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/menteeDetails");
-    setMentee(data.formattedResponse);
-    setTeamId(data.formattedResponse.teamInfo.id);
-  };
-  // console.log(teamId);
-  useEffect(() => {
-    apiCall();
-    load();
-  }, []);
-
-  return first.length == 0 ?(
-    <div>No Query Asked </div>
-  ): (
-    <div className=" mx-auto mt-11" >
-  {first &&
-    first.map((item) => {
-      if (item.text && item.text.length > 0) {
-        
-        return (
-          <MyComponent
-            teamId={teamId}
-            parentId={item.id}
-            key={item.id}
-            item={item}
-          />
-        );
-      } else {
-        return null; // or any other action if needed
-      }
-    })}
-</div>
-
-
   );
 };
 

@@ -67,6 +67,7 @@ async function fetchMentorsByMentee(menteeUid) {
 
 // service to add a user to the database
 async function addUser(userInfo, role) {
+
     // sample userInfo object
     // {
     //     "role": "Mentee",
@@ -79,7 +80,7 @@ async function addUser(userInfo, role) {
     // }
     // or
     // {
-    //     "email": "mentor@example.com",
+    //     "Email": "mentor@example.com",
     //     "First Name": "Jane",
     //     "Last Name": "Doe",
     //     "Experience": "5 years"
@@ -120,6 +121,7 @@ async function addUser(userInfo, role) {
                 return { error: 'Required field is missing' };
             }
         }
+
 
         // generate a random password for each user
         const password = Math.random().toString(36).slice(-8);
@@ -164,7 +166,7 @@ async function addUser(userInfo, role) {
             throw error;
         }
 
-        return { success: true };
+        return { success: true, message: 'User added successfully', role: role };
     } catch (error) {
         console.error(error);
         throw error;

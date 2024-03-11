@@ -15,14 +15,14 @@ exports.teamidToMentee = async (req, res) => {
   try {
     console.log(req.user.role);
     if (req.user.role !== "Admin") {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Only Admin can access",
       });
     }
     const teams = await Team.findAll();
     if (teams.length) {
-      return res.status(400).json({
-        message: "Add all students manually.",
+      return res.status(200).json({
+        message: "Please add all mentees manually.",
       });
     }
     const listOfUser = await Mentee.findAll({
@@ -31,7 +31,7 @@ exports.teamidToMentee = async (req, res) => {
     });
 
     if (listOfUser.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are already created",
       });
     }
@@ -40,7 +40,7 @@ exports.teamidToMentee = async (req, res) => {
     const NoOfTeam = Math.floor(length / 5);
 
     if (NoOfTeam == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Please upload more then 5 mentee",
       });
     }
@@ -112,13 +112,13 @@ exports.teamidToMentee = async (req, res) => {
 exports.teamidToMentor = async (req, res) => {
   try {
     if (req.user.role !== "Admin") {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Only Admin can access",
       });
     }
     const createdTeams = await Team.findAll();
     if (createdTeams.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are not created",
       });
     }
@@ -129,7 +129,7 @@ exports.teamidToMentor = async (req, res) => {
       order: [["Experience", "ASC"]],
     });
     if (mentorList.length == 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Teams are already assigned",
       });
     }
@@ -155,8 +155,9 @@ exports.teamidToMentor = async (req, res) => {
       mentorIndex1 = (mentorIndex1 + 1) % mentorList.length;
       mentorIndex2 = (mentorIndex2 + 1) % mentorList.length;
     }
-
-    res.json({ message: "Teams are successfully assigned to mentors" });
+    return res.status(200).json({
+      message: "Teams are successfully assigned to mentors",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -171,14 +172,8 @@ exports.addSingleUser = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const {
-      email,
-      first_name,
-      last_name,
-      University,
-      home_city,
-      dob,
-    } = req.body;
+    const { email, first_name, last_name, University, home_city, dob } =
+      req.body;
     const password = Math.random().toString(36).slice(-8);
     const hashedPassword = await hash(password, 10);
     const user = await User.create({
@@ -363,15 +358,15 @@ exports.mentorDetails = async (req, res) => {
       ],
     });
     const mentorsList = await Mentor.findAll({
-      where: {team_id: mentorDetails?.Team?.id},
+      where: { team_id: mentorDetails?.Team?.id },
       attributes: ["id", "first_name", "last_name"],
       include: [
         {
           model: User,
           attributes: ["email"],
         },
-      ]
-    })
+      ],
+    });
     // console.log(mentorDetails);
     const menteesList = await Mentee.findAll({
       where: { team_id: mentorDetails?.Team?.id },
@@ -380,8 +375,8 @@ exports.mentorDetails = async (req, res) => {
         {
           model: User,
           attributes: ["email"],
-        }
-      ]
+        },
+      ],
     });
     // console.log(menteesList);
     if (mentorDetails) {
@@ -469,15 +464,15 @@ exports.menteeDetails = async (req, res) => {
       ],
     });
     const mentorsList = await Mentor.findAll({
-      where: {team_id: menteeDetails?.Team?.id},
+      where: { team_id: menteeDetails?.Team?.id },
       attributes: ["id", "first_name", "last_name"],
       include: [
         {
           model: User,
           attributes: ["email"],
         },
-      ]
-    })
+      ],
+    });
     // console.log(menteeDetails);
     const menteesList = await Mentee.findAll({
       where: { team_id: menteeDetails?.Team?.id },
@@ -486,8 +481,8 @@ exports.menteeDetails = async (req, res) => {
         {
           model: User,
           attributes: ["email"],
-        }
-      ]
+        },
+      ],
     });
     // console.log(menteesList);
     if (menteeDetails) {
@@ -545,75 +540,80 @@ exports.menteeDetails = async (req, res) => {
 
 // UPDATE MENTOR DETAILS FROM MENTOR DASHBOARD
 exports.updateMentor = async (req, res) => {
-  try{
-    const {user_id, email, ...data} = req.body;
+  try {
+    const { user_id, email, ...data } = req.body;
     const mentor_record = await Mentor.findOne({
-      where: {user_id}
+      where: { user_id },
     });
     const user_record = await User.findOne({
-      where: {id : user_id}
+      where: { id: user_id },
     });
     // console.log("---------------------------------------------------------------");
     // console.log(mentor_record);
     // console.log(user_record);
-    if(mentor_record && user_record)
-    {
-      const updatedUser = await user_record.update({email});
-      const updatedMentor = await mentor_record.update({...data});
-      console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentor.toJSON());
+    if (mentor_record && user_record) {
+      const updatedUser = await user_record.update({ email });
+      const updatedMentor = await mentor_record.update({ ...data });
+      console.log(
+        "Record updated successfully: ",
+        updatedUser.toJSON(),
+        updatedMentor.toJSON()
+      );
       res.status(200).json({
         success: true,
         message: "Updated successfully!",
-      })
-    }else{
+      });
+    } else {
       res.status(404).json({
         success: false,
         message: "Mentor details Not Found",
-      })
+      });
     }
-  }catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
-}
+};
 
 // UPDATE MENTEE DETAILS FROM MENTOR DASHBOARD
 exports.updateMentee = async (req, res) => {
-  try{
-    const {user_id, email, ...data} = req.body;
+  try {
+    const { user_id, email, ...data } = req.body;
     const mentee_record = await Mentee.findOne({
-      where: {user_id}
+      where: { user_id },
     });
     const user_record = await User.findOne({
-      where: {id : user_id}
+      where: { id: user_id },
     });
-    if(mentee_record && user_record)
-    {
-      const updatedUser = await user_record.update({email});
-      const updatedMentee = await mentee_record.update({...data});
-      console.log("Record updated successfully: ",updatedUser.toJSON(), updatedMentee.toJSON());
+    if (mentee_record && user_record) {
+      const updatedUser = await user_record.update({ email });
+      const updatedMentee = await mentee_record.update({ ...data });
+      console.log(
+        "Record updated successfully: ",
+        updatedUser.toJSON(),
+        updatedMentee.toJSON()
+      );
       res.status(200).json({
         success: true,
         message: "Updated successfully!",
-      })
-    }else{
+      });
+    } else {
       res.status(404).json({
         success: false,
         message: "Mentee details Not Found",
-      })
+      });
     }
-  }catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
-}
-
+};
 
 exports.createQuery = async (req, res) => {
   try {
@@ -650,6 +650,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentor.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     } else {
       const mentee = await Mentee.findOne({
@@ -659,6 +665,12 @@ exports.allQuery = async (req, res) => {
       teamId = mentee.dataValues.team_id;
       queries = await Query.findAll({
         where: { reply_id: id, team_id: teamId },
+        include: [
+          {
+            model: User,
+            attributes: ["email"],
+          },
+        ],
       });
     }
     console.log(teamId);

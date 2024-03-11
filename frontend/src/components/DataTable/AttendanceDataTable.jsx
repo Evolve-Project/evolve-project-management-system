@@ -3,10 +3,19 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { ArrowUpward, ArrowDownward, Edit } from '@mui/icons-material'; // Import icons
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DeleteAttendance, FetchMentorName } from '@/api/attendanceApi';
+import { DeleteAttendance, FetchMentorName, UpdateAttendance } from '@/api/attendanceApi';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const AttendanceDatatable = ({ attendanceData, userData }) => {
   const [sortBy, setSortBy] = useState(null);
@@ -14,6 +23,8 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
   const [mentorNames, setMentorNames] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMeetings, setSelectedMeetings] = useState([]);
+  const [selectedAttendance, setSelectedAttendance] = useState([]);
+  const [position, setPosition] = useState("Present")
 
   useEffect(() => {
     const fetchMentorNames = async () => {
@@ -95,6 +106,37 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
     }
   };
 
+
+  const handleAttendanceCheckboxChange = (checked, meeting) => {
+    setSelectedAttendance((prevSelectedAttendance) => {
+      if (checked) {
+        // Add the meeting to the selectedMeetings array if it's not already present
+        return [...new Set([...prevSelectedAttendance, meeting])];
+      } else {
+        // Remove the meeting from the selectedMeetings array
+        return prevSelectedAttendance.filter(
+          (m) => m.mentor_user_id !== meeting.mentor_user_id || m.date_of_meet !== meeting.date_of_meet || m.mentee_user_id != meeting.mentee_user_id
+        );
+      }
+    });
+    console.log(selectedAttendance);
+  };
+
+  const handleAttendanceDelete = async () => {
+    try {
+      // await DeleteAttendance(selectedMeetings);
+      // Handle successful response, e.g., reset selectedMeetings state
+      console.log(selectedAttendance);
+      await UpdateAttendance({ selectedAttendance, position })
+      setSelectedAttendance([]);
+      console.log('Attendance deleted successfully');
+    } catch (error) {
+      console.error('Error deleting attendance:', error);
+    }
+  };
+
+
+
   return (
     <>
       <div className='text-right my-1'>
@@ -110,7 +152,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                 <TableCell className="w-[10px]  text-left" onClick={() => handleSort('mentor_user_id')}>
                   Selection
                 </TableCell>
-                <TableCell className="w-[200px]  text-left" onClick={() => handleSort('mentor_user_id')}>
+                <TableCell className="w-[100px]  text-left" onClick={() => handleSort('mentor_user_id')}>
                   Mentor Name
                   {sortBy === 'mentor_user_id' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)}
                 </TableCell>
@@ -119,7 +161,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                   {sortBy === 'date_of_meet' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)}
                 </TableCell>
                 <TableCell className="w-[200px]  text-left">Description</TableCell>
-                <TableCell className="w-[100px]  text-center">Attendance</TableCell>
+                <TableCell className="w-[100px]  text-center">Total Present</TableCell>
                 <TableCell className="w-[5px] text-center">Edit</TableCell>
               </TableRow>
             </TableHead>
@@ -157,27 +199,69 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                       <DialogContent>
                         <DialogHeader className={"flex flex-row justify-center items-center"}>
                           <DialogTitle className="m-auto">List of Present Students</DialogTitle>
-                          <Button className="m-auto">Remove</Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline">{position}</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+                                <DropdownMenuRadioItem value="Present">Present</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="Absent">Absent</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="Permitted">Permitted</DropdownMenuRadioItem>
+                              </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <Button className="mx-2 self-end" variant="outline" onClick={handleAttendanceDelete} disabled={selectedAttendance.length === 0}>
+                            Update Selected
+                          </Button>
                         </DialogHeader>
                         <Table>
                           <TableHead>
                             <TableRow>
+                              <TableCell className="">Select</TableCell>
                               <TableCell className="">Name</TableCell>
                               <TableCell className="text-center">Email</TableCell>
+                              <TableCell className="text-center">Attendance</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {/* Adjustment may be needed here depending on the structure of userData */}
                             {/* Assuming mentee_user_id represents the user IDs */}
                             {attendanceData
-                              .filter(item => item.mentor_user_id === at.mentor_user_id && item.date_of_meet === at.date_of_meet && item.attendance === 'Present')
+                              .filter(item => item.mentor_user_id === at.mentor_user_id && item.date_of_meet === at.date_of_meet)
                               .map(item => (
                                 <TableRow key={item.mentee_user_id}>
+                                  <TableCell className="border border-gray-300 p-2 text-center w-[50px]">
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          checked={selectedAttendance.some(
+                                            (m) =>
+                                              m.mentor_user_id === item.mentor_user_id &&
+                                              m.date_of_meet === item.date_of_meet &&
+                                              m.mentee_user_id === item.mentee_user_id
+                                          )}
+                                          onChange={(event) =>
+                                            handleAttendanceCheckboxChange(event.target.checked, {
+                                              mentor_user_id: item.mentor_user_id,
+                                              date_of_meet: item.date_of_meet,
+                                              mentee_user_id: item.mentee_user_id,
+                                            })
+                                          }
+                                        />
+                                      }
+                                    />
+                                  </TableCell>
                                   <TableCell className="font-medium">
                                     {userData.users.find(user => user.id === item.mentee_user_id)?.first_name + " " + userData.users.find(user => user.id === item.mentee_user_id)?.last_name}
                                   </TableCell>
                                   <TableCell className="font-medium text-center">
                                     {userData.users.find(user => user.id === item.mentee_user_id)?.email}
+                                  </TableCell>
+                                  <TableCell className="font-medium text-center">
+                                    {item.attendance}
                                   </TableCell>
                                 </TableRow>
                               ))}
