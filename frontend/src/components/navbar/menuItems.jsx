@@ -94,12 +94,7 @@ const mentee = [
     icon: <IoCheckboxOutline/>,
     link: "/query",
   },
-  {
-    id: 4,
-    title: "Projects",
-    icon: <IoIosGlobe/>,
-    link: "/dashboard",
-  },
+  
   {
     id: 5,
     title: "Milestones",

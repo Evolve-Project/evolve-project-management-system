@@ -151,7 +151,7 @@ function MenteeMilestones() {
       ) : (
         <ChakraProvider theme={theme}>
           
-          <div className="fixed top-2  mt-2 mr-2">
+          
           
                 
                 <span className="feedback_title">Tasks</span>
@@ -211,7 +211,7 @@ function MenteeMilestones() {
             >
               Back
             </button>
-          </div>
+          
         </ChakraProvider>
       )}
     </>
