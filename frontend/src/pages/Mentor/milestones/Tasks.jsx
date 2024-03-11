@@ -1,5 +1,6 @@
 import React, { useState, useEffect,useReducer } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,7 +40,7 @@ function Tasks({ milestoneId}) {
   const [taskname, setTaskname] = useState("");
   const [mentees, setMentees] = useState([]);
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-
+  const history = useNavigate();
   useEffect(() => {
     async function fetchMentees() {
       try {
@@ -93,7 +94,7 @@ function Tasks({ milestoneId}) {
       setAssignee("");
       setOpen(false);
 
-      forceUpdate();
+      //history.push("/milestones?refresh=true");
     } catch (error) {
       // Handle error
       console.error("Error creating task:", error);
