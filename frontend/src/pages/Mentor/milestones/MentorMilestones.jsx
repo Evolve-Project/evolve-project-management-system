@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useReducer} from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import { Box, Heading } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+
 import { ChakraProvider } from "@chakra-ui/react";
 import { loadMilestones } from "@/api/milestoneApi.js";
 import { Select } from "@chakra-ui/react";
@@ -19,7 +21,11 @@ function MentorMilestones() {
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
-  var milestone_id;
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+  const history = useNavigate();
+  
+  
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
@@ -34,9 +40,10 @@ function MentorMilestones() {
         console.error("Error fetching milestone description:", error);
       }
     }
-
+     
     fetchMilestoneDesc();
-  }, [tasks]);
+    forceUpdate()
+  }, [ignored]);
 
   useEffect(() => {
     async function fetchMilestoneForStatus() {
@@ -53,7 +60,8 @@ function MentorMilestones() {
     }
 
     fetchMilestoneForStatus();
-  }, [tasks]);
+    forceUpdate()
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -70,16 +78,21 @@ function MentorMilestones() {
       console.log(newTasks.length);
       console.log(newTasks[0]?.milestone_id);
       setTasks(newTasks);
-      setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); // Update milestone_Id based on new tasks
+      console.log("tasks:",tasks);
+      setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
+      history.push("/milestones?refresh=true");
+      // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
+    forceUpdate();
   };
 
   const handleBackButtonClick = () => {
     setToggle(true); // Set toggle to true to show milestones
     setTasks([]); // Clear tasks
     setMilestone_Id(0); // Clear milestone_Id
+    
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
@@ -107,6 +120,8 @@ function MentorMilestones() {
     } catch (error) {
       console.error("Error updating task status:", error);
     }
+    
+    //history.push("/milestones?refresh=true");
   };
 
   const deleteTask = async (taskId) => {
@@ -116,7 +131,8 @@ function MentorMilestones() {
       const response = await axios.post(`http://localhost:8000/api/delete-task`, {
         taskId
       });
-  
+    
+      history.push("/milestones?refresh=true");
       // Check if the request was successful
       if (response.status === 200) {
         console.log('Task deleted successfully');
@@ -124,11 +140,15 @@ function MentorMilestones() {
       } else {
         // If the response status is not OK, throw an error
         throw new Error('Failed to delete task');
+        
       }
+      history.push("/milestones?refresh=true");
     } catch (error) {
       // Handle any errors
       console.error('Error deleting task:', error);
     }
+
+   
   };
 
   const indexOfLastTask = currentPage * tasksPerPage;
