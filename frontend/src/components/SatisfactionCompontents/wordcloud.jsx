@@ -1,4 +1,5 @@
 // frontend/src/components/WordCloud.js
+// NOT required
 import React, { useEffect, useRef } from 'react';
 import axios from 'axios';
 import * as d3 from 'd3';
@@ -8,10 +9,10 @@ const WordCloud = ({ teamId }) => {
     const svgRef = useRef();
 
     useEffect(() => {
-        axios.post('localhost:8000/feedbackWords', { teamId })
+        axios.post('http://localhost:8000/api/feedbackWords', { teamId })
             .then(res => {
                 const words = res.data;
-
+                console.log(words);
                 const svg = d3.select(svgRef.current);
                 const layout = cloud()
                     .size([500, 500])
