@@ -109,8 +109,8 @@ const Satisfaction = () => {
         console.log("error", err);
       }
     };
-    if (teamId != null) 
-        fetchData();
+    if (teamId != null)
+      fetchData();
   }, [teamId]);
 
   const wordCloudOptions = {
@@ -179,7 +179,7 @@ const Satisfaction = () => {
                       setRole(e.target.value);
                     }}
                     aria-label="Platform"
-                    // size='small'
+                  // size='small'
                   >
                     <ToggleButton value="Mentor">Mentor</ToggleButton>
                     <ToggleButton value="Mentee">Mentee</ToggleButton>

@@ -35,12 +35,6 @@ const admin = [
     icon: <GrUserManager />,
     link: "/satisfaction"
   },
-  {
-    id: 6,
-    title: "Checkouts",
-    icon: <AiFillNotification />,
-    link: "/checkouts",
-  },
 ];
 const mentor = [
   {
