@@ -16,18 +16,20 @@ function MentorMilestones() {
   const [toggle, setToggle] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [milestoneId, setMilestoneId] = useState([]);
+  const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
- var milestone_id;
+  var milestone_id;
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
         console.log("Fetching milestones...");
-        
-        const response = await axios.get("http://localhost:8000/api/get-milestones");
+
+        const response = await axios.get(
+          "http://localhost:8000/api/get-milestones"
+        );
         console.log("Milestones response:", response.data);
         setMilestoneDesc(response.data);
-        
       } catch (error) {
         console.error("Error fetching milestone description:", error);
       }
@@ -40,7 +42,9 @@ function MentorMilestones() {
     async function fetchMilestoneForStatus() {
       try {
         console.log("Fetching milestonesforStatus...");
-        const response = await axios.get("http://localhost:8000/api/get-milestonesForStatus");
+        const response = await axios.get(
+          "http://localhost:8000/api/get-milestonesForStatus"
+        );
         console.log("Milestones response:", response.data);
         setMilestoneId(response.data);
       } catch (error) {
@@ -58,15 +62,24 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
-      
-      const response = await axios.post("http://localhost:8000/api/get-tasks", { milestoneDescId });
-      setTasks(response.data);
-      console.log(response.data);
-     console.log(tasks[0].milestone_id)
-     milestone_id = tasks[0].milestone_id;
+      const response = await axios.post("http://localhost:8000/api/get-tasks", {
+        milestoneDescId,
+      });
+      const newTasks = response.data;
+      console.log(newTasks);
+      console.log(newTasks.length);
+      console.log(newTasks[0]?.milestone_id);
+      setTasks(newTasks);
+      setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
+  };
+  
+  const handleBackButtonClick = () => {
+    setToggle(true); // Set toggle to true to show milestones
+    setTasks([]); // Clear tasks
+    setMilestone_Id(0); // Clear milestone_Id
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
@@ -83,10 +96,13 @@ function MentorMilestones() {
         })
       );
 
-      const response = await axios.post("http://localhost:8000/api/update-task-status", {
-        taskId: taskId,
-        newStatus: newStatus === "true",
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/update-task-status",
+        {
+          taskId: taskId,
+          newStatus: newStatus === "true",
+        }
+      );
       console.log("Update status response:", response.data);
     } catch (error) {
       console.error("Error updating task status:", error);
@@ -98,7 +114,7 @@ function MentorMilestones() {
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
   return (
     <>
       {toggle ? (
@@ -124,11 +140,22 @@ function MentorMilestones() {
                 </thead>
                 <tbody className="text-black-600 text-bg font-dark">
                   {milestoneDesc.map((milestone, index) => (
-                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
-                      <td className="py-2 px-4 text-left whitespace-nowrap">{milestone.name}</td>
-                      <td className="py-2 px-4 text-left">{milestone.description}</td>
-                      <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
-                      <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
+                    <tr
+                      key={index}
+                      className="border-b border-gray-200 hover:bg-gray-100"
+                    >
+                      <td className="py-2 px-4 text-left whitespace-nowrap">
+                        {milestone.name}
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        {milestone.description}
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        {formatDate(milestone.start_date)}
+                      </td>
+                      <td className="py-2 px-4 text-left">
+                        {formatDate(milestone.end_date)}
+                      </td>
                       <td className="py-2 px-4 text-left relative">
                         <Select value={milestoneId[index] ? "true" : "false"}>
                           <option value="false">Completed</option>
@@ -158,7 +185,7 @@ function MentorMilestones() {
       ) : (
         <ChakraProvider theme={theme}>
           <div className="fixed top-2  mt-2 mr-2">
-            <Tasks milestoneId={milestone_id} />
+            <Tasks milestoneId={milestone_Id} />
             <table className="table-auto border-collapse w-full">
               <thead>
                 <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -170,25 +197,29 @@ function MentorMilestones() {
                 </tr>
               </thead>
               <tbody className="text-black-600 text-bg font-dark">
-                { currentTasks.map((task, index) => (
+                {currentTasks.map((task, index) => (
                   <tr
                     key={index}
                     className="border-b border-gray-200 hover:bg-gray-100"
                   >
-                    
-                    <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name }</td>
+                    <td className="py-2 px-3 text-left whitespace-nowrap">
+                      {task.task_name}
+                    </td>
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
-                    <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
+                    <td className="py-2 px-3 text-left">
+                      {formatDate(task.task_completion_datetime)}
+                    </td>
                     <td className="py-2 px-3 text-left">
                       <Select
                         value={task.status ? "true" : "false"}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
+                        onChange={(e) =>
+                          handleStatusChange(task.id, e.target.value === "true")
+                        }
                       >
                         <option value="false">In Progress</option>
                         <option value="true">Completed</option>
                       </Select>
                     </td>
-                    
                   </tr>
                 ))}
               </tbody>
@@ -211,9 +242,9 @@ function MentorMilestones() {
             </div>
             <button
               className="fixed top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-              onClick={() => setToggle(true) }
+              onClick={handleBackButtonClick}
             >
-              Back 
+              Back
             </button>
           </div>
         </ChakraProvider>
