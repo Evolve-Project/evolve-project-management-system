@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useReducer} from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import { Box, Heading } from "@chakra-ui/react";
@@ -19,7 +19,10 @@ function MentorMilestones() {
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
-  var milestone_id;
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+  
+  
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
@@ -34,9 +37,10 @@ function MentorMilestones() {
         console.error("Error fetching milestone description:", error);
       }
     }
-
+     
     fetchMilestoneDesc();
-  }, [tasks]);
+    forceUpdate()
+  }, [ignored]);
 
   useEffect(() => {
     async function fetchMilestoneForStatus() {
@@ -53,7 +57,8 @@ function MentorMilestones() {
     }
 
     fetchMilestoneForStatus();
-  }, [tasks]);
+    forceUpdate()
+  }, [ignored]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -74,12 +79,14 @@ function MentorMilestones() {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
+    forceUpdate();
   };
 
   const handleBackButtonClick = () => {
     setToggle(true); // Set toggle to true to show milestones
     setTasks([]); // Clear tasks
     setMilestone_Id(0); // Clear milestone_Id
+    
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
@@ -107,6 +114,7 @@ function MentorMilestones() {
     } catch (error) {
       console.error("Error updating task status:", error);
     }
+    forceUpdate();
   };
 
   const deleteTask = async (taskId) => {
@@ -129,6 +137,8 @@ function MentorMilestones() {
       // Handle any errors
       console.error('Error deleting task:', error);
     }
+
+    forceUpdate()
   };
 
   const indexOfLastTask = currentPage * tasksPerPage;
