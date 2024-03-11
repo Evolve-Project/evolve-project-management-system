@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Word Cloud</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Test Word Cloud</h1>
+  <button id="fetchButton">Fetch Word Cloud</button>
+
+  <script>
+    document.getElementById('fetchButton').addEventListener('click', function() {
+      axios.post('http://localhost:8000/feedbackWords', { teamId: '3' })
+        .then(function(response) {
+          console.log(response.data);
+          // Replace this with your own code to display the data
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+    });
+  </script>
+</body>
+</html>
