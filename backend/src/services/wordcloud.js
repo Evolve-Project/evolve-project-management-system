@@ -1,10 +1,6 @@
 // backend/src/services/feedback_services.js
 
-// potential stopwords library
-// const { removeStopwords } = require('stopword')
-// const oldString = 'a really Interesting string with some words'.split(' ')
 // const newString = removeStopwords(oldString)
-// // newString is now [ 'really', 'Interesting', 'string', 'words' ]
 
 
 
