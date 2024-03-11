@@ -23,7 +23,25 @@ function MentorMilestones() {
   const [tasksPerPage] = useState(6);
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
+  const [mentees, setMentees] = useState([]);
+  
   const history = useNavigate();
+
+  useEffect(() => {
+    async function fetchMentees() {
+      try {
+        console.log("Fetching mentees...");
+        const response = await axios.get("http://localhost:8000/api/getMentees");
+        console.log("Mentees response:", response.data);
+        setMentees(response.data);
+      } catch (error) {
+        console.error("Error fetching mentees:", error);
+      }
+    }
+
+    fetchMentees();
+  }, []);
+  
   
   
   useEffect(() => {
@@ -42,8 +60,7 @@ function MentorMilestones() {
     }
      
     fetchMilestoneDesc();
-    forceUpdate()
-  }, [ignored]);
+  }, []);
 
   useEffect(() => {
     async function fetchMilestoneForStatus() {
@@ -60,7 +77,6 @@ function MentorMilestones() {
     }
 
     fetchMilestoneForStatus();
-    forceUpdate()
   }, []);
 
   const formatDate = (dateString) => {
@@ -78,14 +94,13 @@ function MentorMilestones() {
       console.log(newTasks.length);
       console.log(newTasks[0]?.milestone_id);
       setTasks(newTasks);
-      console.log("tasks:",tasks);
       setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
       history.push("/milestones?refresh=true");
       // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-    forceUpdate();
+    
   };
 
   const handleBackButtonClick = () => {
@@ -151,6 +166,10 @@ function MentorMilestones() {
    
   };
 
+  const getMenteeName = (menteeId) => {
+    const mentee = mentees.users.find((m) => m.id === menteeId);
+    return mentee ? mentee.first_name +" " + mentee.last_name : "Unknown Mentee";
+  };
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
@@ -262,7 +281,9 @@ function MentorMilestones() {
                         <option value="true">Completed</option>
                       </Select>
                     </td>
-                    <td></td>
+                    <td className="py-2 px-3 text-left">
+      {getMenteeName(task.mentee_user_id)}
+    </td>
                     <td className="py-2 px-3 text-left">
                       <button
                         className="text-red-600 hover:text-red-900 focus:outline-none"
