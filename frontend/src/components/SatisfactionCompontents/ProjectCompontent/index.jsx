@@ -54,7 +54,7 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
                     {teams_projects.map((team)=>{
                         if(team.Project?.name)  // IF PROJECTS ASSIGNED ONLY DISPLAY
                             return (
-                                <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id)}}>
+                                <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id, team.team_name)}}>
                                     {team.Project.name}
                                 </MenuItem>
                             )

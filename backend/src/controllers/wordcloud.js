@@ -22,7 +22,7 @@ exports.getFeedbackWords = async (req, res) => {
             });
         });
 
-        const myWords = Object.entries(wordCounts).map(([word, size]) => ({ word, size }));
+        const myWords = Object.entries(wordCounts).map(([word, size]) => ({ "text":word, "value":size }));
         res.json(myWords);
     } catch (error) {
         res.status(500).json({ message: "An error occurred while fetching feedback words", error: error.message });
