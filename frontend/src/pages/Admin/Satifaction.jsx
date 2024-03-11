@@ -7,7 +7,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 // import { mentees, mentors } from '@/dummyData';
 import ProjectNames from '@/components/SatisfactionCompontents/ProjectCompontent';
-import UserNames from '@/components/SatisfactionCompontents/UserCompontent';
+import UserNames from '@/components/SatisfactionCompontents/UserNamesCompontent';
 import SatisfactionChart from '@/components/SatisfactionCompontents/ChartComponent';
 import SatisfactionDetailed from '@/components/SatisfactionCompontents/DetailedComponent';
 import CustomizedDialogs from '@/components/SatisfactionCompontents/PopupComponent';
@@ -20,6 +20,7 @@ import SatisfactionShimmer from '@/components/SatisfactionCompontents/Satisfacti
 import ChartShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/chartShimmer';
 import DetailedShimmer from '@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer';
 import ErrorPage from '@/components/ErrorPage';
+import ReactWordcloud from 'react-wordcloud';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_SERVER_URL,
@@ -95,6 +96,57 @@ const Satisfaction = ()=>{
         setIsPopOpen(prev => !prev);
     }
 
+
+    const words = [
+        {
+          text: 'told',
+          value: 64,
+        },
+        {
+          text: 'mistake',
+          value: 11,
+        },
+        {
+          text: 'thought',
+          value: 16,
+        },
+        {
+          text: 'bad',
+          value: 17,
+        },
+        {
+          text: 'told',
+          value: 64,
+        },
+        {
+          text: 'mistake',
+          value: 11,
+        },
+        {
+          text: 'thought',
+          value: 16,
+        },
+        {
+          text: 'bad',
+          value: 17,
+        },
+        {
+          text: 'Good',
+          value: 64,
+        },
+        {
+          text: 'mistake',
+          value: 11,
+        },
+        {
+          text: 'thought',
+          value: 16,
+        },
+        {
+          text: 'bad',
+          value: 17,
+        },
+      ]
 
     if(loading1 || status === "Initial-loading" || projectLoading){ // LOADING PAGE
         return <SatisfactionShimmer/>;
@@ -182,6 +234,7 @@ const Satisfaction = ()=>{
                                     }
                                 </div>
                              : 
+                             (teamId != null) ? <div className='w-full'><div>Feedback review wordcloud: Most common words used by "team name" team members(beta)</div><ReactWordcloud words={words} size={[400,600]} /></div> :
                             <img src={feedback_loader} style={{width:"50%"}} ></img>
                         }
                     </div>
