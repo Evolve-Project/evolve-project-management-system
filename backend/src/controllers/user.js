@@ -19,12 +19,6 @@ exports.teamidToMentee = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const teams = await Team.findAll();
-    if (teams.length) {
-      return res.status(200).json({
-        message: "Please add all mentees manually.",
-      });
-    }
     const listOfUser = await Mentee.findAll({
       where: { team_id: null },
       order: [["University", "ASC"]],
@@ -44,12 +38,13 @@ exports.teamidToMentee = async (req, res) => {
         message: "Please upload more then 5 mentee",
       });
     }
-
+    
     //Create teams
+    let lastTeamId = await Team.max('id');
     let list = [];
     for (let i = 0; i < NoOfTeam; i++) {
       list.push({
-        team_name: `Team ${i + 1}`,
+        team_name: `Team ${++lastTeamId}`,
         total_team_members: 5,
       });
     }
@@ -116,13 +111,23 @@ exports.teamidToMentor = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const createdTeams = await Team.findAll();
-    if (createdTeams.length == 0) {
+
+    const allTeams = await Team.findAll();
+    const listOfTeamid = allTeams.map((team) => team.id);
+
+    const assignedTeams = await Mentor.findAll({
+      attributes: ["team_id"],
+    });
+    const listassignedTeams = assignedTeams.map((team) => team.team_id);
+
+    const remainingTeamsId = listOfTeamid.filter(
+      (id) => !listassignedTeams.includes(id)
+    );
+    if (remainingTeamsId.length == 0) {
       return res.status(200).json({
         message: "Teams are not created",
       });
     }
-    const listOfTeamid = createdTeams.map((team) => team.id);
 
     const mentorList = await Mentor.findAll({
       where: { team_id: null },
@@ -131,13 +136,14 @@ exports.teamidToMentor = async (req, res) => {
     if (mentorList.length == 0) {
       return res.status(200).json({
         message: "Teams are already assigned",
+        remainingTeamsId
       });
     }
     let mentorIndex1 = 0;
     let mentorIndex2 = mentorList.length / 2;
 
-    for (let i = 0; i < listOfTeamid.length; i++) {
-      const teamid = listOfTeamid[i];
+    for (let i = 0; i < remainingTeamsId.length; i++) {
+      const teamid = remainingTeamsId[i];
 
       const mentorid1 = mentorList[mentorIndex1].id;
       const mentorid2 = mentorList[mentorIndex2].id;
