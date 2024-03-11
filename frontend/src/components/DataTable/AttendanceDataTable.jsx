@@ -193,7 +193,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                   </TableCell>
                   <TableCell className="border border-gray-300 p-2 text-center">{at.description}</TableCell>
                   <TableCell className="border border-gray-300 p-2 text-center">{at.totalAttendance}</TableCell>
-                  <TableCell className="border border-gray-300 p-0 text-center">
+                  <TableCell className="border border-gray-300 p-2 text-center">
                     <Dialog>
                       <DialogTrigger><Edit /></DialogTrigger>
                       <DialogContent>
@@ -204,7 +204,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
                               <Button variant="outline">{position}</Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
-                              <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+                              <DropdownMenuLabel>Select Attendance Type</DropdownMenuLabel>
                               <DropdownMenuSeparator />
                               <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
                                 <DropdownMenuRadioItem value="Present">Present</DropdownMenuRadioItem>
