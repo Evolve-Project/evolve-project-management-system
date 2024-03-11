@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useReducer } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,14 +32,15 @@ import {
 } from "@/components/ui/form";
 import { Select } from "@chakra-ui/react";
 
-function Tasks({ milestoneId }) {
+function Tasks({ milestoneId}) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
   const [taskname, setTaskname] = useState("");
   const [mentees, setMentees] = useState([]);
-
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const history = useNavigate();
   useEffect(() => {
     async function fetchMentees() {
       try {
@@ -55,19 +57,19 @@ function Tasks({ milestoneId }) {
     fetchMentees();
   }, []);
 
-    
-
   const handleCreateTask = async (e) => {
     e.preventDefault();
     console.log("create task called");
-    
+
     try {
-      const selectedMentee = mentees.users.find((mentee) => mentee.id === parseInt(assignee));
+      const selectedMentee = mentees.users.find(
+        (mentee) => mentee.id === parseInt(assignee)
+      );
       if (!selectedMentee) {
         console.error("Selected mentee not found.");
         return;
       }
-      
+
       const taskData = {
         taskname,
         date,
@@ -75,25 +77,29 @@ function Tasks({ milestoneId }) {
         assignee_id: selectedMentee.id,
         milestone_id: milestoneId, // Send the milestoneId to the backend
       };
-      
+
       console.log("Task data:", taskData);
-  
-      const response = await axios.post("http://localhost:8000/api/create-task", taskData);
-      
+
+      const response = await axios.post(
+        "http://localhost:8000/api/create-task",
+        taskData
+      );
+
       console.log("Task created successfully:", response.data);
-      
+      onTaskCreated(); // Call the callback function to notify the parent component
       // Optionally, you can close the dialog here
       setTaskname("");
       setDate("");
       setDescription("");
       setAssignee("");
       setOpen(false);
+
+      //history.push("/milestones?refresh=true");
     } catch (error) {
       // Handle error
       console.error("Error creating task:", error);
     }
   };
- 
 
   return (
     <div>
@@ -101,7 +107,6 @@ function Tasks({ milestoneId }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <div className="flex justify-left mx-10">
           <DialogTrigger asChild>
-            
             <Button onClick={() => setOpen(true)}>Create Task</Button>
           </DialogTrigger>
         </div>
