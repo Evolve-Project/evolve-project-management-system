@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { ArrowUpward, ArrowDownward, Edit } from '@mui/icons-material'; // Import icons
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DeleteAttendance, FetchMentorName } from '@/api/attendanceApi';
+import { DeleteAttendance, FetchMentorName, UpdateAttendance } from '@/api/attendanceApi';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
@@ -126,7 +126,9 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
     try {
       // await DeleteAttendance(selectedMeetings);
       // Handle successful response, e.g., reset selectedMeetings state
-      setSelectedMeetings([]);
+      console.log(selectedAttendance);
+      await UpdateAttendance({ selectedAttendance, position })
+      setSelectedAttendance([]);
       console.log('Attendance deleted successfully');
     } catch (error) {
       console.error('Error deleting attendance:', error);

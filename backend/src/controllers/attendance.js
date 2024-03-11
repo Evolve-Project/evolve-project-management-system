@@ -8,7 +8,6 @@ exports.fetchTeamData = async (req, res) => {
     try {
         if (req.user.role == "Mentor") {
             const mentorUid = req.user.id;
-            console.log(req.body);
             const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
             const mentorTeamId = mentor.team_id;
 
@@ -110,7 +109,6 @@ exports.fetchAttendance = async (req, res) => {
 };
 
 exports.getMentorName = async (req, res) => {
-    console.log(req.body)
     try {
         const mentorUid = req.body.mentorId;
         const mentor = await Mentor.findOne({ where: { user_id: mentorUid } });
@@ -156,3 +154,45 @@ exports.deleteAttendance = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+
+exports.updateAttendance = async (req, res) => {
+    const { selectedAttendance, position } = req.body;
+
+    try {
+        // Loop through each attendance record in the selectedAttendance array
+        for (const attendanceData of selectedAttendance) {
+            const { mentor_user_id, date_of_meet, mentee_user_id } = attendanceData;
+
+            // Find the attendance record based on mentor_user_id, date_of_meet, and mentee_user_id
+            const existingAttendance = await Attendance.findOne({
+                where: {
+                    mentor_user_id,
+                    date_of_meet,
+                    mentee_user_id
+                }
+            });
+
+            // If the attendance record exists, update the attendance status
+            if (existingAttendance) {
+                existingAttendance.attendance = position;
+                await existingAttendance.save(); // Save the updated attendance record
+            } else {
+                // If the attendance record doesn't exist, create a new one with the provided data
+                await Attendance.create({
+                    mentor_user_id,
+                    date_of_meet,
+                    mentee_user_id,
+                    attendance: position
+                });
+            }
+        }
+
+        // Respond with a success message
+        return res.status(200).json({ message: 'Attendances updated successfully' });
+    } catch (error) {
+        // Handle errors
+        console.error('Error updating attendances:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

@@ -295,7 +295,7 @@ const Attendance = () => {
 
       </Dialog>
 
-      {userData.users != null && attendanceData != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
+      {userData.users != null && attendanceData.length > 0 && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div >
 
   )

@@ -1,45 +1,10 @@
-import { Button } from '@/components/ui/button'
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from '@/lib/utils'
-import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { useForm } from 'react-hook-form';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-
-import { CalendarIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
-import { CreateAttendance, FetchAttendance, FetchMentees } from '@/api/attendanceApi';
-import { Textarea } from "@/components/ui/textarea"
-import AttendanceDatatable from '@/components/DataTable/AttendanceDataTable';
+import { FetchAttendance, FetchMentees } from '@/api/attendanceApi';
 import { useEffect } from 'react';
 import AttendanceTableMentee from '@/components/DataTable/AttendanceTableMentee';
+import "@/styles/userDashboard.css";
 
 const MenteeAttendance = () => {
   const [attendanceData, setAttendanceData] = useState({});
@@ -63,8 +28,11 @@ const MenteeAttendance = () => {
   return (
     <div className='flex flex-col justify-end'>
       <div className='flex justify-center'>
-        <h1 className='mb-4 text-4xl dark:text-white py-4'>Attendance</h1>
-      </div>
+        <div className="dashboard_title_container">
+          <span className="dashboard_title_bar"></span>
+          <span className="dashboard_title">Attendance</span>
+          <span className="dashboard_title_bar"></span>
+        </div>      </div>
       {console.log(attendanceData)}
       {attendanceData.length > 0 && <AttendanceTableMentee attendanceData={attendanceData} />}
     </div >
