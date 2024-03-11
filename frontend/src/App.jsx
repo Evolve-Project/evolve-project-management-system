@@ -25,6 +25,8 @@ import Satisfaction from "./pages/Admin/Satifaction";
 import Project from "./pages/Mentor/Project";
 import AddQuery from "./pages/Mentee/AddQuery";
 import MentorMilestones from "./pages/Mentor/milestones/MentorMilestones";
+import MenteeMilestones from "./pages/Mentee/milestones/MenteeMilestones";
+import MenteeAttendance from "./pages/Mentee/Attendance";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -59,8 +61,8 @@ const App = () => {
               <Route path="/feedback" element={<MentorFeedback />} />
               <Route path="/query" element={<Query />} />
               <Route path="/attendance" element={<MentorAttendance />} />
-              <Route path="/milestones" element={<MentorMilestones/>} />
-              <Route path="/milestones/:name" element={<MentorMilestones/>} />
+              <Route path="/milestones" element={<MentorMilestones />} />
+              <Route path="/milestones/:name" element={<MentorMilestones />} />
               <Route path="/project" element={<Project />} />
             </>
           )}
@@ -69,8 +71,9 @@ const App = () => {
             <>
               <Route path="/dashboard" element={<DashboardMentee />} />
               <Route path="/feedback" element={<MenteeFeedback />} />
-              {/* <Route path="/attendance" element={<Attendance />} /> */}
+              <Route path="/attendance" element={<MenteeAttendance />} />
               <Route path="/query" element={<AddQuery />} />
+              <Route path="/milestones" element={<MenteeMilestones />} />
             </>
           )}
         </Route>

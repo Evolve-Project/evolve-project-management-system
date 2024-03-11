@@ -1,6 +1,6 @@
 'use strict';
 
-const { Milestone, MilestoneDescription, Task } = require('../models');
+const { Milestone, MilestoneDescription, Task ,Mentee} = require('../models');
 
 async function getMilestoneDesc() {
     try {
@@ -44,7 +44,54 @@ async function getTasksByMilestoneId(milestoneDescId, teamId) {
     }
 };
 
+async function getMilestonebyteamId(teamId) {
+    try {
+      const milestones = await Milestone.findAll({
+        where: {
+          team_id: teamId,
+        },
+      });
+  
+      // console.log("Milestone ID:", milestone ? milestone.id : null);
+  
+      if (!milestones) {
+        // Handle the case where milestone is not found
+        return res.status(404).json({ error: "Milestone not found" });
+      }
+  
+      return milestones;
+    } catch (error) {
+      console.log("Error in getTasksByMilestoneId service:", error);
+      throw error;
+    }
+  }
+  
+  async function getMenteebyteamId(teamId) {
+    try {
+      const mentees = await Mentee.findAll({
+        where: {
+          team_id: teamId,
+        },
+      });
+  
+      
+  
+      if (!mentees) {
+        
+        return res.status(404).json({ error: "Mentee not found" });
+      }
+  
+      return mentees;
+    } catch (error) {
+      console.log("Error in getTasksByMilestoneId service:", error);
+      throw error;
+    }
+  }
+
 module.exports = {
     getMilestoneDesc,
-    getTasksByMilestoneId
+    getTasksByMilestoneId,
+    getMenteebyteamId,
+    getMilestonebyteamId
+
 };

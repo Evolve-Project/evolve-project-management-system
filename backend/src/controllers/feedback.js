@@ -103,7 +103,7 @@ const getMenteeMetrics = async (req, res) => {
 const getAllProjectDetails = async (req, res) => {
   try {
     const allTeamsNames = await Team.findAll({
-      attributes: ["id", "project_id"],
+      attributes: ["id", "team_name", "project_id"],
       include: [
         {
           model: Project,

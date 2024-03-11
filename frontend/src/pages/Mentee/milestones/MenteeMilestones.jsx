@@ -1,74 +1,42 @@
-import React, { useState, useEffect ,useReducer} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import { Box, Heading } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-
 import { ChakraProvider } from "@chakra-ui/react";
 import { loadMilestones } from "@/api/milestoneApi.js";
 import { Select } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import theme from "./themes/theme.jsx";
-import AddMilestone from "./AddMilestone.jsx";
-import Tasks from "./Tasks.jsx";
 
-function MentorMilestones() {
+function MenteeMilestones() {
   const [status, setStatus] = useState([]);
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
   const [tasks, setTasks] = useState([]);
-  const [milestoneId, setMilestoneId] = useState([]);
-  const [milestone_Id, setMilestone_Id] = useState(0);
+  const [milestoneId, setMilestoneId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
-  const [mentees, setMentees] = useState([]);
-  
-  const history = useNavigate();
-
-  useEffect(() => {
-    async function fetchMentees() {
-      try {
-        console.log("Fetching mentees...");
-        const response = await axios.get("http://localhost:8000/api/getMentees");
-        console.log("Mentees response:", response.data);
-        setMentees(response.data);
-      } catch (error) {
-        console.error("Error fetching mentees:", error);
-      }
-    }
-
-    fetchMentees();
-  }, []);
-  
-  
-  
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
         console.log("Fetching milestones...");
-
-        const response = await axios.get(
-          "http://localhost:8000/api/get-milestones"
-        );
+        const response = await axios.get("http://localhost:8000/api/get-milestones");
         console.log("Milestones response:", response.data);
         setMilestoneDesc(response.data);
       } catch (error) {
         console.error("Error fetching milestone description:", error);
       }
     }
-     
+
     fetchMilestoneDesc();
-  }, []);
+  }, [tasks]);
 
   useEffect(() => {
     async function fetchMilestoneForStatus() {
       try {
         console.log("Fetching milestonesforStatus...");
-        const response = await axios.get(
-          "http://localhost:8000/api/get-milestonesForStatus"
-        );
+        const response = await axios.get("http://localhost:8000/api/get-milestonesForStatus");
         console.log("Milestones response:", response.data);
         setMilestoneId(response.data);
       } catch (error) {
@@ -77,7 +45,7 @@ function MentorMilestones() {
     }
 
     fetchMilestoneForStatus();
-  }, []);
+  }, [tasks]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -86,28 +54,12 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
-      const response = await axios.post("http://localhost:8000/api/get-tasks", {
-        milestoneDescId,
-      });
-      const newTasks = response.data;
-      console.log(newTasks);
-      console.log(newTasks.length);
-      console.log(newTasks[0]?.milestone_id);
-      setTasks(newTasks);
-      setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
-      history.push("/milestones?refresh=true");
-      // Update milestone_Id based on new tasks
+      const response = await axios.post("http://localhost:8000/api/get-tasks", { milestoneDescId });
+      setTasks(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-    
-  };
-
-  const handleBackButtonClick = () => {
-    setToggle(true); // Set toggle to true to show milestones
-    setTasks([]); // Clear tasks
-    setMilestone_Id(0); // Clear milestone_Id
-    
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
@@ -124,52 +76,16 @@ function MentorMilestones() {
         })
       );
 
-      const response = await axios.post(
-        "http://localhost:8000/api/update-task-status",
-        {
-          taskId: taskId,
-          newStatus: newStatus === "true",
-        }
-      );
+      const response = await axios.post("http://localhost:8000/api/update-task-status", {
+        taskId: taskId,
+        newStatus: newStatus === "true",
+      });
       console.log("Update status response:", response.data);
     } catch (error) {
       console.error("Error updating task status:", error);
     }
-    
-    //history.push("/milestones?refresh=true");
   };
 
-  const deleteTask = async (taskId) => {
-    try {
-      // Make a DELETE request to the server
-      console.log(taskId)
-      const response = await axios.post(`http://localhost:8000/api/delete-task`, {
-        taskId
-      });
-    
-      history.push("/milestones?refresh=true");
-      // Check if the request was successful
-      if (response.status === 200) {
-        console.log('Task deleted successfully');
-        // Optionally, you can perform any additional actions after the task is deleted
-      } else {
-        // If the response status is not OK, throw an error
-        throw new Error('Failed to delete task');
-        
-      }
-      history.push("/milestones?refresh=true");
-    } catch (error) {
-      // Handle any errors
-      console.error('Error deleting task:', error);
-    }
-
-   
-  };
-
-  const getMenteeName = (menteeId) => {
-    const mentee = mentees.users.find((m) => m.id === menteeId);
-    return mentee ? mentee.first_name +" " + mentee.last_name : "Unknown Mentee";
-  };
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
@@ -201,22 +117,11 @@ function MentorMilestones() {
                 </thead>
                 <tbody className="text-black-600 text-bg font-dark">
                   {milestoneDesc.map((milestone, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-200 hover:bg-gray-100"
-                    >
-                      <td className="py-2 px-4 text-left whitespace-nowrap">
-                        {milestone.name}
-                      </td>
-                      <td className="py-2 px-4 text-left">
-                        {milestone.description}
-                      </td>
-                      <td className="py-2 px-4 text-left">
-                        {formatDate(milestone.start_date)}
-                      </td>
-                      <td className="py-2 px-4 text-left">
-                        {formatDate(milestone.end_date)}
-                      </td>
+                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                      <td className="py-2 px-4 text-left whitespace-nowrap">{milestone.name}</td>
+                      <td className="py-2 px-4 text-left">{milestone.description}</td>
+                      <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
+                      <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
                       <td className="py-2 px-4 text-left relative">
                         <Select value={milestoneId[index] ? "true" : "false"}>
                           <option value="false">Completed</option>
@@ -246,7 +151,12 @@ function MentorMilestones() {
       ) : (
         <ChakraProvider theme={theme}>
           
-            <Tasks milestoneId={milestone_Id} />
+          <div className="fixed top-2  mt-2 mr-2">
+          
+                
+                <span className="feedback_title">Tasks</span>
+               
+              
             <table className="table-auto border-collapse w-full">
               <thead>
                 <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -263,47 +173,17 @@ function MentorMilestones() {
                     key={index}
                     className="border-b border-gray-200 hover:bg-gray-100"
                   >
-                    <td className="py-2 px-3 text-left whitespace-nowrap">
-                      {task.task_name}
-                    </td>
+                    <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
-                    <td className="py-2 px-3 text-left">
-                      {formatDate(task.task_completion_datetime)}
-                    </td>
+                    <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                     <td className="py-2 px-3 text-left">
                       <Select
                         value={task.status ? "true" : "false"}
-                        onChange={(e) =>
-                          handleStatusChange(task.id, e.target.value === "true")
-                        }
+                        onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
                       >
                         <option value="false">In Progress</option>
                         <option value="true">Completed</option>
                       </Select>
-                    </td>
-                    <td className="py-2 px-3 text-left">
-      {getMenteeName(task.mentee_user_id)}
-    </td>
-                    <td className="py-2 px-3 text-left">
-                      <button
-                        className="text-red-600 hover:text-red-900 focus:outline-none"
-                        onClick={() => deleteTask(task.id)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 6l3 15h12l3-15H3zm9 2v8m-4-4h8"
-                          />
-                        </svg>
-                      </button>
                     </td>
                   </tr>
                 ))}
@@ -327,15 +207,15 @@ function MentorMilestones() {
             </div>
             <button
               className="fixed top-3 right-5 mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-              onClick={handleBackButtonClick}
+              onClick={() => setToggle(true)}
             >
               Back
             </button>
-          
+          </div>
         </ChakraProvider>
       )}
     </>
   );
 }
 
-export { MentorMilestones as default };
+export { MenteeMilestones as default };

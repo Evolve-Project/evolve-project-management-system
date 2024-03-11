@@ -14,31 +14,31 @@ const admin = [
   {
     id: 2,
     title: "User Management",
-    icon: <GrUserManager/>,
+    icon: <GrUserManager />,
     link: "/usermanagement",
   },
   {
     id: 3,
     title: "Attendance",
-    icon: <IoCheckboxOutline/>,
+    icon: <IoCheckboxOutline />,
     link: "/attendance",
   },
   {
     id: 4,
     title: "Projects",
-    icon: <IoIosGlobe/>,
+    icon: <IoIosGlobe />,
     link: "/projects",
   },
   {
     id: 5,
     title: "Satisfaction",
-    icon: <GrUserManager/>,
+    icon: <GrUserManager />,
     link: "/satisfaction"
   },
   {
     id: 6,
     title: "Checkouts",
-    icon: <AiFillNotification/>,
+    icon: <AiFillNotification />,
     link: "/checkouts",
   },
 ];
@@ -46,53 +46,71 @@ const mentor = [
   {
     id: 1,
     title: "Dashboard",
-    icon: <MdDashboard/>,
+    icon: <MdDashboard />,
     link: "/dashboard",
   },
   {
     id: 2,
     title: "Attendance",
-    icon: <IoCheckboxOutline/>,
+    icon: <IoCheckboxOutline />,
     link: "/attendance",
   },
   {
     id: 3,
     title: "Feedback",
-    icon: <GrUserManager/>,
+    icon: <GrUserManager />,
     link: "/feedback",
   },
   {
     id: 4,
     title: "Query",
-    icon: <FaClipboardQuestion/>,
+    icon: <FaClipboardQuestion />,
     link: "/query",
   },
   {
     id: 5,
     title: "Milestones",
-    icon: <IoIosGlobe/>,
+    icon: <IoIosGlobe />,
     link: "/milestones",
   }
- 
+
 ];
 const mentee = [
   {
     id: 1,
     title: "Dashboard",
-    icon: <MdDashboard/>,
+    icon: <MdDashboard />,
     link: "/dashboard",
   },
   {
     id: 2,
     title: "Feedback",
-    icon: <IoCheckboxOutline/>,
+    icon: <IoCheckboxOutline />,
     link: "/feedback",
   },
   {
     id: 3,
+    title: "Attendance",
+    icon: <IoCheckboxOutline />,
+    link: "/attendance",
+  },
+  {
+    id: 4,
     title: "Ask Query",
-    icon: <IoCheckboxOutline/>,
+    icon: <IoCheckboxOutline />,
     link: "/query",
+  },
+  {
+    id: 5,
+    title: "Projects",
+    icon: <IoIosGlobe />,
+    link: "/dashboard",
+  },
+  {
+    id: 6,
+    title: "Milestones",
+    icon: <IoIosGlobe />,
+    link: "/milestones",
   }
 ];
 export { admin, mentee, mentor };

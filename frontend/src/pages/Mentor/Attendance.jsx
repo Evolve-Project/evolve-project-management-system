@@ -32,6 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+
 import { CalendarIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { CreateAttendance, FetchAttendance, FetchMentees } from '@/api/attendanceApi';
@@ -40,107 +41,9 @@ import AttendanceDatatable from '@/components/DataTable/AttendanceDataTable';
 import { useEffect } from 'react';
 
 const Attendance = () => {
-  const oldUserData = {
-    users: [
-      {
-        name: 'Aarav',
-        email: 'aarav@example.com',
-        id: 1
-      },
-      {
-        name: 'Isha',
-        email: 'isha@example.com',
-        id: 2
-      },
-      {
-        name: 'Rohan',
-        email: 'rohan@example.com',
-        id: 3
-      },
-      {
-        name: 'Neha',
-        email: 'neha@example.com',
-        id: 4
-      },
-      {
-        name: 'Kiran',
-        email: 'kiran@example.com',
-        id: 5
-      },
-      {
-        name: 'Anaya',
-        email: 'anaya@example.com',
-        id: 6
-      },
-      {
-        name: 'Vikram',
-        email: 'vikram@example.com',
-        id: 7
-      }
-    ]
-  };
-
   const form = useForm()
 
-  const [open, setOpen] = useState(false);
-  // const [attendanceData, setAttendanceData] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Harsh",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-22"),
-  //     attendance: [1, 2, 3] // Assuming these are user IDs present on this date
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Verma",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-21"),
-  //     attendance: [4, 5, 6]
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Harsh",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-20"),
-  //     attendance: [2, 3, 7]
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Verma",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-19"),
-  //     attendance: [1, 4, 6]
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Harsh",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-18"),
-  //     attendance: [3, 5, 7]
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Verma",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-17"),
-  //     attendance: [1, 2, 6]
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "Harsh",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-16"),
-  //     attendance: [3, 4, 5]
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Verma",
-  //     description: "Project meeting",
-  //     date: new Date("2024-02-15"),
-  //     attendance: [1, 4, 7]
-  //   }
-  // ]);
+  const [open, setOpen] = useState(false)
   const [userData, setUserData] = useState({});
   const [attendanceData, setAttendanceData] = useState({});
 
@@ -228,11 +131,20 @@ const Attendance = () => {
     }
     try {
       const response = await CreateAttendance(data);
-      console.log(response);
     } catch (error) {
+      if (data.date == null || data.attendance == null) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Another meeting with that date already exists',
+          icon: 'error',
+          confirmButtonText: 'Retry'
+        });
+        setOpen(false);
+        return;
+      }
       console.log("Failed to create attendance ", error);
     }
-    setAttendanceData([...attendanceData]);
+    // setAttendanceData([...attendanceData]);
     setOpen(false);
   };
 
@@ -383,7 +295,7 @@ const Attendance = () => {
 
       </Dialog>
 
-      {userData.users != null && attendanceData != null && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
+      {userData.users != null && attendanceData.length > 0 && <AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div >
 
   )

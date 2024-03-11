@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from '@/lib/utils'
-import { Checkbox } from "@/components/ui/checkbox"
+import React, { useState, useEffect,useReducer } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
-import { format } from 'date-fns';
-import { useForm } from 'react-hook-form';
+import { format } from "date-fns";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -21,54 +29,83 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Select } from '@chakra-ui/react'
+} from "@/components/ui/form";
+import { Select } from "@chakra-ui/react";
 
-
-function Tasks() {
+function Tasks({ milestoneId}) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState('');
-  const [description, setDescription] = useState('');
-  const [assignee, setAssignee] = useState('');
-  const [taskname, setTaskname] = useState('');
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [taskname, setTaskname] = useState("");
+  const [mentees, setMentees] = useState([]);
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const history = useNavigate();
+  useEffect(() => {
+    async function fetchMentees() {
+      try {
+        console.log("Fetching mentees...");
+        console.log(milestoneId);
+        const response = await axios.get("http://localhost:8000/api/getMentees");
+        console.log("Mentees response:", response.data);
+        setMentees(response.data);
+      } catch (error) {
+        console.error("Error fetching mentees:", error);
+      }
+    }
 
-  
-  const handleCreateTask = (e) => {
-    {console.log("create task called")}
+    fetchMentees();
+  }, []);
+
+  const handleCreateTask = async (e) => {
     e.preventDefault();
-    const taskData = {
-      taskname,
-      date,
-      description,
-      assignee
-    };
-    console.log('Task data:', taskData);
-    
-    
-    // Send data to the backend
-    axios.post('http://localhost:8000/api/create-task', taskData)
-      .then((response) => {
-        // Handle success
-        console.log('Task created successfully:', response.data);
-        // Optionally, you can close the dialog here
-        setTaskname('');
-      setDate('');
-      setDescription('');
-      setAssignee('');
-        setOpen(false);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error('Error creating task:', error);
-      });
+    console.log("create task called");
+
+    try {
+      const selectedMentee = mentees.users.find(
+        (mentee) => mentee.id === parseInt(assignee)
+      );
+      if (!selectedMentee) {
+        console.error("Selected mentee not found.");
+        return;
+      }
+
+      const taskData = {
+        taskname,
+        date,
+        description,
+        assignee_id: selectedMentee.id,
+        milestone_id: milestoneId, // Send the milestoneId to the backend
+      };
+
+      console.log("Task data:", taskData);
+
+      const response = await axios.post(
+        "http://localhost:8000/api/create-task",
+        taskData
+      );
+
+      console.log("Task created successfully:", response.data);
+      onTaskCreated(); // Call the callback function to notify the parent component
+      // Optionally, you can close the dialog here
+      setTaskname("");
+      setDate("");
+      setDescription("");
+      setAssignee("");
+      setOpen(false);
+
+      //history.push("/milestones?refresh=true");
+    } catch (error) {
+      // Handle error
+      console.error("Error creating task:", error);
+    }
   };
 
-  
- 
   return (
     <div>
+      <br />
       <Dialog open={open} onOpenChange={setOpen}>
-        <div className='flex justify-left mx-10'>
+        <div className="flex justify-left mx-10">
           <DialogTrigger asChild>
             <Button onClick={() => setOpen(true)}>Create Task</Button>
           </DialogTrigger>
@@ -78,7 +115,7 @@ function Tasks() {
             <DialogTitle>Create a new Task</DialogTitle>
             <DialogDescription>Create Task</DialogDescription>
           </DialogHeader>
-          <Form >
+          <Form>
             <div className="space-y-8">
               <div className="flex flex-col">
                 <label className="text-black">Name of the task</label>
@@ -101,12 +138,15 @@ function Tasks() {
                 <Select
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
-                  placeholder='Choose'>
-                  <option value='Purnima'>Purnima</option>
-                  <option value='Harsha'>Harsha</option>
-                  <option value='Ashutosh'>Ashutosh</option>
-                  <option value='Monish'>Monish</option>
-                  <option value='Shubham'>Shubham</option>
+                  placeholder="Choose"
+                >
+                  {mentees &&
+                    mentees.users &&
+                    mentees.users.map((mentee) => (
+                      <option key={mentee.id} value={mentee.id}>
+                        {mentee.first_name} {mentee.last_name}
+                      </option>
+                    ))}
                 </Select>
               </div>
               <div className="mb-4flex flex-col">
@@ -118,8 +158,15 @@ function Tasks() {
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
-              <Button type="submit" onClick={(e) => { handleCreateTask(e); setOpen(false); }}>Submit</Button>
-              
+              <Button
+                type="submit"
+                onClick={(e) => {
+                  handleCreateTask(e);
+                  setOpen(false);
+                }}
+              >
+                Submit
+              </Button>
             </div>
             {console.log("this should call create task")}
           </Form>
@@ -127,7 +174,7 @@ function Tasks() {
       </Dialog>
       <br />
     </div>
-  )
+  );
 }
 
-export default Tasks
+export default Tasks;
