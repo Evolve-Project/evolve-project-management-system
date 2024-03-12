@@ -47,6 +47,36 @@ const Dashboard = () => {
   const handleSubmit = async () => {
     // alert("saving...........!");
     const toastId = toast.loading("Please wait...");
+    if(firstName === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter first name`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
+    if(lastName === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter last name`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
+    if(email === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter Email Id`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
     try {
       const data = {
         user_id: mentor.mentorInfo.user_id,
@@ -314,7 +344,7 @@ const Dashboard = () => {
                   </li>
                   <li className="flex flex-row items-start">
                     <div className="min-w-40 text-lg font-semibold">
-                      Github{" "}
+                      Github
                     </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
@@ -323,13 +353,13 @@ const Dashboard = () => {
                         href={mentor.projectInfo?.git}
                         className="ml-4"
                       >
-                        Link
+                        {mentor.projectInfo?.git}
                       </a>
                     </div>
                   </li>
                   <li className="flex flex-row items-start">
                     <div className="min-w-40 text-lg font-semibold">
-                      Trello{" "}
+                      Trello
                     </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
@@ -338,7 +368,7 @@ const Dashboard = () => {
                         href={mentor.projectInfo?.trello}
                         className="ml-4"
                       >
-                        Link
+                        {mentor.projectInfo?.trello}
                       </a>
                     </div>
                   </li>
@@ -420,7 +450,7 @@ const Dashboard = () => {
                             Role{" "}
                           </div>
                           <div className="text-lg">
-                            :<span className="ml-4">Mentor</span>
+                            :<span className="ml-4">Mentee</span>
                           </div>
                         </li>
                         <li className="flex flex-row items-start">
