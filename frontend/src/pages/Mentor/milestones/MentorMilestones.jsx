@@ -5,7 +5,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { loadMilestones } from "@/api/milestoneApi.js";
-import { Select } from "@chakra-ui/react";
+
 import { Link } from "react-router-dom";
 import AddMilestone from "./AddMilestone.jsx";
 import Tasks from "./Tasks.jsx";
@@ -18,6 +18,7 @@ function MentorMilestones() {
   const [milestoneId, setMilestoneId] = useState([]);
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentMilestoneDesc, setCurrentMilestoneDesc] = useState(null);
   const [tasksPerPage] = useState(6);
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -93,6 +94,7 @@ function MentorMilestones() {
       console.log(newTasks[0]?.milestone_id);
       setTasks(newTasks);
       setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
+      setCurrentMilestoneDesc(milestoneDescId);
       history.push("/milestones?refresh=true");
       // Update milestone_Id based on new tasks
     } catch (error) {
@@ -101,15 +103,12 @@ function MentorMilestones() {
     
   };
 
-  useEffect(() => {
-    // This code will run after the component renders
-    fetchTasks()
-  }, []);
-
+ 
   const handleBackButtonClick = () => {
     setToggle(true); // Set toggle to true to show milestones
     setTasks([]); // Clear tasks
     setMilestone_Id(0); // Clear milestone_Id
+    setCurrentMilestoneDesc(null);
     
   };
 
@@ -143,10 +142,7 @@ function MentorMilestones() {
     //history.push("/milestones?refresh=true");
   };
 
-  useEffect(() => {
-    // This code will run after the component renders
-   handleStatusChange()
-  }, []);
+  
   const deleteTask = async (taskId) => {
     try {
       // Make a DELETE request to the server
@@ -174,10 +170,7 @@ function MentorMilestones() {
    
   };
   
-  useEffect(() => {
-    // This code will run after the component renders
-   deleteTask()
-  }, []);
+  
 
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
