@@ -21,8 +21,10 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
                 // console.log(data.data.allTeamsNames);
                 if(data.status === 200)
                     setTeamProjects(data.data.allTeamsNames);
-                else
+                else{
                     console.log(data); 
+                    setTeamProjects([]);
+                }
             }catch(err){
                 console.log("Error in fetching project details", err);
             }
@@ -34,9 +36,8 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
     {
         setProjectLoading(true);
         return;
-    }else{
-        setProjectLoading(false);
     }
+    setProjectLoading(false);
 
     return (
         <div className='satisfaction_input pt-1'>

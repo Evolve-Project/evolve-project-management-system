@@ -21,6 +21,11 @@ import ChartShimmer from "@/components/SatisfactionCompontents/SatisfactionShimm
 import DetailedShimmer from "@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer";
 import ErrorPage from "@/components/ErrorPage";
 import ReactWordcloud from "react-wordcloud";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
+
+// import { TagCloud } from 'react-tagcloud'
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -104,6 +109,7 @@ const Satisfaction = () => {
       try {
         // console.log("words");
         const data = await api.post("/api/feedbackWords", { teamId });
+        // console.log(data);
         setWordCloudWords(data.data);
       } catch (err) {
         console.log("error", err);
@@ -129,13 +135,13 @@ const Satisfaction = () => {
     transitionDuration: 500,
   };
 
+  // LOADING PAGE
   if (loading1 || status === "Initial-loading" || projectLoading) {
-    // LOADING PAGE
     return <SatisfactionShimmer />;
   }
 
+  // ERROR PAGE
   if (error || errorPage || status === "Initail-failed") {
-    // ERROR PAGE
     return <ErrorPage />;
   }
 
@@ -245,20 +251,27 @@ const Satisfaction = () => {
                   />
                 )}
               </div>
-            ) : (teamId != null) ? (
+            ) :
+             (teamId != null && wordCloudWords.length !== 0) ? (
               <div className="mt-4">
                 <div>
                   <span className="satisfaction_text_title"> Word Cloud : </span>
                   <span>Most common words used by "{teamName}" team members (beta)</span>
                 </div>
                 <div style={{ height: 400, width: 600 }} className="mt-4">
-                  <ReactWordcloud
-                    options={wordCloudOptions}
-                    words={wordCloudWords}
-                  />
+                  <ReactWordcloud words={wordCloudWords} options={wordCloudOptions}/>
+                  {/* USING TAGCLOUD FOR WORD-CLOUD */}
+                  {/* <TagCloud
+                    minSize={12}
+                    maxSize={35}
+                    tags={wordCloudWords} //[{value,count}]
+                    // onClick={tag => alert(`'${tag.value}' was selected!`)}
+                  /> */}
+
                 </div>
               </div>
-            ) : (
+            ) : 
+            (
               <img src={feedback_loader} style={{ width: "50%" }}></img>
             )}
           </div>
