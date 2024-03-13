@@ -4,9 +4,9 @@ import { Button } from "@mui/material";
 import { Box, Heading } from "@chakra-ui/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { loadMilestones } from "@/api/milestoneApi.js";
-import { Select } from "@chakra-ui/react";
+
 import { Link } from "react-router-dom";
-import theme from "./themes/theme.jsx";
+
 
 function MenteeMilestones() {
   const [status, setStatus] = useState([]);
@@ -95,7 +95,6 @@ function MenteeMilestones() {
   return (
     <>
       {toggle ? (
-        <ChakraProvider theme={theme}>
           <div>
             <Box maxW={1000} mx="auto" px={6} frontSize="sm">
               <div className="feedback_title_container">
@@ -123,10 +122,10 @@ function MenteeMilestones() {
                       <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
                       <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
                       <td className="py-2 px-4 text-left relative">
-                        <Select value={milestoneId[index] ? "true" : "false"}>
+                        <select value={milestoneId[index] ? "true" : "false"}>
                           <option value="false">Completed</option>
                           <option value="true">In Progress</option>
-                        </Select>
+                        </select>
                       </td>
                       <td className="">
                         <div className="">
@@ -147,9 +146,9 @@ function MenteeMilestones() {
               </table>
             </Box>
           </div>
-        </ChakraProvider>
+       
       ) : (
-        <ChakraProvider theme={theme}>
+        <> 
           
           
           
@@ -177,13 +176,13 @@ function MenteeMilestones() {
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
                     <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                     <td className="py-2 px-3 text-left">
-                      <Select
+                      <select
                         value={task.status ? "true" : "false"}
                         onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
                       >
                         <option value="false">In Progress</option>
                         <option value="true">Completed</option>
-                      </Select>
+                      </select>
                     </td>
                   </tr>
                 ))}
@@ -211,8 +210,8 @@ function MenteeMilestones() {
             >
               Back
             </button>
-          
-        </ChakraProvider>
+          </div>
+        </>
       )}
     </>
   );

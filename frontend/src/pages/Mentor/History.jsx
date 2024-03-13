@@ -1,3 +1,4 @@
+import { background } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -21,13 +22,13 @@ const MyComponent = ({ item, teamId, parentId }) => {
     handleAskQuery(inputValue);
     setInputValue("");
   };
+
   const fetchAnswersForQuestion = async (questionId) => {
     try {
       const { data } = await axios.get(
         `http://localhost:8000/api/allQuery?id=${questionId}`
       );
-      setAnswers(data.queries);
-
+      setAnswers(data.queries.sort((a, b) => a.id - b.id)); // Sort answers based on id
       setSelectedQuestion(questionId);
     } catch (error) {
       console.error("Error fetching answers:", error);
@@ -72,7 +73,18 @@ const MyComponent = ({ item, teamId, parentId }) => {
                 <div key={answer.id}>
                   <div className="flex items-start">
                     <div className="text-black p-1">
-                      {answer.User.email.split("@")[0]}::{answer.text}
+                      <div
+                        style={{
+                          background: "rgba(183, 70, 225,0.7)",
+                          width: "100%",
+                          borderRadius: "10px",
+                          padding: "10px",
+                        }}
+                      >
+                        {answer.User.email.split("@")[0]}
+                        <br />
+                        {answer.text}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -107,4 +119,6 @@ const MyComponent = ({ item, teamId, parentId }) => {
     </div>
   );
 };
+
 export default MyComponent;
+

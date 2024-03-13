@@ -79,9 +79,11 @@ const AddQuery = () => {
           <Dialog.Portal>
             <Dialog.Overlay className="DialogOverlay" />
             <Dialog.Content className="DialogContent">
-              <Dialog.Title className="DialogTitle">Ask Query</Dialog.Title>
-              <Dialog.Description className="DialogDescription">
-                Make changes to your profile here. Click save when you're done.
+               <Dialog.Title className="DialogTitle text-2xl text-center font-bold text-blue-500 bg-gray-200 p-4 rounded-t-lg">
+             Ask Query
+          </Dialog.Title>
+             <Dialog.Description className="DialogDescription text-lg font-semibold  text-gray-700">
+                Ask Your Queries
               </Dialog.Description>
 
               <textarea

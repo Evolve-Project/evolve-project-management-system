@@ -21,8 +21,10 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
                 // console.log(data.data.allTeamsNames);
                 if(data.status === 200)
                     setTeamProjects(data.data.allTeamsNames);
-                else
+                else{
                     console.log(data); 
+                    setTeamProjects([]);
+                }
             }catch(err){
                 console.log("Error in fetching project details", err);
             }
@@ -34,9 +36,8 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
     {
         setProjectLoading(true);
         return;
-    }else{
-        setProjectLoading(false);
     }
+    setProjectLoading(false);
 
     return (
         <div className='satisfaction_input pt-1'>
@@ -54,7 +55,7 @@ const ProjectNames = ({handleTeamId, setProjectLoading}) => {
                     {teams_projects.map((team)=>{
                         if(team.Project?.name)  // IF PROJECTS ASSIGNED ONLY DISPLAY
                             return (
-                                <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id)}}>
+                                <MenuItem key={team.id} value={team.Project.name} onClick={()=>{console.log("team id: "+team.id);handleTeamId(team.id, team.team_name)}}>
                                     {team.Project.name}
                                 </MenuItem>
                             )
