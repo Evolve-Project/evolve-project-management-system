@@ -8,6 +8,7 @@ const {
   Sequelize,
   User,
 } = require("../models/");
+const { fetchTeamId } = require("../services/user_services");
 
 const { Op } = Sequelize;
 
@@ -459,6 +460,8 @@ exports.menteeDetails = async (req, res) => {
                 "start_date",
                 "end_date",
                 "status",
+                "git_repository_link",
+                "trello_board_link",
               ],
             },
           ],
@@ -518,6 +521,8 @@ exports.menteeDetails = async (req, res) => {
           start_date: menteeDetails.Team?.Project?.start_date,
           end_date: menteeDetails.Team?.Project?.end_date,
           status: menteeDetails.Team?.Project?.status,
+          git: menteeDetails.Team?.Project?.git_repository_link,
+          trello: menteeDetails.Team?.Project?.trello_board_link,
         },
         teamMembersInfo: {
           mentorsList,
@@ -644,42 +649,46 @@ exports.createQuery = async (req, res) => {
 };
 exports.allQuery = async (req, res) => {
   try {
-    // console.log(req.qu.id);
-    let teamId;
+    const teamId = await fetchTeamId( req.user.id, req.user.role);
+    // console.log("teamId ",teamId);
     let queries;
     let id = req.query.id || null;
-    if (req.user.role == "Mentor") {
-      const mentor = await Mentor.findOne({
-        where: { user_id: req.user.id },
-        attributes: ["team_id"],
-      });
-      teamId = mentor.dataValues.team_id;
-      queries = await Query.findAll({
-        where: { reply_id: id, team_id: teamId },
-        include: [
-          {
-            model: User,
-            attributes: ["email"],
-          },
-        ],
-      });
-    } else {
-      const mentee = await Mentee.findOne({
-        where: { user_id: req.user.id },
-        attributes: ["team_id"],
-      });
-      teamId = mentee.dataValues.team_id;
-      queries = await Query.findAll({
-        where: { reply_id: id, team_id: teamId },
-        include: [
-          {
-            model: User,
-            attributes: ["email"],
-          },
-        ],
-      });
-    }
-    console.log(teamId);
+    // if (req.user.role == "Mentor") {
+    //   const mentor = await Mentor.findOne({
+    //     where: { user_id: req.user.id },
+    //     attributes: ["team_id"],
+    //   });
+    //   teamId = mentor.dataValues.team_id;
+    // } else {
+    //   const mentee = await Mentee.findOne({
+    //     where: { user_id: req.user.id },
+    //     attributes: ["team_id"],
+    //   });
+    //   teamId = mentee.dataValues.team_id;
+    // }
+    queries = await Query.findAll({
+      where: { reply_id: id, team_id: teamId},
+      // attributes: ["updatedAt"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+          include: [
+            {
+              model: Mentor,
+              attributes: ["first_name","last_name"],
+              required: false // Set to false to perform a left join
+            },
+            {
+              model: Mentee,
+              attributes: ["first_name","last_name"],
+              required: false // Set to false to perform a left join
+            }
+          ]
+        },
+      ],
+    });
+    // console.log(queries);
 
     res.status(201).json({
       success: true,

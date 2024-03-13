@@ -57,12 +57,12 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
   const handleEditSave = async (index, name, role) =>{  // UPDATE
     // console.log("edited");
     const toastId = toast.loading("Please wait...");
-    if(name.length === 0){
+    if(name.trim().length === 0){
       toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
       return;
     }
     try{
-      const successData = await dispatch(updateMetric({id: index, metric_name : name, role})).unwrap();
+      const successData = await dispatch(updateMetric({id: index, metric_name : name.trim(), role})).unwrap();
       // console.log(successData);
       setEditableId(null);
       setEditedName("");
@@ -102,7 +102,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
 
   const handleAddNewItem = async (index, name) => {
     const toastId = toast.loading("Please wait...");
-    if(name.length === 0){
+    if(name.trim().length === 0){
       toast.update(toastId, {render: "Metric should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
       return;
     }
@@ -110,9 +110,9 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
       let successfulData ;
       if(index == -1) //add at Mentor
       {
-        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentor"}));
+        successfulData = await dispatch(addMetric({metric_name:name.trim(), role: "Mentor"}));
       }else{  //add at Mentee
-        successfulData = await dispatch(addMetric({metric_name:name, role: "Mentee"}));
+        successfulData = await dispatch(addMetric({metric_name:name.trim(), role: "Mentee"}));
       }
       console.log(successfulData);
       if(successfulData.error) //error at adding metric

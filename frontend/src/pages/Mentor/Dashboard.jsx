@@ -47,7 +47,7 @@ const Dashboard = () => {
   const handleSubmit = async () => {
     // alert("saving...........!");
     const toastId = toast.loading("Please wait...");
-    if(firstName === "")
+    if(firstName.trim() === "")
     {
       toast.update(toastId, {
         render: `Please, enter first name`,
@@ -57,7 +57,7 @@ const Dashboard = () => {
       });
       return;
     }
-    if(lastName === "")
+    if(lastName.trim() === "")
     {
       toast.update(toastId, {
         render: `Please, enter last name`,
@@ -67,7 +67,7 @@ const Dashboard = () => {
       });
       return;
     }
-    if(email === "")
+    if(email.trim() === "")
     {
       toast.update(toastId, {
         render: `Please, enter Email Id`,
@@ -80,9 +80,9 @@ const Dashboard = () => {
     try {
       const data = {
         user_id: mentor.mentorInfo.user_id,
-        first_name: firstName,
-        last_name: lastName,
-        email,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        email: email.trim(),
       };
       // console.log(data);
       const response = await api.post(`/api/updateMentor`, data);
@@ -373,7 +373,7 @@ const Dashboard = () => {
                     </div>
                   </li>
                   <li className="flex flex-row items-start">
-                    <div className="min-w-40 text-lg font-semibold">Date </div>
+                    <div className="min-w-40 text-lg font-semibold">Project Period </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
                       <div className="ml-4">
