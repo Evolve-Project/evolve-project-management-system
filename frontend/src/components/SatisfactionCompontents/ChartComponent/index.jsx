@@ -4,10 +4,12 @@ import {Bar} from "react-chartjs-2";
 import {Chart} from 'chart.js/auto';
 import { useSelector } from "react-redux";
 import ChartShimmer from "../SatisfactionShimmer/chartShimmer";
+import randomColor from "randomcolor";
 // import { feedbacks } from "@/dummyData";
 
 
-const colors = ["#9BD0F5","#5facde","#a8c1d4","#7B76F1","#5f9dc6","#1297f0","#a4a2ef"];
+// const colors = ["#9BD0F5","#5facde", "#a8c1d4","#7B76F1","#5f9dc6","#1297f0","#a4a2ef",
+                // "#9BD0F5","#5facde", "#a8c1d4","#7B76F1","#5f9dc6","#1297f0","#a4a2ef"];
 
 const options = {
     plugins: {
@@ -93,7 +95,13 @@ const SatisfactionChart = ({role, userId, givenByRecords, feedbacks})=>{
             comment: feedbacks
                 .filter((ele) => ele.given_by_user_id === record.user_id)
                 .map((ele) => ele.review),
-            backgroundColor: colors[index],
+            backgroundColor: 
+                // index < colors.length ? 
+                //     colors[index] : 
+                    randomColor({
+                        luminosity: 'light',
+                        hue: 'blue'
+                    }),
         }
     });
 
