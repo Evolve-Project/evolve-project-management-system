@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import Tasks from "./Tasks.jsx";
 
 function MentorMilestones() {
@@ -13,63 +12,43 @@ function MentorMilestones() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentMilestoneDesc, setCurrentMilestoneDesc] = useState(null);
   const [tasksPerPage] = useState(6);
-  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const [mentees, setMentees] = useState([]);
 
-  const history = useNavigate();
-
   useEffect(() => {
-    async function fetchMentees() {
+    async function fetchData() {
       try {
-        console.log("Fetching mentees...");
-        const response = await axios.get(
+        console.log("Fetching data...");
+        const menteesResponse = await axios.get(
           "http://localhost:8000/api/getMentees"
         );
-        console.log("Mentees response:", response.data);
-        setMentees(response.data);
-      } catch (error) {
-        console.error("Error fetching mentees:", error);
-      }
-    }
+        console.log("Mentees response:", menteesResponse.data);
+        setMentees(menteesResponse.data);
 
-    fetchMentees();
-  }, []);
-
-  useEffect(() => {
-    async function fetchMilestoneDesc() {
-      try {
-        console.log("Fetching milestones...");
-
-        const response = await axios.get(
+        const milestoneDescResponse = await axios.get(
           "http://localhost:8000/api/get-milestones"
         );
-        console.log("Milestones response:", response.data);
-        setMilestoneDesc(response.data);
+        console.log("Milestones response:", milestoneDescResponse.data);
+        setMilestoneDesc(milestoneDescResponse.data);
+
+        const milestoneIdResponse = await axios.get(
+          "http://localhost:8000/api/get-milestonesForStatus"
+        );
+        console.log("Milestone IDs response:", milestoneIdResponse.data);
+        setMilestoneId(milestoneIdResponse.data);
       } catch (error) {
-        console.error("Error fetching milestone description:", error);
+        console.error("Error fetching data:", error);
       }
     }
 
-    fetchMilestoneDesc();
+    fetchData();
   }, []);
 
   useEffect(() => {
-    async function fetchMilestoneForStatus() {
-      try {
-        console.log("Fetching milestonesforStatus...");
-        const response = await axios.get(
-          "http://localhost:8000/api/get-milestonesForStatus"
-        );
-        console.log("Milestones response:", response.data);
-        setMilestoneId(response.data);
-      } catch (error) {
-        console.error("Error fetching milestone for status:", error);
-      }
+    if (currentMilestoneDesc) {
+      fetchTasks(currentMilestoneDesc);
     }
-
-    fetchMilestoneForStatus();
-  }, []);
+  }, [currentMilestoneDesc]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -87,71 +66,45 @@ function MentorMilestones() {
       console.log(newTasks[0]?.milestone_id);
       setTasks(newTasks);
       setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0);
-      setCurrentMilestoneDesc(milestoneDescId);
-      // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  const handleBackButtonClick = () => {
-    setToggle(true); // Set toggle to true to show milestones
-    setTasks([]); // Clear tasks
-    setMilestone_Id(0); // Clear milestone_Id
-    setCurrentMilestoneDesc(null);
+  const updateTasks = (newTasks) => {
+    setTasks(newTasks);
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
-      setTasks(
-        tasks.map((task) => {
-          if (task.id === taskId) {
-            return {
-              ...task,
-              status: newStatus === "true",
-            };
-          }
-          return task;
-        })
-      );
-
       const response = await axios.post(
         "http://localhost:8000/api/update-task-status",
-        {
-          taskId: taskId,
-          newStatus: newStatus === "true",
-        }
+        { taskId, newStatus }
       );
       console.log("Update status response:", response.data);
+
+      // Update the status of the task in the frontend
+      setTasks(
+        tasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus === "true" } : task
+        )
+      );
     } catch (error) {
       console.error("Error updating task status:", error);
     }
-
-    //history.push("/milestones?refresh=true");
   };
 
   const deleteTask = async (taskId) => {
     try {
-      // Make a DELETE request to the server
-      console.log(taskId);
       const response = await axios.post(
-        `http://localhost:8000/api/delete-task`,
-        {
-          taskId,
-        }
+        "http://localhost:8000/api/delete-task",
+        { taskId }
       );
+      console.log("Delete task response:", response.data);
 
-      history.push("/milestones?refresh=true");
-      // Check if the request was successful
-      if (response.status === 200) {
-        console.log("Task deleted successfully");
-        // Optionally, you can perform any additional actions after the task is deleted
-      } else {
-        // If the response status is not OK, throw an error
-        throw new Error("Failed to delete task");
-      }
+      // Remove the task from the frontend
+      setTasks(tasks.filter((task) => task.id !== taskId));
     } catch (error) {
-      // Handle any errors
       console.error("Error deleting task:", error);
     }
   };
@@ -159,14 +112,22 @@ function MentorMilestones() {
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
     return mentee
-      ? mentee.first_name + " " + mentee.last_name
+      ? `${mentee.first_name} ${mentee.last_name}`
       : "Unknown Mentee";
   };
+
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleBackButtonClick = () => {
+    setToggle(true); // Set toggle to true to show milestones
+    setTasks([]); // Clear tasks
+    setMilestone_Id(0); // Clear milestone_Id
+    setCurrentMilestoneDesc(null);
+  };
 
   return (
     <>
@@ -219,7 +180,7 @@ function MentorMilestones() {
                         className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
                         onClick={() => {
                           setToggle(false);
-                          fetchTasks(milestone.id);
+                          setCurrentMilestoneDesc(milestone.id);
                         }}
                       >
                         view
@@ -233,7 +194,7 @@ function MentorMilestones() {
         </div>
       ) : (
         <>
-          <Tasks milestoneId={milestone_Id} />
+          <Tasks milestoneId={milestone_Id} updateTasks={updateTasks}/>
           <table className="table-auto border-collapse w-full">
             <thead>
               <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
@@ -261,11 +222,17 @@ function MentorMilestones() {
                     <select
                       value={task.status ? "true" : "false"}
                       onChange={(e) =>
-                        handleStatusChange(task.id, e.target.value === "true")
+                        handleStatusChange(task.id, e.target.value)
                       }
                     >
-                      <option value="false">In Progress</option>
-                      <option value="true">Completed</option>
+                      {task.status ? (
+                        <option value="true">Completed</option>
+                      ) : (
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
+                      )}
                     </select>
                   </td>
                   <td className="py-2 px-3 text-left">

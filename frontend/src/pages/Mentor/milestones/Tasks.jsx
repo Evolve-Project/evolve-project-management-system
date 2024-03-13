@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { toast } from 'react-toastify';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-function Tasks({ milestoneId }) {
+function Tasks({ milestoneId , updateTasks }) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -24,7 +25,28 @@ function Tasks({ milestoneId }) {
     assignee: "",
     date: ""
   });
-  const history = useNavigate();
+ 
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.post("http://localhost:8000/api/get-tasks", {
+          milestoneId,
+        });
+
+        if (typeof updateTasks === "function") {
+          updateTasks(response.data); // Assuming the response contains the newly created task
+        }
+       
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+   
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     async function fetchMentees() {
@@ -109,6 +131,9 @@ function Tasks({ milestoneId }) {
       );
 
       console.log("Task created successfully:", response.data);
+      toast.success('Task created successfully');
+
+      
 
       // Optionally, you can close the dialog here
       setTaskname("");
