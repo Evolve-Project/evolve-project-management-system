@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-toastify';
 import {
@@ -12,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-function Tasks({ milestoneId , updateTasks }) {
+function Tasks({ milestoneId ,onTaskCreated}) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -26,27 +25,11 @@ function Tasks({ milestoneId , updateTasks }) {
     date: ""
   });
  
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.post("http://localhost:8000/api/get-tasks", {
-          milestoneId,
-        });
-
-        if (typeof updateTasks === "function") {
-          updateTasks(response.data); // Assuming the response contains the newly created task
-        }
-       
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-   
-
-    fetchData();
-  }, []);
+  if (typeof onTaskCreated === "function") {
+    console.log("hehe")
+    console.log(milestoneId)
+    onTaskCreated(milestoneId);
+  }
 
   useEffect(() => {
     async function fetchMentees() {

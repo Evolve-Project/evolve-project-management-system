@@ -57,6 +57,7 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
+      console.log("This is inside fetch tasks",milestoneDescId)
       const response = await axios.post("http://localhost:8000/api/get-tasks", {
         milestoneDescId,
       });
@@ -108,6 +109,8 @@ function MentorMilestones() {
       console.error("Error deleting task:", error);
     }
   };
+
+ 
 
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
@@ -194,7 +197,7 @@ function MentorMilestones() {
         </div>
       ) : (
         <>
-          <Tasks milestoneId={milestone_Id} updateTasks={updateTasks}/>
+          <Tasks milestoneId={milestone_Id}  onTaskCreated={fetchTasks}/>
           <table className="table-auto border-collapse w-full">
             <thead>
               <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
