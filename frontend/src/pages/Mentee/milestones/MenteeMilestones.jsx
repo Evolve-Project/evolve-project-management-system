@@ -79,6 +79,21 @@ function MenteeMilestones() {
     }
   };
 
+  useEffect(() => {
+    
+    const fetchTasks = async (milestoneDescId) => {
+      try {
+        const response = await axios.post("http://localhost:8000/api/get-tasks", { milestoneDescId });
+        setTasks(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, [tasks]);
+
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       setTasks(
