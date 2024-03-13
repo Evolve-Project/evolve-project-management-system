@@ -5,6 +5,10 @@ import { loadUser } from "@/redux/Actions/User";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import MyComponent from "./History";
+import AddIcon from '@mui/icons-material/Add';
+import img_load from "@/asserts/img/query-load.jpg";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -18,19 +22,27 @@ const Query = () => {
   const { mentor } = useSelector((state) => state.mentor);
 
   const getAllQuery = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/allQuery");
+    const { data } = await api.get("/api/allQuery");
     setQuestions(data.queries);
   };
 
   const handleAskQuery = async () => {
     const team = mentor?.teamInfo?.id;
+    const toastId = toast.loading("Please wait...");
     if (query.length > 0) {
-      await api.post("http://localhost:8000/api/createQuery", {
-        text: query,
-        team_id: team,
-      });
-      setQuery("");
-      getAllQuery();
+      try{
+        await api.post("/api/createQuery", {
+          text: query,
+          team_id: team,
+        });
+        setQuery("");
+        getAllQuery();
+        toast.update(toastId, {render: "Query Added Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+      }catch(err){
+        toast.update(toastId, {render: `${err.message}`, isLoading: false, type: "error", autoClose: 2000});
+      }
+    }else{
+      toast.update(toastId, {render: "Query should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
     }
   };
 
@@ -40,7 +52,8 @@ const Query = () => {
   }, [dispatch]);
 
   return (
-    <div className="mt-11">
+    <div>
+      <ToastContainer/>
       <div className="dashboard_title_container">
         <span className="dashboard_title_bar"></span>
         <span className="dashboard_title"> Query History </span>
@@ -48,9 +61,8 @@ const Query = () => {
       </div>
       <div className=" mx-20 mt-11">
         {questions.length === 0 ? (
-          <div>No Query is raised</div>
-        ) : (
-          questions?.map((item) => {
+          <div className="flex items-center justify-center"><img src={img_load} className="w-[70%]"/></div>) :
+          (questions?.map((item) => {
             if (item.text && item.text.length > 0) {
               return (
                 <MyComponent
@@ -66,14 +78,14 @@ const Query = () => {
           })
         )}
       </div>
-      <div className="fixed top-5 right-5 mt-2 mr-2" >
+      <div className="fixed bottom-8 right-10" >
         <Dialog.Root style>
           <Dialog.Trigger asChild>
             <button
-              className="Button"
-              style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
+              className="p-3 text-white shadow-md shadow-violet-800 rounded-full bg-gradient-to-r from-[#368ad4] to-[#1173be] group flex flex-row border-white border-2"
             >
-              Ask Query
+              <span className="hidden group-hover:block">Ask Query </span>
+              <span><AddIcon/></span>
             </button>
           </Dialog.Trigger>
           <Dialog.Portal>

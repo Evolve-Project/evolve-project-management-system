@@ -1,15 +1,6 @@
 import React, { useState, useEffect ,useReducer} from "react";
 import axios from "axios";
-import { Button } from "@mui/material";
-import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-
-import { ChakraProvider } from "@chakra-ui/react";
-import { loadMilestones } from "@/api/milestoneApi.js";
-import { Select } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import theme from "./themes/theme.jsx";
-import AddMilestone from "./AddMilestone.jsx";
 import Tasks from "./Tasks.jsx";
 
 function MentorMilestones() {
@@ -20,6 +11,7 @@ function MentorMilestones() {
   const [milestoneId, setMilestoneId] = useState([]);
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentMilestoneDesc, setCurrentMilestoneDesc] = useState(null);
   const [tasksPerPage] = useState(6);
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -95,7 +87,7 @@ function MentorMilestones() {
       console.log(newTasks[0]?.milestone_id);
       setTasks(newTasks);
       setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
-      history.push("/milestones?refresh=true");
+      setCurrentMilestoneDesc(milestoneDescId);
       // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -103,13 +95,16 @@ function MentorMilestones() {
     
   };
 
+ 
   const handleBackButtonClick = () => {
     setToggle(true); // Set toggle to true to show milestones
     setTasks([]); // Clear tasks
     setMilestone_Id(0); // Clear milestone_Id
+    setCurrentMilestoneDesc(null);
     
   };
 
+  
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       setTasks(
@@ -139,6 +134,7 @@ function MentorMilestones() {
     //history.push("/milestones?refresh=true");
   };
 
+  
   const deleteTask = async (taskId) => {
     try {
       // Make a DELETE request to the server
@@ -157,7 +153,7 @@ function MentorMilestones() {
         throw new Error('Failed to delete task');
         
       }
-      history.push("/milestones?refresh=true");
+     
     } catch (error) {
       // Handle any errors
       console.error('Error deleting task:', error);
@@ -165,6 +161,8 @@ function MentorMilestones() {
 
    
   };
+  
+  
 
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
@@ -179,9 +177,9 @@ function MentorMilestones() {
   return (
     <>
       {toggle ? (
-        <ChakraProvider theme={theme}>
+       
           <div>
-            <Box maxW={1000} mx="auto" px={6} frontSize="sm">
+            
               <div className="feedback_title_container">
                 <span className="feedback_title_bar"></span>
                 <span className="feedback_title">Milestones</span>
@@ -218,10 +216,10 @@ function MentorMilestones() {
                         {formatDate(milestone.end_date)}
                       </td>
                       <td className="py-2 px-4 text-left relative">
-                        <Select value={milestoneId[index] ? "true" : "false"}>
+                        <select value={milestoneId[index] ? "true" : "false"}>
                           <option value="false">Completed</option>
                           <option value="true">In Progress</option>
-                        </Select>
+                        </select>
                       </td>
                       <td className="">
                         <div className="">
@@ -240,12 +238,12 @@ function MentorMilestones() {
                   ))}
                 </tbody>
               </table>
-            </Box>
+            
           </div>
-        </ChakraProvider>
+        
       ) : (
-        <ChakraProvider theme={theme}>
-          
+        
+          <>
             <Tasks milestoneId={milestone_Id} />
             <table className="table-auto border-collapse w-full">
               <thead>
@@ -271,7 +269,7 @@ function MentorMilestones() {
                       {formatDate(task.task_completion_datetime)}
                     </td>
                     <td className="py-2 px-3 text-left">
-                      <Select
+                      <select
                         value={task.status ? "true" : "false"}
                         onChange={(e) =>
                           handleStatusChange(task.id, e.target.value === "true")
@@ -279,7 +277,7 @@ function MentorMilestones() {
                       >
                         <option value="false">In Progress</option>
                         <option value="true">Completed</option>
-                      </Select>
+                      </select>
                     </td>
                     <td className="py-2 px-3 text-left">
       {getMenteeName(task.mentee_user_id)}
@@ -331,8 +329,8 @@ function MentorMilestones() {
             >
               Back
             </button>
-          
-        </ChakraProvider>
+         </> 
+        
       )}
     </>
   );
