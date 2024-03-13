@@ -12,6 +12,28 @@ function MenteeMilestones() {
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
 
+  const [mentees, setMentees] = useState([]);
+  
+  
+
+  useEffect(() => {
+    async function fetchMentees() {
+      try {
+        console.log("Fetching mentees...");
+        const response = await axios.get("http://localhost:8000/api/get-menteesbyId");
+        console.log("Mentees response:", response.data);
+        console.log("here it  mentees...");
+        setMentees(response.data);
+      } catch (error) {
+        console.error("Error fetching mentees:", error);
+      }
+    }
+
+    fetchMentees();
+  }, [tasks]);
+
+  
+
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
@@ -32,7 +54,7 @@ function MenteeMilestones() {
       try {
         console.log("Fetching milestonesforStatus...");
         const response = await axios.get("http://localhost:8000/api/get-milestonesForStatus");
-        console.log("Milestones response:", response.data);
+        console.log("Milestones for status response:", response.data);
         setMilestoneId(response.data);
       } catch (error) {
         console.error("Error fetching milestone for status:", error);
@@ -86,7 +108,11 @@ function MenteeMilestones() {
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+ 
+  const getMenteeName = (menteeId) => {
+    const mentee = mentees.find((m) => m.user_id === menteeId);
+    return mentee ? `${mentee.first_name} ${mentee.last_name}` : "Unknown Mentee";
+  };
   return (
     <>
       {toggle ? (
@@ -179,6 +205,10 @@ function MenteeMilestones() {
                         <option value="true">Completed</option>
                       </select>
                     </td>
+                    <td className="py-2 px-3 text-left">
+      {getMenteeName(task.mentee_user_id)}
+    </td>
+                    
                   </tr>
                 ))}
               </tbody>
