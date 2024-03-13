@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button } from "@mui/material";
-import { Box, Heading } from "@chakra-ui/react";
-import { ChakraProvider } from "@chakra-ui/react";
-import { loadMilestones } from "@/api/milestoneApi.js";
 
-import { Link } from "react-router-dom";
 
 
 function MenteeMilestones() {
@@ -96,7 +91,7 @@ function MenteeMilestones() {
     <>
       {toggle ? (
           <div>
-            <Box maxW={1000} mx="auto" px={6} frontSize="sm">
+            
               <div className="feedback_title_container">
                 <span className="feedback_title_bar"></span>
                 <span className="feedback_title">Milestones</span>
@@ -144,13 +139,13 @@ function MenteeMilestones() {
                   ))}
                 </tbody>
               </table>
-            </Box>
+          
           </div>
        
       ) : (
         <> 
           
-          <div className="fixed top-2  mt-2 mr-2">
+         
           
                 
                 <span className="feedback_title">Tasks</span>
@@ -210,7 +205,7 @@ function MenteeMilestones() {
             >
               Back
             </button>
-          </div>
+          
         </>
       )}
     </>

@@ -1,13 +1,6 @@
 import React, { useState, useEffect ,useReducer} from "react";
 import axios from "axios";
-import { Button } from "@mui/material";
-import { Box, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-
-import { loadMilestones } from "@/api/milestoneApi.js";
-
-import { Link } from "react-router-dom";
-import AddMilestone from "./AddMilestone.jsx";
 import Tasks from "./Tasks.jsx";
 
 function MentorMilestones() {
@@ -95,7 +88,6 @@ function MentorMilestones() {
       setTasks(newTasks);
       setMilestone_Id(newTasks.length > 0 ? newTasks[0].milestone_id : 0); 
       setCurrentMilestoneDesc(milestoneDescId);
-      history.push("/milestones?refresh=true");
       // Update milestone_Id based on new tasks
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -161,7 +153,7 @@ function MentorMilestones() {
         throw new Error('Failed to delete task');
         
       }
-      history.push("/milestones?refresh=true");
+     
     } catch (error) {
       // Handle any errors
       console.error('Error deleting task:', error);
@@ -187,7 +179,7 @@ function MentorMilestones() {
       {toggle ? (
        
           <div>
-            <Box maxW={1000} mx="auto" px={6} frontSize="sm">
+            
               <div className="feedback_title_container">
                 <span className="feedback_title_bar"></span>
                 <span className="feedback_title">Milestones</span>
@@ -246,7 +238,7 @@ function MentorMilestones() {
                   ))}
                 </tbody>
               </table>
-            </Box>
+            
           </div>
         
       ) : (
