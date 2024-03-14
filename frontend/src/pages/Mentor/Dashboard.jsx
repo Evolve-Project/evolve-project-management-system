@@ -47,12 +47,42 @@ const Dashboard = () => {
   const handleSubmit = async () => {
     // alert("saving...........!");
     const toastId = toast.loading("Please wait...");
+    if(firstName.trim() === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter first name`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
+    if(lastName.trim() === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter last name`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
+    if(email.trim() === "")
+    {
+      toast.update(toastId, {
+        render: `Please, enter Email Id`,
+        type: "info",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      return;
+    }
     try {
       const data = {
         user_id: mentor.mentorInfo.user_id,
-        first_name: firstName,
-        last_name: lastName,
-        email,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        email: email.trim(),
       };
       // console.log(data);
       const response = await api.post(`/api/updateMentor`, data);
@@ -314,7 +344,7 @@ const Dashboard = () => {
                   </li>
                   <li className="flex flex-row items-start">
                     <div className="min-w-40 text-lg font-semibold">
-                      Github{" "}
+                      Github
                     </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
@@ -323,13 +353,13 @@ const Dashboard = () => {
                         href={mentor.projectInfo?.git}
                         className="ml-4"
                       >
-                        Link
+                        {mentor.projectInfo?.git}
                       </a>
                     </div>
                   </li>
                   <li className="flex flex-row items-start">
                     <div className="min-w-40 text-lg font-semibold">
-                      Trello{" "}
+                      Trello
                     </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
@@ -338,12 +368,12 @@ const Dashboard = () => {
                         href={mentor.projectInfo?.trello}
                         className="ml-4"
                       >
-                        Link
+                        {mentor.projectInfo?.trello}
                       </a>
                     </div>
                   </li>
                   <li className="flex flex-row items-start">
-                    <div className="min-w-40 text-lg font-semibold">Date </div>
+                    <div className="min-w-40 text-lg font-semibold">Project Period </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
                       <div className="ml-4">
@@ -380,7 +410,7 @@ const Dashboard = () => {
               <Slider {...slideSettings}>
                 {mentor.teamMembersInfo.mentorsList.map((user) => {
                   return (
-                    <div className="dashboard_card  min-w-96">
+                    <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                       <div className="text-lg font-semibold">
                         {user.first_name + " " + user?.last_name}
                       </div>
@@ -409,7 +439,7 @@ const Dashboard = () => {
 
                 {mentor.teamMembersInfo.menteesList.map((user) => {
                   return (
-                    <div className="dashboard_card  min-w-96">
+                    <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                       <div className="text-lg font-semibold">
                         {user.first_name + " " + user?.last_name}
                       </div>
@@ -420,7 +450,7 @@ const Dashboard = () => {
                             Role{" "}
                           </div>
                           <div className="text-lg">
-                            :<span className="ml-4">Mentor</span>
+                            :<span className="ml-4">Mentee</span>
                           </div>
                         </li>
                         <li className="flex flex-row items-start">

@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -54,15 +53,42 @@ const DashboardMentee = () => {
   const handleSubmit = async () => {
     // alert("saving...........!");
     const toastId = toast.loading("Please wait...");
+    if(firstName.trim() === "")
+    {
+      toast.update(toastId, { render: `Please, enter first name`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }
+    if(lastName.trim() === "")
+    {
+      toast.update(toastId, { render: `Please, enter last name`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }if(email.trim() === "")
+    {
+      toast.update(toastId, { render: `Please, enter Email Id`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }if(University.trim() === "")
+    {
+      toast.update(toastId, { render: `Please, enter University name`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }if(dob === "")
+    {
+      toast.update(toastId, { render: `Please, enter Date of Birth`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }
+    if(home_city.trim() === "")
+    {
+      toast.update(toastId, { render: `Please, enter Home City`, type: "info", isLoading: false, autoClose: 2000,});
+      return;
+    }
     try{
       const data = {
         user_id : mentee.menteeInfo.user_id,
-        first_name : firstName,
-        last_name : lastName,
-        email ,
-        University,
+        first_name : firstName.trim(),
+        last_name : lastName.trim(),
+        email: email.trim() ,
+        University: University.trim(),
         dob,
-        home_city,
+        home_city: home_city.trim(),
       }
       // console.log(data);
       const response = await api.post(`/api/updateMentee`, data);
@@ -76,7 +102,6 @@ const DashboardMentee = () => {
     }
   }
 
-  const navigate = useNavigate();
   const slideSettings = {
     dots: true,
     infinite: true,
@@ -207,36 +232,85 @@ const DashboardMentee = () => {
 
         {/* PROJECT DETAILS */}
         <div>
-          <div className="border-blue-800 border-l-4 bg-blue-100 p-2 rounded-sm flex flex-row justify-between items-center pl-4 pr-8">
+            <div className="border-blue-800 border-l-4 bg-blue-100 p-2 rounded-sm flex flex-row justify-between items-center pl-4 pr-8">
               <div className=" text-2xl font-medium">Project Information</div>
-              <div className=" p-[6px] px-3 bg-[#7B76F1] text-white rounded-md cursor-pointer flex flex-row gap-2" onClick={()=> navigate("/project")}>
-                <span>View More</span>
-              </div>
+            </div>
+            <div className=" bg-slate-100 rounded-sm py-4 px-10">
+              {mentee.projectInfo?.name ? (
+                <ul className="flex flex-col gap-2">
+                  <li className="flex flex-row items-center">
+                    <div className="w-40 text-lg font-semibold">Team Name </div>
+                    <div className="text-lg">
+                      :<span className="ml-4">{mentee.teamInfo.team_name}</span>
+                    </div>
+                  </li>
+                  <li className="flex flex-row items-center">
+                    <div className="w-40 text-lg font-semibold">
+                      Project Name{" "}
+                    </div>
+                    <div className="text-lg">
+                      :<span className="ml-4">{mentee.projectInfo?.name}</span>
+                    </div>
+                  </li>
+                  <li className="flex flex-row items-start">
+                    <div className="min-w-40 text-lg font-semibold">
+                      Description{" "}
+                    </div>
+                    <div className="text-lg flex flex-row">
+                      <div>:</div>
+                      <div className="ml-4">
+                        {mentee.projectInfo?.description}
+                      </div>
+                    </div>
+                  </li>
+                  <li className="flex flex-row items-start">
+                    <div className="min-w-40 text-lg font-semibold">
+                      Github
+                    </div>
+                    <div className="text-lg flex flex-row">
+                      <div>:</div>
+                      <a
+                        target="_blank"
+                        href={mentee.projectInfo?.git}
+                        className="ml-4"
+                      >
+                        {mentee.projectInfo?.git}
+                      </a>
+                    </div>
+                  </li>
+                  <li className="flex flex-row items-start">
+                    <div className="min-w-40 text-lg font-semibold">
+                      Trello
+                    </div>
+                    <div className="text-lg flex flex-row">
+                      <div>:</div>
+                      <a
+                        target="_blank"
+                        href={mentee.projectInfo?.trello}
+                        className="ml-4"
+                      >
+                        {mentee.projectInfo?.trello}
+                      </a>
+                    </div>
+                  </li>
+                  <li className="flex flex-row items-start">
+                    <div className="min-w-40 text-lg font-semibold">Project Period </div>
+                    <div className="text-lg flex flex-row">
+                      <div>:</div>
+                      <div className="ml-4">
+                        {mentee.projectInfo?.start_date} to{" "}
+                        {mentee.projectInfo?.end_date}
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-lg gap-2 p-6">
+                  <div>No Project assigned !!</div>
+                </div>
+              )}
+            </div>
           </div>
-          <div className=" bg-slate-100 rounded-sm py-4 px-10">
-            <ul className="flex flex-col gap-2">
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Team Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentee.teamInfo.team_name}</span>
-                </div>
-              </li>
-              <li className="flex flex-row items-center">
-                <div className="w-40 text-lg font-semibold">Project Name </div>
-                <div className="text-lg">
-                  :<span className="ml-4">{mentee.projectInfo?.name ? (mentee.projectInfo?.name) : "NO PROJECT ASSIGNED"}</span>
-                </div>
-              </li>
-              <li className="flex flex-row items-start">
-                <div className="min-w-40 text-lg font-semibold">Description </div>
-                <div className="text-lg flex flex-row">
-                  <div>:</div>
-                  <div className="ml-4">{mentee.projectInfo?.description ? (mentee.projectInfo?.description) : "NO PROJECT ASSIGNED"}</div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
 
 
         {/* Team details */}
@@ -250,7 +324,7 @@ const DashboardMentee = () => {
               {
                 mentee.teamMembersInfo.mentorsList.map((user)=>{
                   return (
-                  <div className="dashboard_card  min-w-96">
+                  <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                     <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
@@ -275,7 +349,7 @@ const DashboardMentee = () => {
               {
                 mentee.teamMembersInfo.menteesList.map((user)=>{
                   return (
-                  <div className="dashboard_card  min-w-96">
+                  <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                     <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">

@@ -101,6 +101,7 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
       // Handle successful response, e.g., reset selectedMeetings state
       setSelectedMeetings([]);
       console.log('Attendance deleted successfully');
+      window.location.reload();
     } catch (error) {
       console.error('Error deleting attendance:', error);
     }
@@ -129,7 +130,8 @@ const AttendanceDatatable = ({ attendanceData, userData }) => {
       console.log(selectedAttendance);
       await UpdateAttendance({ selectedAttendance, position })
       setSelectedAttendance([]);
-      console.log('Attendance deleted successfully');
+      console.log('Attendance changed successfully');
+      window.location.reload();
     } catch (error) {
       console.error('Error deleting attendance:', error);
     }

@@ -35,12 +35,6 @@ const admin = [
     icon: <GrUserManager />,
     link: "/satisfaction"
   },
-  // {
-  //   id: 6,
-  //   title: "Checkouts",
-  //   icon: <AiFillNotification />,
-  //   link: "/checkouts",
-  // },
 ];
 const mentor = [
   {
@@ -102,12 +96,6 @@ const mentee = [
   },
   {
     id: 5,
-    title: "Projects",
-    icon: <IoIosGlobe />,
-    link: "/dashboard",
-  },
-  {
-    id: 6,
     title: "Milestones",
     icon: <IoIosGlobe />,
     link: "/milestones",

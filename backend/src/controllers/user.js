@@ -8,6 +8,7 @@ const {
   Sequelize,
   User,
 } = require("../models/");
+const { fetchTeamId } = require("../services/user_services");
 
 const { Op } = Sequelize;
 
@@ -17,12 +18,6 @@ exports.teamidToMentee = async (req, res) => {
     if (req.user.role !== "Admin") {
       return res.status(200).json({
         message: "Only Admin can access",
-      });
-    }
-    const teams = await Team.findAll();
-    if (teams.length) {
-      return res.status(200).json({
-        message: "Please add all mentees manually.",
       });
     }
     const listOfUser = await Mentee.findAll({
@@ -46,10 +41,11 @@ exports.teamidToMentee = async (req, res) => {
     }
 
     //Create teams
+    let lastTeamId = await Team.max('id');
     let list = [];
     for (let i = 0; i < NoOfTeam; i++) {
       list.push({
-        team_name: `Team ${i + 1}`,
+        team_name: `Team ${++lastTeamId}`,
         total_team_members: 5,
       });
     }
@@ -116,13 +112,23 @@ exports.teamidToMentor = async (req, res) => {
         message: "Only Admin can access",
       });
     }
-    const createdTeams = await Team.findAll();
-    if (createdTeams.length == 0) {
+
+    const allTeams = await Team.findAll();
+    const listOfTeamid = allTeams.map((team) => team.id);
+
+    const assignedTeams = await Mentor.findAll({
+      attributes: ["team_id"],
+    });
+    const listassignedTeams = assignedTeams.map((team) => team.team_id);
+
+    const remainingTeamsId = listOfTeamid.filter(
+      (id) => !listassignedTeams.includes(id)
+    );
+    if (remainingTeamsId.length == 0) {
       return res.status(200).json({
         message: "Teams are not created",
       });
     }
-    const listOfTeamid = createdTeams.map((team) => team.id);
 
     const mentorList = await Mentor.findAll({
       where: { team_id: null },
@@ -131,13 +137,14 @@ exports.teamidToMentor = async (req, res) => {
     if (mentorList.length == 0) {
       return res.status(200).json({
         message: "Teams are already assigned",
+        remainingTeamsId
       });
     }
     let mentorIndex1 = 0;
     let mentorIndex2 = mentorList.length / 2;
 
-    for (let i = 0; i < listOfTeamid.length; i++) {
-      const teamid = listOfTeamid[i];
+    for (let i = 0; i < remainingTeamsId.length; i++) {
+      const teamid = remainingTeamsId[i];
 
       const mentorid1 = mentorList[mentorIndex1].id;
       const mentorid2 = mentorList[mentorIndex2].id;
@@ -453,6 +460,8 @@ exports.menteeDetails = async (req, res) => {
                 "start_date",
                 "end_date",
                 "status",
+                "git_repository_link",
+                "trello_board_link",
               ],
             },
           ],
@@ -512,6 +521,8 @@ exports.menteeDetails = async (req, res) => {
           start_date: menteeDetails.Team?.Project?.start_date,
           end_date: menteeDetails.Team?.Project?.end_date,
           status: menteeDetails.Team?.Project?.status,
+          git: menteeDetails.Team?.Project?.git_repository_link,
+          trello: menteeDetails.Team?.Project?.trello_board_link,
         },
         teamMembersInfo: {
           mentorsList,
@@ -638,42 +649,46 @@ exports.createQuery = async (req, res) => {
 };
 exports.allQuery = async (req, res) => {
   try {
-    // console.log(req.qu.id);
-    let teamId;
+    const teamId = await fetchTeamId(req.user.id, req.user.role);
+    // console.log("teamId ",teamId);
     let queries;
     let id = req.query.id || null;
-    if (req.user.role == "Mentor") {
-      const mentor = await Mentor.findOne({
-        where: { user_id: req.user.id },
-        attributes: ["team_id"],
-      });
-      teamId = mentor.dataValues.team_id;
-      queries = await Query.findAll({
-        where: { reply_id: id, team_id: teamId },
-        include: [
-          {
-            model: User,
-            attributes: ["email"],
-          },
-        ],
-      });
-    } else {
-      const mentee = await Mentee.findOne({
-        where: { user_id: req.user.id },
-        attributes: ["team_id"],
-      });
-      teamId = mentee.dataValues.team_id;
-      queries = await Query.findAll({
-        where: { reply_id: id, team_id: teamId },
-        include: [
-          {
-            model: User,
-            attributes: ["email"],
-          },
-        ],
-      });
-    }
-    console.log(teamId);
+    // if (req.user.role == "Mentor") {
+    //   const mentor = await Mentor.findOne({
+    //     where: { user_id: req.user.id },
+    //     attributes: ["team_id"],
+    //   });
+    //   teamId = mentor.dataValues.team_id;
+    // } else {
+    //   const mentee = await Mentee.findOne({
+    //     where: { user_id: req.user.id },
+    //     attributes: ["team_id"],
+    //   });
+    //   teamId = mentee.dataValues.team_id;
+    // }
+    queries = await Query.findAll({
+      where: { reply_id: id, team_id: teamId },
+      // attributes: ["updatedAt"],
+      include: [
+        {
+          model: User,
+          attributes: ["email"],
+          include: [
+            {
+              model: Mentor,
+              attributes: ["first_name", "last_name"],
+              required: false // Set to false to perform a left join
+            },
+            {
+              model: Mentee,
+              attributes: ["first_name", "last_name"],
+              required: false // Set to false to perform a left join
+            }
+          ]
+        },
+      ],
+    });
+    // console.log(queries);
 
     res.status(201).json({
       success: true,
@@ -684,5 +699,35 @@ exports.allQuery = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+exports.getMentorAndMenteeDetailsByTeamId = async (req, res) => {
+  teamId = req.body.teamID;
+  console.log(req);
+  try {
+    // Fetch mentors based on team ID
+    const mentors = await Mentor.findAll({
+      where: {
+        team_id: teamId
+      },
+      include: [User, Team] // Include associated User and Team details
+    });
+
+    // Fetch mentees based on team ID
+    const mentees = await Mentee.findAll({
+      where: {
+        team_id: teamId
+      },
+      include: [User, Team] // Include associated User and Team details
+    });
+
+    return res.status(200).json({
+      mentee: mentees,
+      mentors: mentors
+    })
+  } catch (error) {
+    console.error('Error fetching mentor and mentee details:', error);
+    throw error;
   }
 };

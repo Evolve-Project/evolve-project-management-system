@@ -1,29 +1,42 @@
-import axios from 'axios'
+import axios from "axios"
 axios.defaults.withCredentials = true
 
 export async function CreateAttendance(attendanceData) {
-    return await axios.post('http://localhost:8000/api/createAttendance', attendanceData)
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/createAttendance`, attendanceData)
 }
 
 export async function FetchMentees() {
-    return await axios.get('http://localhost:8000/api/getMentees');
+    return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getMentees`);
 }
 
 
 export async function FetchAttendance() {
-    return await axios.get('http://localhost:8000/api/getAttendance');
+    return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getAttendance`);
 }
 
 
 export async function FetchMentorName(mentorId) {
-    return await axios.post('http://localhost:8000/api/getMentorName', mentorId);
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/getMentorName`, mentorId);
 }
 
 
 export async function DeleteAttendance(attendanceArray) {
-    return await axios.post('http://localhost:8000/api/deleteAttendance', attendanceArray);
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/deleteAttendance`, attendanceArray);
 }
 
 export async function UpdateAttendance(attendanceArray) {
-    return await axios.post('http://localhost:8000/api/updateAttendance', attendanceArray)
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/updateAttendance`, attendanceArray)
+}
+
+export async function FetchTeamDetails() {
+    return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/project_details`);
+}
+
+export async function FetchUsersByTeam(teamID) {
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/fetchMentee-Mentor`, teamID)
+}
+
+export async function FetchAttendanceByMentorID(mentorID) {
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/getAttendanceMentor`, mentorID)
+
 }

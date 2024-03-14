@@ -21,6 +21,11 @@ import ChartShimmer from "@/components/SatisfactionCompontents/SatisfactionShimm
 import DetailedShimmer from "@/components/SatisfactionCompontents/SatisfactionShimmer/detailedShimmer";
 import ErrorPage from "@/components/ErrorPage";
 import ReactWordcloud from "react-wordcloud";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
+
+// import { TagCloud } from 'react-tagcloud'
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -29,7 +34,27 @@ const api = axios.create({
 
 const Satisfaction = () => {
   // const URL = "http://localhost:8000/";
-  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectLoading, setProjectLoading] = useState(true);
+  const [teams_projects , setTeamProjects] = useState([]);
+    useEffect(()=>{
+        const fetchData = async () =>{
+            try{
+                const data = await api.get(`/api/project_details`);
+                // console.log(data);
+                // console.log(data.data.allTeamsNames);
+                if(data.status === 200)
+                    setTeamProjects(data.data.allTeamsNames);
+                else{
+                    console.log(data); 
+                    setTeamProjects([]);
+                }
+            }catch(err){
+                console.log("Error in fetching project details", err);
+            }
+            setProjectLoading(false);
+        }
+        fetchData();
+    },[]);
   const [teamId, setTeamId] = useState(null);
   const [teamName, setTeamName] = useState("");
   const [userId, setUserId] = useState(null);
@@ -104,13 +129,14 @@ const Satisfaction = () => {
       try {
         // console.log("words");
         const data = await api.post("/api/feedbackWords", { teamId });
+        // console.log(data);
         setWordCloudWords(data.data);
       } catch (err) {
         console.log("error", err);
       }
     };
-    if (teamId != null) 
-        fetchData();
+    if (teamId != null)
+      fetchData();
   }, [teamId]);
 
   const wordCloudOptions = {
@@ -129,13 +155,13 @@ const Satisfaction = () => {
     transitionDuration: 500,
   };
 
+  // LOADING PAGE
   if (loading1 || status === "Initial-loading" || projectLoading) {
-    // LOADING PAGE
     return <SatisfactionShimmer />;
   }
 
+  // ERROR PAGE
   if (error || errorPage || status === "Initail-failed") {
-    // ERROR PAGE
     return <ErrorPage />;
   }
 
@@ -152,7 +178,7 @@ const Satisfaction = () => {
           <div className="satisfaction_input justify-between">
             <ProjectNames
               handleTeamId={handleTeamId}
-              setProjectLoading={setProjectLoading}
+              teams_projects={teams_projects}
             />
 
             <CustomizedDialogs isOpen={isPopOpen} handlePop={handlePop} />
@@ -179,7 +205,7 @@ const Satisfaction = () => {
                       setRole(e.target.value);
                     }}
                     aria-label="Platform"
-                    // size='small'
+                  // size='small'
                   >
                     <ToggleButton value="Mentor">Mentor</ToggleButton>
                     <ToggleButton value="Mentee">Mentee</ToggleButton>
@@ -189,7 +215,7 @@ const Satisfaction = () => {
               <UserNames
                 handleUserId={handleUserId}
                 userRecords={role === "Mentor" ? mentorRecords : menteeRecords}
-              />
+              key={crypto.randomUUID()}/>
             </div>
             <div className="satisfaction_input">
               <span>
@@ -245,20 +271,27 @@ const Satisfaction = () => {
                   />
                 )}
               </div>
-            ) : (teamId != null) ? (
+            ) :
+             (teamId != null && wordCloudWords.length !== 0) ? (
               <div className="mt-4">
                 <div>
                   <span className="satisfaction_text_title"> Word Cloud : </span>
                   <span>Most common words used by "{teamName}" team members (beta)</span>
                 </div>
                 <div style={{ height: 400, width: 600 }} className="mt-4">
-                  <ReactWordcloud
-                    options={wordCloudOptions}
-                    words={wordCloudWords}
-                  />
+                  <ReactWordcloud words={wordCloudWords} options={wordCloudOptions}/>
+                  {/* USING TAGCLOUD FOR WORD-CLOUD */}
+                  {/* <TagCloud
+                    minSize={12}
+                    maxSize={35}
+                    tags={wordCloudWords} //[{value,count}]
+                    // onClick={tag => alert(`'${tag.value}' was selected!`)}
+                  /> */}
+
                 </div>
               </div>
-            ) : (
+            ) : 
+            (
               <img src={feedback_loader} style={{ width: "50%" }}></img>
             )}
           </div>

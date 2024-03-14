@@ -43,7 +43,11 @@ const Project = () => {
   }, [message, error, dispatch]);
   return (
     <>
-      <div className="feedback_title">Project Details</div>
+      <div className="dashboard_title_container">
+        <span className="dashboard_title_bar"></span>
+        <span className="dashboard_title">Project Details </span>
+        <span className="dashboard_title_bar"></span>
+      </div>
       <form onSubmit={handleSubmit} className="rounded-md mx-20 px-20">
         <div className="mb-4 ">
           <label className="block mb-2 text-sm font-bold text-gray-700">
@@ -79,7 +83,8 @@ const Project = () => {
             name="start_date"
             value={formData.start_date}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md"
+            className=" px-4 py-2 border rounded-md"
+            min={new Date().toISOString().split('T')[0]}
             required
           />
         </div>
@@ -92,7 +97,8 @@ const Project = () => {
             name="end_date"
             value={formData.end_date}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md"
+            className=" px-4 py-2 border rounded-md"
+            min={formData.start_date}
             required
           />
         </div>
