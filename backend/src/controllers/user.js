@@ -39,7 +39,7 @@ exports.teamidToMentee = async (req, res) => {
         message: "Please upload more then 5 mentee",
       });
     }
-    
+
     //Create teams
     let lastTeamId = await Team.max('id');
     let list = [];
@@ -649,7 +649,7 @@ exports.createQuery = async (req, res) => {
 };
 exports.allQuery = async (req, res) => {
   try {
-    const teamId = await fetchTeamId( req.user.id, req.user.role);
+    const teamId = await fetchTeamId(req.user.id, req.user.role);
     // console.log("teamId ",teamId);
     let queries;
     let id = req.query.id || null;
@@ -667,7 +667,7 @@ exports.allQuery = async (req, res) => {
     //   teamId = mentee.dataValues.team_id;
     // }
     queries = await Query.findAll({
-      where: { reply_id: id, team_id: teamId},
+      where: { reply_id: id, team_id: teamId },
       // attributes: ["updatedAt"],
       include: [
         {
@@ -676,12 +676,12 @@ exports.allQuery = async (req, res) => {
           include: [
             {
               model: Mentor,
-              attributes: ["first_name","last_name"],
+              attributes: ["first_name", "last_name"],
               required: false // Set to false to perform a left join
             },
             {
               model: Mentee,
-              attributes: ["first_name","last_name"],
+              attributes: ["first_name", "last_name"],
               required: false // Set to false to perform a left join
             }
           ]
@@ -699,5 +699,35 @@ exports.allQuery = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+exports.getMentorAndMenteeDetailsByTeamId = async (req, res) => {
+  teamId = req.body.teamID;
+  console.log(req);
+  try {
+    // Fetch mentors based on team ID
+    const mentors = await Mentor.findAll({
+      where: {
+        team_id: teamId
+      },
+      include: [User, Team] // Include associated User and Team details
+    });
+
+    // Fetch mentees based on team ID
+    const mentees = await Mentee.findAll({
+      where: {
+        team_id: teamId
+      },
+      include: [User, Team] // Include associated User and Team details
+    });
+
+    return res.status(200).json({
+      mentee: mentees,
+      mentors: mentors
+    })
+  } catch (error) {
+    console.error('Error fetching mentor and mentee details:', error);
+    throw error;
   }
 };

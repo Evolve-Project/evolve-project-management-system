@@ -11,6 +11,7 @@ const {
   menteeDetails,
   updateMentor,
   updateMentee,
+  getMentorAndMenteeDetailsByTeamId,
 } = require("../controllers/user");
 
 const { userAuth } = require("../middlewares/passport-middleware");
@@ -31,7 +32,7 @@ router.post("/updateMentee", userAuth, updateMentee);
 
 router.post("/createQuery", userAuth, createQuery);
 router.get("/allQuery", userAuth, allQuery);
-
+router.post("/fetchMentee-Mentor", userAuth, getMentorAndMenteeDetailsByTeamId)
 
 router.post("/assignProject", userAuth, assignProject);
 

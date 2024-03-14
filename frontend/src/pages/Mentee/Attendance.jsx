@@ -21,7 +21,7 @@ const MenteeAttendance = () => {
 
   useEffect(() => {
     // Log userData whenever it changes
-    // console.log(userData);
+    // console.log(attendanceData);
   }, [attendanceData]);
 
 
