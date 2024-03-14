@@ -17,7 +17,6 @@ const api = axios.create({
   withCredentials: true,
 });
 
-
 const handleRatingChange = (e, newValue, dataObject, setDataObject, metricId) => {
   const newDataObject = dataObject.map(record => {
     if (record.metric_id === metricId) {
@@ -44,6 +43,19 @@ const handleSubmit = async (e, dataObject, mentee_id, handleNewAverage, setError
     e.preventDefault();
     // console.log(dataObject);
     // const URL = "http://localhost:8000";
+    for(const record of dataObject)
+    {
+      if(record.rating === 0)
+      {
+        toast.update(id, {render: `Rating should not be empty`, type: "info", isLoading: false, autoClose: 2000});
+        return;
+      }
+      if(record.review.trim() === "")
+      {
+        toast.update(id, {render: `Comment should not be empty`, type: "info", isLoading: false, autoClose: 2000});
+        return;
+      }
+    }
     const response = await api.post(`/api/feedback`, dataObject);
     if (response.status === 200) {
       const sumOfRatings = dataObject.reduce((sum, item) => sum + item.rating, 0);
@@ -162,7 +174,7 @@ const MentorFeedback = () => {
   const [loading3, setLoading3] = useState(true);
   const [errorPage1, setErrorPage1] = useState(false);
   const [errorPage2, setErrorPage2] = useState(false);
-  // const [errorPage3, setErrorPage3] = useState(false);
+  const [errorPage3, setErrorPage3] = useState(false);
   const [errorPage4, setErrorPage4] = useState(false);
   const [errorPage5, setErrorPage5] = useState(false);
 
@@ -211,14 +223,16 @@ const MentorFeedback = () => {
         const averageRating = await api.get(`/api/getAvgRatingByUser`);
         setAvgRating(averageRating.data.avgRating);
         // console.log("avg rating");
+        if(averageRating.status === 204) // NO FEEDBACKS FOUND
+          setAvgRating([]);
         // console.log(averageRating.data.avgRating);
         setLoading3(false);
-        // setErrorPage3(false);
+        setErrorPage3(false);
       }
       catch (error) {
         console.error('Error fetching avg rating data:', error);
-        // setErrorPage3(true);
-        setAvgRating([]);   // NO FEEDBACK FOUND
+        setErrorPage3(true);
+        // setAvgRating([]);
       }
     };
 
@@ -253,7 +267,7 @@ const MentorFeedback = () => {
   if (status === "loading" || loading1 || loading2 || loading3 || teamId === undefined || mentees === undefined || avgRating === undefined) {  // LOADING SKELETON
     return <FeedbackShimmer />
   }
-  if (error || errorPage1 || errorPage2 || errorPage4 || errorPage5 || status === "failed") {
+  if (error || errorPage1 || errorPage2 || errorPage3 || errorPage4 || errorPage5 || status === "failed") {
     return <ErrorPage />;
   }
 
@@ -266,7 +280,7 @@ const MentorFeedback = () => {
           <span className="feedback_title">Feedback</span>
           <span className="feedback_title_bar"></span>
         </div>
-        <div className="feedback_component">
+        <div className="feedback_component" key={crypto.randomUUID()}>
           {mentees.map((mentee) => {
             return (
               <>

@@ -8,7 +8,7 @@ const FeedbackMetricShimmer = () => {
     <div className="feedback_content animate-pulse">
       {data.map((id) => {
         return (
-          <div className="feedback_metric-box" key={id}>
+          <div className="feedback_metric-box" key={crypto.randomUUID()}>
             <span className="feedback_name"><div className='w-32 h-4 bg-slate-200 rounded-md'></div></span>
             <span className="feedback_rating">
             {/* <Rating

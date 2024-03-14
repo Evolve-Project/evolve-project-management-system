@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Tasks from "./Tasks.jsx";
-
+const milestoneIdResponse = await axios.get(
+  "http://localhost:8000/api/get-milestonesForStatus"
+);
+console.log("Milestone IDs response:", milestoneIdResponse.data);
 function MentorMilestones() {
   const [status, setStatus] = useState([]);
   const [milestoneDesc, setMilestoneDesc] = useState([]);
   const [toggle, setToggle] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [milestoneId, setMilestoneId] = useState([]);
+
+  const [milestoneId2, setMilestoneId2] = useState([]);
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentMilestoneDesc, setCurrentMilestoneDesc] = useState(null);
@@ -36,6 +41,8 @@ function MentorMilestones() {
         );
         console.log("Milestone IDs response:", milestoneIdResponse.data);
         setMilestoneId(milestoneIdResponse.data);
+        setMilestoneId2(milestoneIdResponse.data);
+        console.log(milestoneId2)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -50,6 +57,9 @@ function MentorMilestones() {
     }
   }, [currentMilestoneDesc]);
 
+
+ 
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US");
@@ -57,7 +67,7 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
-      console.log("This is inside fetch tasks",milestoneDescId)
+      console.log("This is inside fetch tasks", milestoneDescId);
       const response = await axios.post("http://localhost:8000/api/get-tasks", {
         milestoneDescId,
       });
@@ -76,6 +86,35 @@ function MentorMilestones() {
     setTasks(newTasks);
   };
 
+  const handleStatusChangeMilestone = async (milestoneId, newStatus) => {
+    try {
+      console.log(milestoneId);
+      console.log(newStatus);
+  
+      const response = await axios.post(
+        "http://localhost:8000/api/update-task-status-milestone",
+        { milestoneId, newStatus }
+      );
+      console.log("Update status response:", response.data);
+
+   const updatedrid = response.data.id;
+   const updatedrstatus = response.data.status;
+      // Update the status of the task in the frontend
+      
+      const updatedMilestones = milestoneIdResponse.data.map((milestone) =>
+      milestone.id === milestoneId
+        ? { ...milestone, status: response.data.status }
+        : milestone
+    );
+    setMilestoneId2(updatedMilestones);
+      
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+  };
+
+
+ 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       const response = await axios.post(
@@ -109,8 +148,6 @@ function MentorMilestones() {
       console.error("Error deleting task:", error);
     }
   };
-
- 
 
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
@@ -172,9 +209,27 @@ function MentorMilestones() {
                     {formatDate(milestone.end_date)}
                   </td>
                   <td className="py-2 px-4 text-left relative">
-                    <select value={milestoneId[index] ? "true" : "false"}>
-                      <option value="false">Completed</option>
-                      <option value="true">In Progress</option>
+                    
+                    <select
+                      value={milestoneId2[index].status ? "true" : "false"}
+                      onChange={(e) =>
+                        handleStatusChangeMilestone(
+                          milestoneId2[index].id,
+                          e.target.value
+                        )
+                      }
+                    >
+                      {milestoneId2[index].status ? (
+                         <>
+                         <option value="false">In Progress</option>
+                         <option value="true">Completed</option>
+                       </>
+                      ) : (
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
+                      )}
                     </select>
                   </td>
                   <td className="">
@@ -197,7 +252,7 @@ function MentorMilestones() {
         </div>
       ) : (
         <>
-          <Tasks milestoneId={milestone_Id}  onTaskCreated={fetchTasks}/>
+          <Tasks milestoneId={milestone_Id} onTaskCreated={fetchTasks} />
           <table className="table-auto border-collapse w-full">
             <thead>
               <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
