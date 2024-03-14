@@ -176,7 +176,7 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
                   Add
                 </span>
               </div>
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-4" key={crypto.randomUUID()}>
                 {mentor_metrics.map((record) => {
                   return (
                     <>

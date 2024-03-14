@@ -198,7 +198,7 @@ const getAvgRating = async (req, res) => {
       group: ["given_by_user_id", "given_to_user_id"]
     });
     if (avgRating.length === 0)
-      res.status(404).json({ message: "No feedback found" });
+      res.status(204).json({ message: "No feedback found" });
     else
       res.status(200).json({ avgRating });
   } catch (err) {

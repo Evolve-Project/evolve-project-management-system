@@ -95,11 +95,11 @@ const MyComponent = ({ item, teamId, parentId }) => {
               item.User.Mentee.first_name+" "+item.User.Mentee.last_name}</span>
             <span className="font-thin text-sm ">{item.User.Mentor?.first_name ? "(Mentor)" : "(Mentee)"}</span>
           </div>
-          <div className="flex items-center gap-2 mr-10">
+          <div className="flex items-center gap-2 w-44">
             <CircleIcon sx={{ fontSize: "5px" }} /> <CalendarMonthOutlinedIcon/><span>{getDateTime(item.updatedAt)}</span>
           </div>
         </div>
-        <div className="text-2xl">{item.text}</div>
+        <div className="text-lg">{item.text}</div>
       </div>
       {selectedQuestion === item.id ? (
         <div className="w-full">
@@ -139,7 +139,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
                               answer.User.Mentee.first_name+" "+answer.User.Mentee.last_name}</span>
                             <span className="font-thin text-sm ">{answer.User.Mentor?.first_name ? "(Mentor)" : "(Mentee)"}</span>
                           </span>
-                          <span className="flex items-center gap-2 pr-3"><CircleIcon sx={{ fontSize: "5px" }}/> <CalendarMonthOutlinedIcon/><span>{getDateTime(answer.updatedAt)}</span></span>
+                          <span className="flex items-center gap-2 w-44"><CircleIcon sx={{ fontSize: "5px" }}/> <CalendarMonthOutlinedIcon/><span>{getDateTime(answer.updatedAt)}</span></span>
                         </div>
                         <div style={{width:"60vw", wordWrap: "break-word" }} className="p-2">
                           {answer.text}

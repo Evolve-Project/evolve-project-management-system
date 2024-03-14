@@ -12,11 +12,11 @@ const FeedbackShimmer = () => {
           <span className="feedback_title">Feedback</span>
           <span className="feedback_title_bar"></span>
         </div>
-        <div className="feedback_component animate-pulse">
+        <div className="feedback_component animate-pulse" key={crypto.randomUUID()}>
           {data.map((id) => {
             return (
               <>
-                <div className="feedback_box" key={id}>
+                <div className="feedback_box" key={crypto.randomUUID()}>
                   <span className="feedback_name">
                     <div className='w-48 h-4 bg-slate-200 rounded-md'></div>
                   </span>
