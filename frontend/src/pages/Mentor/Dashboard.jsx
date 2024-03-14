@@ -410,7 +410,7 @@ const Dashboard = () => {
               <Slider {...slideSettings}>
                 {mentor.teamMembersInfo.mentorsList.map((user) => {
                   return (
-                    <div className="dashboard_card  min-w-96">
+                    <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                       <div className="text-lg font-semibold">
                         {user.first_name + " " + user?.last_name}
                       </div>
@@ -439,7 +439,7 @@ const Dashboard = () => {
 
                 {mentor.teamMembersInfo.menteesList.map((user) => {
                   return (
-                    <div className="dashboard_card  min-w-96">
+                    <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                       <div className="text-lg font-semibold">
                         {user.first_name + " " + user?.last_name}
                       </div>
