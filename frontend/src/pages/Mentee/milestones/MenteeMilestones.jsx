@@ -162,34 +162,15 @@ function MenteeMilestones() {
             </thead>
             <tbody className="text-black-600 text-bg font-dark">
               {milestoneDesc.map((milestone, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-gray-200 hover:bg-gray-100"
-                >
-                  <td className="py-2 px-4 text-left whitespace-nowrap">
-                    {milestone.name}
-                  </td>
-                  <td className="py-2 px-4 text-left">
-                    {milestone.description}
-                  </td>
-                  <td className="py-2 px-4 text-left">
-                    {formatDate(milestone.start_date)}
-                  </td>
-                  <td className="py-2 px-4 text-left">
-                    {formatDate(milestone.end_date)}
-                  </td>
+                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                  <td className="py-2 px-4 text-left whitespace-nowrap">{milestone.name}</td>
+                  <td className="py-2 px-4 text-left">{milestone.description}</td>
+                  <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
+                  <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
                   <td className="py-2 px-4 text-left relative">
-                    {console.log(milestoneId[index].status)}
-                    <select
-                      value={milestoneId[index].status ? "true" : "false"}
-                    >
-                      {milestoneId[index].status ? (
-                        <option value="true">Completed</option>
-                      ) : (
-                        <>
-                          <option value="false">In Progress</option>
-                        </>
-                      )}
+                    <select value={milestoneId[index] ? "true" : "false"}>
+                      <option value="false">Completed</option>
+                      <option value="true">In Progress</option>
                     </select>
                   </td>
                   <td className="">
@@ -198,7 +179,7 @@ function MenteeMilestones() {
                         className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
                         onClick={() => {
                           setToggle(false);
-                          fetchTasks(milestone.id);
+                          setCurrentMilestoneDesc(milestone.id);
                         }}
                       >
                         view
