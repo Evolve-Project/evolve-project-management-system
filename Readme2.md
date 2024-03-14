@@ -9,6 +9,43 @@ To get started with the project, follow the installation instructions provided i
 
 Happy coding!
 
+# Table of Contents
+- [Evolve Mentor Mentee Management System](#evolve-mentor-mentee-management-system)
+- [Table of Contents](#table-of-contents)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Here's a demo of the application:](#heres-a-demo-of-the-application)
+- [Components and APIs:](#components-and-apis)
+  - [Frontend:](#frontend)
+    - [Third-party Libraries:](#third-party-libraries)
+      - [General Libraries Used:](#general-libraries-used)
+      - [Styling Libraries Utilized:](#styling-libraries-utilized)
+      - [Icon Libraries Employed:](#icon-libraries-employed)
+      - [UI Component Libraries Integrated:](#ui-component-libraries-integrated)
+      - [Notification Libraries:](#notification-libraries)
+    - [State Management:](#state-management)
+    - [Components:](#components)
+  - [Backend:](#backend)
+    - [Third-party Libraries:](#third-party-libraries-1)
+      - [Server Setup and HTTP Handling:](#server-setup-and-http-handling)
+      - [Database Management:](#database-management)
+      - [Authentication and Security:](#authentication-and-security)
+      - [Request and Response Handling:](#request-and-response-handling)
+      - [Development:](#development)
+      - [File Handling:](#file-handling)
+      - [Other:](#other)
+    - [APIs:](#apis)
+  - [Database](#database)
+    - [Tables](#tables)
+    - [Migrations](#migrations)
+    - [Seeders](#seeders)
+    - [Configurations](#configurations)
+    - [Entity Relationship Diagram](#entity-relationship-diagram)
+    - [Contact Information](#contact-information)
+      - [Mentors:](#mentors)
+      - [Mentees:](#mentees)
+
 # Project Structure
 The project is structured as follows:
 - `frontend/`: Contains all frontend code and related configuration files.
@@ -335,7 +372,27 @@ npx sequelize-cli db:seed:all
 
 Database configurations are located in the `backend/src/config/` directory. It includes details like the database name, username, password, host, and dialect. We are using `.env `file to store the environment variables. And the configuration is loaded from the `.env` file.
 
+
 ### Entity Relationship Diagram
 ![alt text](Untitled.png)
 
 ***Thank you for reading the README. We hope you enjoy using the Evolve Mentor Mentee Management System! If you encounter any issues or have any suggestions, feel free to contribute or open an issue. Happy coding!***
+
+### Contact Information
+
+If you have any questions or need further clarification, feel free to reach out to our team members:
+
+#### Mentors:
+- **Shirpi**: shirpianbarasan@jmangroup.com
+- **Akshay Kumar**: akshaykumar@jmangroup.com
+
+#### Mentees:
+- **Ashutosh Goyal**: alice.johnson@example.com
+- **Harsh Verma**: bob.williams@example.com
+- **Harsha Vardhan**: charlie.brown@example.com
+- **Purnima Kabadwal**: david.jones@example.com
+- **Subahm Pradhan**: eve.davis@example.com
+- **Monish Kumar**: frank.miller@example.com
+- **Vijay R**: grace.wilson@example.com
+
+Please replace the dummy email addresses with the actual email addresses of the team members.
