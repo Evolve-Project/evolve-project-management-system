@@ -36,7 +36,7 @@ const updateTaskStatus = async (req, res) => {
   try {
     // Update the task status in the database
     const [rowsAffected, [updatedTask]] = await Task.update(
-      { status: true },
+      { status: newStatus },
       { where: { id: taskId }, returning: true }
     );
 
