@@ -9,6 +9,10 @@ export async function FetchMentees() {
     return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getMentees`);
 }
 
+export async function FetchMenteesByMentor(mentorID) {
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/getMenteesByMentor`, mentorID);
+}
+
 
 export async function FetchAttendance() {
     return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/getAttendance`);
