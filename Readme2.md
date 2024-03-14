@@ -12,6 +12,13 @@ Happy coding!
 # Project Structure
 The project is structured as follows:
 - `frontend/`: Contains all frontend code and related configuration files.
+  - `src/`: Contains the source code for the Frontend.
+    - `api/`: Contains asynchronous calls made to the server, facilitating communication between the frontend and backend systems.
+    - `asserts/`: Here reside images and assets essential for the frontend user interface
+    - `components/`: Basic compontents required for frontend pages.
+    - `pages/`: Contains pages for different user roles, including administrators, mentors, and mentees.
+    - `redux/`: Contains Redux store actions and reducers, responsible for managing application state and enabling seamless data flow between components. Redux facilitates centralized state management, ensuring consistency and predictability across the application.
+    - `styles/`: Contains style sheets and styling configurations essential for shaping the frontend appearance and layout.
 - `backend/`: Contains all backend code and related configuration files.
     - `src/`: Contains the source code for the backend.
       - `config/`: Contains configuration files for the database setup.
@@ -59,7 +66,12 @@ DB_DIALECT=<DB_DIALECT>
 DB_PORT=<DB_PORT>
 ```
 
-4. Run the database migrations:
+4. Need Configuration for frontend in `frontend/.env`. Create a `.env` file in the `frontend` directory and add the following environment variables:
+```bash
+  VITE_SERVER_URL = '<SERVER_URL>'
+```
+
+5. Run the database migrations:
 ```bash
 npx sequelize-cli db:migrate
 ```
@@ -86,12 +98,105 @@ The frontend is built using React and Vite. It provides a user-friendly interfac
 ### Third-party Libraries:
 - `axios`: Used for making HTTP requests to the backend API.
 
+### Styling Libraries Utilized:
+- `Style sheets`: Customized style sheets for consistent visual presentation.
+- `Styled Components`: Dynamic styling using CSS-in-JS for enhanced component styling.
+- `Tailwind CSS`:  Utility-first CSS framework for rapid UI development.
+
+### Icon Libraries Employed:
+- `Material-UI Icons`: Icon set provided by the Material-UI library for intuitive and consistent visual cues.
+- `Font Awesome Icons`: Versatile icon set from Font Awesome library for a wide range of icons.
+- `Bootstrap Icons`: Icon library from Bootstrap framework offering a collection of scalable icons.
+
+### UI Component Libraries Integrated:
+- `Material-UI:`: Comprehensive UI component library offering pre-designed and customizable components for React applications.
+- `Shadcn-UI`: UI component library providing modern and responsive components for building user interfaces.
+- `Radix-UI`: Toolkit for building component libraries and design systems with React.
+- `Chakra-UI`: A simple, modular, and accessible component library that provides building blocks for React applications.
+
 ### Components:
 - `App`: The main component that renders the entire application. It includes the routing logic and renders the appropriate components based on the URL.
-- `Header`: The header component that is displayed at the top of the application. It includes the navigation links and user authentication logic.
-- `Footer`: The footer component that is displayed at the bottom of the application. It includes the copyright information.
 - `Home`: The home page component that is displayed when the user is not logged in. It includes a brief description of the application and a call-to-action to sign up or log in.
 - `Dashboard`: The dashboard component that is displayed when the user is logged in. It includes the main content of the application, such as the user profile, projects, feedback, and attendance.
+  - `Project and User Details`: Admin have Comprehensive view of all project details and users within the system. Ability to filter users based on their roles for streamlined management.
+  - `Personal Information`: Mentor and Mentee can view their personal details and edit if necessary.
+  - `Team Members and Projects Information`: Information about team members and assigned projects, Capability for mentors to create new projects if none are assigned.
+- `Sidebar`: The sidebar provides quick access to essential features based on the user's role, ensuring efficient navigation and usability within the application.
+  Here are the routes as per the users:
+    1. Admin Routes:
+      - `Dashboard`: Overview of projects and their mentors. Includes Mentor and Mentee satisfaction level of that particular project and average of attendance and progress of the project. Contains information of total number of mentors and mentees and projects assigned.
+      - `User Management`: Information about all users and add individual User or bulk user
+      - `Attendance`: Monitor and manage attendance records of users or teams.
+      - `Projects`: View project details and progress of the project and verify it will github and trello application.
+      - `Satisfaction`: Monitor user satisfaction metrics, feedback, and ratings.
+
+    2. Mentor Routes:
+      - `Dashboard`: Overview of mentor-specific information, project and team members info.
+      - `Attendance`: Record and track attendance for assigned mentees.
+      - `Feedback`: Provide feedback and evaluations for assigned mentees.
+      - `Query`: Address queries, concerns, or requests raised by team members.
+
+    3. Mentee Routes:
+      - `Dashboard`: Overview of mentee-specific information, project and team members info.
+      - `Attendance`: View attendance records and history.
+      - `Feedback`: Provide feedback and evaluations for assigned mentors.
+      - `Query`: Raise queries, concerns, or requests raised by team members.
+
+    4. Common Routes:
+    - `Sign Out`: Available across all user roles to log out and securely end the session.
+
+- `Add Users`: To add users in bulk using [`Excel sheets (.xlsx)`](https://www.npmjs.com/package/xlsx), you can follow these steps:
+  1. Install Required Packages:
+    - Ensure you have the necessary packages installed:
+      - `xlsx`: For parsing Excel files.
+      - `react-dropzone`: For handling file uploads.
+        You can install these packages using npm or yarn:
+        ```bash
+        npm install xlsx react-dropzone
+        yarn add xlsx react-dropzone
+        ```
+  2. Implement File Upload Feature:
+    - Use the react-dropzone package to implement the file upload feature. This allows users to select and upload Excel files.
+  3. Parse Excel File:
+    - After the user uploads an Excel file, use the xlsx package to parse the uploaded file. Extract the user data from the Excel sheet.
+
+- `Attendance` : 
+  1. Admin view: Admin can retrieve attendance data for all mentees and Filter attendance records by project name and date range for better organization and analysis.
+  2. Mentor view: Capability for mentors to record and edit attendance data.
+  3. Mentee view: Display attendance records for mentees as per attendance history.
+
+- `Satisfaction`: The satisfaction component offers various views for feedback analysis, including visual representations, detailed reports, and word clouds, providing comprehensive insights into user sentiment.
+    - `Word Cloud`: The [`react-wordcloud`](https://www.npmjs.com/package/react-wordcloud) package offers an insightful overview of prominent keywords highlighted in feedback reviews provided by both mentors and mentees within a specific project context.
+      ```bash
+      npm install react-wordcloud
+      ```
+      - Note that react-wordcloud requires react^16.13. 0 as a peer dependency.
+    - `Visual representation`: The [`react-chartjs-2`](https://www.npmjs.com/package/react-chartjs-2) package offers robust charting capabilities, enabling the creation of meaningful visual representations. In this context, a bar chart is utilized to showcase ratings assigned by team members to an individual team member, providing valuable insights at a glance.
+      ```bash
+      npm install react-chartjs-2
+      ```
+    - `Edit metrics`: Admin have access for adding, editing, deleting metrics.
+- `Milestones` :
+  1. `Mentor view`
+    - `Task Creation `: Ability for mentors to create tasks.
+    - `Assign Tasks`: Mentors can assign tasks to mentees and track their progress.
+    - `Task Status Updates`: Mentors can update the status of tasks as they are completed.
+  2. `Mentee view`
+    - `View Tasks`: Mentees can view tasks assigned to them by mentors.
+    - `Task Progress`: Track the progress of tasks assigned by mentors.
+- `Feedback` : 
+  1. `Mentor view`
+    - `Provide Feedback`: Mentors can share feedback about mentees.
+    - `Rating Metrics`: Ability to rate mentees based on predefined metrics.
+    - `Commenting`: Mentors can provide comments along with the ratings.
+  2. `Mentee view`
+    - `Share Feedback`: Mentees can share feedback about mentors.
+    - `Rating Metrics`: Ability to rate mentors based on predefined metrics.
+    - `Commenting`: Mentees can provide comments along with the ratings.
+- `Query System` :
+  - `Ask Queries`: Users can post queries or questions.
+  - `Team Response`: Queries are answered by any member of the team.
+  - `Collaborative Support`: Encourages teamwork and collaboration in resolving queries.
 
 ## Backend:
 The backend is a Node.js server that handles data management and business logic. It integrates with a PostgreSQL database to store and manage data. The database structure includes tables for users, projects, milestones, and more. The database is managed using Sequelize, a popular ORM for Node.js.
