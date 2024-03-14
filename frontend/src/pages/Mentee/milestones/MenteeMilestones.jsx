@@ -148,47 +148,29 @@ function MenteeMilestones() {
             <span className="feedback_title">Milestones</span>
             <span className="feedback_title_bar"></span>
           </div>
-       
-      ) : (
-        <> 
-          
-          
-          
-                
-                <span className="feedback_title">Tasks</span>
-               
-              
-            <table className="table-auto border-collapse w-full">
-              <thead>
-                <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
-                  <th className="py-3 px-6 text-left">Name</th>
-                  <th className="py-3 px-6 text-left">Description</th>
-                  <th className="py-3 px-6 text-left">Due Date</th>
-                  <th className="py-3 px-6 text-left">Status</th>
-                  <th className="py-3 px-6 text-left">Mentee Assigned</th>
-                </tr>
-              </thead>
-              <tbody className="text-black-600 text-bg font-dark">
-                {currentTasks.map((task, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray-200 hover:bg-gray-100"
-                  >
-                    <td className="py-2 px-3 text-left whitespace-nowrap">{task.task_name}</td>
-                    <td className="py-2 px-3 text-left">{task.task_desc}</td>
-                    <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
-                    <td className="py-2 px-3 text-left">
-                      <select
-                        value={task.status ? "true" : "false"}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
-                      >
-                        <option value="false">In Progress</option>
-                        <option value="true">Completed</option>
-                      ) : (
-                        <>
-                          <option value="false">In Progress</option>
-                        </>
-                      )}
+          <br />
+          <table className="table-auto border-collapse w-full">
+            <thead>
+              <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Name</th>
+                <th className="py-3 px-6 text-left">Description</th>
+                <th className="py-3 px-6 text-left">Start Date</th>
+                <th className="py-3 px-6 text-left">End Date</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                <th className="py-3 px-6 text-left">Tasks</th>
+              </tr>
+            </thead>
+            <tbody className="text-black-600 text-bg font-dark">
+              {milestoneDesc.map((milestone, index) => (
+                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                  <td className="py-2 px-4 text-left whitespace-nowrap">{milestone.name}</td>
+                  <td className="py-2 px-4 text-left">{milestone.description}</td>
+                  <td className="py-2 px-4 text-left">{formatDate(milestone.start_date)}</td>
+                  <td className="py-2 px-4 text-left">{formatDate(milestone.end_date)}</td>
+                  <td className="py-2 px-4 text-left relative">
+                    <select value={milestoneId[index] ? "true" : "false"}>
+                      <option value="false">Completed</option>
+                      <option value="true">In Progress</option>
                     </select>
                   </td>
                   <td className="">
@@ -197,7 +179,7 @@ function MenteeMilestones() {
                         className=" mt-2 mr-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-gray-600"
                         onClick={() => {
                           setToggle(false);
-                          fetchTasks(milestone.id);
+                          setCurrentMilestoneDesc(milestone.id);
                         }}
                       >
                         view
