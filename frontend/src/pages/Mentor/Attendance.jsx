@@ -74,7 +74,7 @@ const Attendance = () => {
 
   useEffect(() => {
     // Log userData whenever it changes
-    // console.log(userData);
+    // console.log(attendanceData);
   }, [attendanceData]);
 
 
@@ -140,6 +140,7 @@ const Attendance = () => {
           confirmButtonText: 'Retry'
         });
         setOpen(false);
+        window.location.reload();
         return;
       }
       console.log("Failed to create attendance ", error);
@@ -260,7 +261,7 @@ const Attendance = () => {
                                 </RadioGroup>
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
-                                {item.name} {item.first_name} {item.last_name} {/* Display user's name and email */}
+                                | {item.first_name} {item.last_name} {/* Display user's name and email */}
                               </FormLabel>
                             </FormItem>
                           )

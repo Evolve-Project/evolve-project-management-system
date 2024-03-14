@@ -1,6 +1,13 @@
-import { background } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CircleIcon from '@mui/icons-material/Circle';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import { toast } from "react-toastify";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL,
+});
 
 const MyComponent = ({ item, teamId, parentId }) => {
   const [inputValue, setInputValue] = useState("");
@@ -8,7 +15,7 @@ const MyComponent = ({ item, teamId, parentId }) => {
   const [answers, setAnswers] = useState([]);
 
   const handleAskQuery = async (inputValue) => {
-    await axios.post("http://localhost:8000/api/createQuery", {
+    await api.post("/api/createQuery", {
       text: inputValue,
       team_id: teamId,
       reply_id: parentId,
@@ -18,51 +25,93 @@ const MyComponent = ({ item, teamId, parentId }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (inputValue.trim() === "") return;
-    handleAskQuery(inputValue);
-    setInputValue("");
+    const toastId = toast.loading("Please wait...");
+    if (inputValue.trim() === ""){
+      toast.update(toastId, {render: "Reply should not be Empty !!", isLoading: false, type: "info", autoClose: 2000});
+      return;
+    };
+    try{
+      handleAskQuery(inputValue);
+      setInputValue("");
+      toast.update(toastId, {render: "Reply Added Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+    }catch(error){
+      toast.update(toastId, {render: `${error.message}`, isLoading: false, type: "error", autoClose: 2000});
+    }
   };
 
   const fetchAnswersForQuestion = async (questionId) => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/allQuery?id=${questionId}`
-      );
+      const { data } = await api.get(`/api/allQuery?id=${questionId}`);
       setAnswers(data.queries.sort((a, b) => a.id - b.id)); // Sort answers based on id
       setSelectedQuestion(questionId);
     } catch (error) {
-      console.error("Error fetching answers:", error);
+      console.log(error);
     }
   };
+
+  const getDateTime = (dateTime)=>{
+    const date = new Date(dateTime);
+    const today = new Date();
+    if(today.getFullYear()== date.getFullYear() && today.getMonth()== date.getMonth() && today.getDate()== date.getDate())
+    {
+      if(today.getHours() !== date.getHours())
+      {
+        const diff = today.getHours() - date.getHours();
+        if(diff == 1)
+          return "an hour ago";
+        return `${diff} hours ago`;
+      }
+      if(today.getMinutes() !== date.getMinutes())
+      {
+        const diff = today.getMinutes() - date.getMinutes();
+        if(diff == 1)
+          return "a minute ago";
+        return `${diff} minutes ago`;
+      }
+      return "a few seconds ago";
+    }
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  }
 
   return (
     <div
       key={item.id}
-      className="flex flex-col items-start justify-center border p-4 my-3 rounded-lg shadow-md"
+      className="flex flex-col items-start justify-center border p-4 my-3 rounded-lg shadow-md w-ful"
     >
-      <div className="flex flex-col text-lg font-bold text-gray-900 gap-2">
-        <div className="flex flex-row gap-2">
-          <img
+      <div className="flex flex-col text-gray-900 gap-2 w-full">
+        <div className="flex flex-row gap-2 items-center justify-between ">
+          {/* <img
             className="rounded-lg -mt-1"
             width={35}
             height={27}
             src="https://toppng.com/public/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png"
             alt=""
-          />
-          {item.User.email.split("@")[0]}
+          /> */}
+          <div className="flex flex-row gap-2 items-center">
+            <span><AccountCircleIcon sx={{color:"rgb(123, 118, 241)"}} fontSize="large"/></span>
+            <span className="text-xl font-bold">{item.User.Mentor?.first_name ? 
+              item.User.Mentor.first_name+" "+item.User.Mentor.last_name :
+              item.User.Mentee.first_name+" "+item.User.Mentee.last_name}</span>
+            <span className="font-thin text-sm ">{item.User.Mentor?.first_name ? "(Mentor)" : "(Mentee)"}</span>
+          </div>
+          <div className="flex items-center gap-2 w-44">
+            <CircleIcon sx={{ fontSize: "5px" }} /> <CalendarMonthOutlinedIcon/><span>{getDateTime(item.updatedAt)}</span>
+          </div>
         </div>
-        <div className="text-2xl">{item.text}</div>
+        <div className="text-lg">{item.text}</div>
       </div>
       {selectedQuestion === item.id ? (
         <div className="w-full">
           {answers.length !== 0 && (
             <div
               style={{
-                maxHeight: "150px",
-                overflow: "auto",
+                maxHeight: "200px",
+                width: "100%",
+                overflowY: "auto",
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "thin",
-                scrollbarColor: "rgb(183, 70, 225) violet",
+                // scrollbarColor: "rgb(183, 70, 225) violet",
                 borderRadius: "8px",
                 boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
                 padding: "10px",
@@ -74,16 +123,27 @@ const MyComponent = ({ item, teamId, parentId }) => {
                   <div className="flex items-start">
                     <div className="text-black p-1">
                       <div
+                      // className="w-[50vw]"
                         style={{
-                          background: "rgba(183, 70, 225,0.7)",
+                          background: "rgba(226, 219, 226, 0.7)",
                           width: "100%",
                           borderRadius: "10px",
                           padding: "10px",
                         }}
                       >
-                        {answer.User.email.split("@")[0]}
-                        <br />
-                        {answer.text}
+                        <div className="flex flex-row items-center justify-between">
+                          <span className="flex flex-row items-center gap-2">
+                            <span><AccountCircleIcon fontSize="small" /></span>
+                            <span className="text-lg font-semibold">{answer.User.Mentor?.first_name ? 
+                              answer.User.Mentor.first_name+" "+answer.User.Mentor.last_name :
+                              answer.User.Mentee.first_name+" "+answer.User.Mentee.last_name}</span>
+                            <span className="font-thin text-sm ">{answer.User.Mentor?.first_name ? "(Mentor)" : "(Mentee)"}</span>
+                          </span>
+                          <span className="flex items-center gap-2 w-44"><CircleIcon sx={{ fontSize: "5px" }}/> <CalendarMonthOutlinedIcon/><span>{getDateTime(answer.updatedAt)}</span></span>
+                        </div>
+                        <div style={{width:"60vw", wordWrap: "break-word" }} className="p-2">
+                          {answer.text}
+                        </div>
                       </div>
                     </div>
                   </div>

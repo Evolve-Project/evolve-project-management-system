@@ -3,7 +3,7 @@ axios.defaults.withCredentials = true
 
 export async function loadMilestones() {
     try {
-        const response = await axios.get('http://localhost:8000/api/get-milestones');
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/get-milestones`);
         // If the request is successful, return the data
         return response;
     } catch (error) {

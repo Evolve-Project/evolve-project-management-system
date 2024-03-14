@@ -34,7 +34,27 @@ const api = axios.create({
 
 const Satisfaction = () => {
   // const URL = "http://localhost:8000/";
-  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectLoading, setProjectLoading] = useState(true);
+  const [teams_projects , setTeamProjects] = useState([]);
+    useEffect(()=>{
+        const fetchData = async () =>{
+            try{
+                const data = await api.get(`/api/project_details`);
+                // console.log(data);
+                // console.log(data.data.allTeamsNames);
+                if(data.status === 200)
+                    setTeamProjects(data.data.allTeamsNames);
+                else{
+                    console.log(data); 
+                    setTeamProjects([]);
+                }
+            }catch(err){
+                console.log("Error in fetching project details", err);
+            }
+            setProjectLoading(false);
+        }
+        fetchData();
+    },[]);
   const [teamId, setTeamId] = useState(null);
   const [teamName, setTeamName] = useState("");
   const [userId, setUserId] = useState(null);
@@ -115,8 +135,8 @@ const Satisfaction = () => {
         console.log("error", err);
       }
     };
-    if (teamId != null) 
-        fetchData();
+    if (teamId != null)
+      fetchData();
   }, [teamId]);
 
   const wordCloudOptions = {
@@ -158,7 +178,7 @@ const Satisfaction = () => {
           <div className="satisfaction_input justify-between">
             <ProjectNames
               handleTeamId={handleTeamId}
-              setProjectLoading={setProjectLoading}
+              teams_projects={teams_projects}
             />
 
             <CustomizedDialogs isOpen={isPopOpen} handlePop={handlePop} />
@@ -185,7 +205,7 @@ const Satisfaction = () => {
                       setRole(e.target.value);
                     }}
                     aria-label="Platform"
-                    // size='small'
+                  // size='small'
                   >
                     <ToggleButton value="Mentor">Mentor</ToggleButton>
                     <ToggleButton value="Mentee">Mentee</ToggleButton>
@@ -195,7 +215,7 @@ const Satisfaction = () => {
               <UserNames
                 handleUserId={handleUserId}
                 userRecords={role === "Mentor" ? mentorRecords : menteeRecords}
-              />
+              key={crypto.randomUUID()}/>
             </div>
             <div className="satisfaction_input">
               <span>

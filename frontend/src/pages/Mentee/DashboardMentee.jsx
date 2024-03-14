@@ -53,20 +53,20 @@ const DashboardMentee = () => {
   const handleSubmit = async () => {
     // alert("saving...........!");
     const toastId = toast.loading("Please wait...");
-    if(firstName === "")
+    if(firstName.trim() === "")
     {
       toast.update(toastId, { render: `Please, enter first name`, type: "info", isLoading: false, autoClose: 2000,});
       return;
     }
-    if(lastName === "")
+    if(lastName.trim() === "")
     {
       toast.update(toastId, { render: `Please, enter last name`, type: "info", isLoading: false, autoClose: 2000,});
       return;
-    }if(email === "")
+    }if(email.trim() === "")
     {
       toast.update(toastId, { render: `Please, enter Email Id`, type: "info", isLoading: false, autoClose: 2000,});
       return;
-    }if(University === "")
+    }if(University.trim() === "")
     {
       toast.update(toastId, { render: `Please, enter University name`, type: "info", isLoading: false, autoClose: 2000,});
       return;
@@ -75,7 +75,7 @@ const DashboardMentee = () => {
       toast.update(toastId, { render: `Please, enter Date of Birth`, type: "info", isLoading: false, autoClose: 2000,});
       return;
     }
-    if(home_city === "")
+    if(home_city.trim() === "")
     {
       toast.update(toastId, { render: `Please, enter Home City`, type: "info", isLoading: false, autoClose: 2000,});
       return;
@@ -83,12 +83,12 @@ const DashboardMentee = () => {
     try{
       const data = {
         user_id : mentee.menteeInfo.user_id,
-        first_name : firstName,
-        last_name : lastName,
-        email ,
-        University,
+        first_name : firstName.trim(),
+        last_name : lastName.trim(),
+        email: email.trim() ,
+        University: University.trim(),
         dob,
-        home_city,
+        home_city: home_city.trim(),
       }
       // console.log(data);
       const response = await api.post(`/api/updateMentee`, data);
@@ -294,7 +294,7 @@ const DashboardMentee = () => {
                     </div>
                   </li>
                   <li className="flex flex-row items-start">
-                    <div className="min-w-40 text-lg font-semibold">Date </div>
+                    <div className="min-w-40 text-lg font-semibold">Project Period </div>
                     <div className="text-lg flex flex-row">
                       <div>:</div>
                       <div className="ml-4">
@@ -324,7 +324,7 @@ const DashboardMentee = () => {
               {
                 mentee.teamMembersInfo.mentorsList.map((user)=>{
                   return (
-                  <div className="dashboard_card  min-w-96">
+                  <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                     <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">
@@ -349,7 +349,7 @@ const DashboardMentee = () => {
               {
                 mentee.teamMembersInfo.menteesList.map((user)=>{
                   return (
-                  <div className="dashboard_card  min-w-96">
+                  <div className="dashboard_card  min-w-96" key={crypto.randomUUID()}>
                     <div className="text-lg font-semibold">{user.first_name+" "+user?.last_name}</div>
                     <Divider/>
                     <ul className="flex flex-col gap-2 p-4">

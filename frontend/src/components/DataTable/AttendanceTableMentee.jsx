@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Table,
     TableBody,
@@ -13,7 +13,7 @@ const AttendanceTable = ({ attendanceData }) => {
     const [sortedData, setSortedData] = useState(attendanceData);
     const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const sortByDate = () => {
         const sorted = [...sortedData].sort((a, b) => {
@@ -56,9 +56,13 @@ const AttendanceTable = ({ attendanceData }) => {
         );
     };
 
+    useEffect(() => {
+        setSortedData(attendanceData);
+    }, [attendanceData]);
+
     return (
         <div className="flex justify-center">
-            <div className="w-2/3">
+            <div className="w-full p-10">
                 <Table>
                     <TableCaption>Attendance</TableCaption>
                     <TableHeader>
