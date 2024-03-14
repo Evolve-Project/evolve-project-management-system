@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Tasks from "./Tasks.jsx";
-
+const milestoneIdResponse = await axios.get(
+  "http://localhost:8000/api/get-milestonesForStatus"
+);
+console.log("Milestone IDs response:", milestoneIdResponse.data);
 function MentorMilestones() {
   const [status, setStatus] = useState([]);
   const [milestoneDesc, setMilestoneDesc] = useState([]);
@@ -50,6 +53,9 @@ function MentorMilestones() {
     }
   }, [currentMilestoneDesc]);
 
+
+ 
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US");
@@ -57,7 +63,7 @@ function MentorMilestones() {
 
   const fetchTasks = async (milestoneDescId) => {
     try {
-      console.log("This is inside fetch tasks",milestoneDescId)
+      console.log("This is inside fetch tasks", milestoneDescId);
       const response = await axios.post("http://localhost:8000/api/get-tasks", {
         milestoneDescId,
       });
@@ -76,6 +82,34 @@ function MentorMilestones() {
     setTasks(newTasks);
   };
 
+  const handleStatusChangeMilestone = async (milestoneId, newStatus) => {
+    try {
+      console.log(milestoneId);
+      console.log(newStatus);
+  
+      const response = await axios.post(
+        "http://localhost:8000/api/update-task-status-milestone",
+        { milestoneId, newStatus }
+      );
+      console.log("Update status response:", response.data);
+
+   const updatedrid = response.data.id;
+   const updatedrstatus = response.data.status;
+      // Update the status of the task in the frontend
+      
+      milestoneIdResponse.data =  milestoneIdResponse.data.map((milestone) =>
+      milestone.id === updatedrid
+        ? { ...milestone, status: updatedrstatus }
+        : milestone
+    );
+      
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+  };
+
+
+ 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       const response = await axios.post(
@@ -109,8 +143,6 @@ function MentorMilestones() {
       console.error("Error deleting task:", error);
     }
   };
-
- 
 
   const getMenteeName = (menteeId) => {
     const mentee = mentees.users.find((m) => m.id === menteeId);
@@ -172,9 +204,27 @@ function MentorMilestones() {
                     {formatDate(milestone.end_date)}
                   </td>
                   <td className="py-2 px-4 text-left relative">
-                    <select value={milestoneId[index] ? "true" : "false"}>
-                      <option value="false">Completed</option>
-                      <option value="true">In Progress</option>
+                    
+                    <select
+                      value={milestoneIdResponse.data[index].status ? "true" : "false"}
+                      onChange={(e) =>
+                        handleStatusChangeMilestone(
+                          milestoneIdResponse.data[index].id,
+                          e.target.value
+                        )
+                      }
+                    >
+                      {milestoneIdResponse.data[index].status ? (
+                         <>
+                         <option value="false">In Progress</option>
+                         <option value="true">Completed</option>
+                       </>
+                      ) : (
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
+                      )}
                     </select>
                   </td>
                   <td className="">
@@ -197,7 +247,7 @@ function MentorMilestones() {
         </div>
       ) : (
         <>
-          <Tasks milestoneId={milestone_Id}  onTaskCreated={fetchTasks}/>
+          <Tasks milestoneId={milestone_Id} onTaskCreated={fetchTasks} />
           <table className="table-auto border-collapse w-full">
             <thead>
               <tr className="bg-gray-200 text-black-600 uppercase text-sm leading-normal">
