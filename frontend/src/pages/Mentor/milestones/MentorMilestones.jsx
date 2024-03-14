@@ -11,6 +11,8 @@ function MentorMilestones() {
   const [toggle, setToggle] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [milestoneId, setMilestoneId] = useState([]);
+
+  const [milestoneId2, setMilestoneId2] = useState([]);
   const [milestone_Id, setMilestone_Id] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentMilestoneDesc, setCurrentMilestoneDesc] = useState(null);
@@ -39,6 +41,8 @@ function MentorMilestones() {
         );
         console.log("Milestone IDs response:", milestoneIdResponse.data);
         setMilestoneId(milestoneIdResponse.data);
+        setMilestoneId2(milestoneIdResponse.data);
+        console.log(milestoneId2)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -97,11 +101,12 @@ function MentorMilestones() {
    const updatedrstatus = response.data.status;
       // Update the status of the task in the frontend
       
-      milestoneIdResponse.data =  milestoneIdResponse.data.map((milestone) =>
-      milestone.id === updatedrid
-        ? { ...milestone, status: updatedrstatus }
+      const updatedMilestones = milestoneIdResponse.data.map((milestone) =>
+      milestone.id === milestoneId
+        ? { ...milestone, status: response.data.status }
         : milestone
     );
+    setMilestoneId2(updatedMilestones);
       
     } catch (error) {
       console.error("Error updating task status:", error);
@@ -206,15 +211,15 @@ function MentorMilestones() {
                   <td className="py-2 px-4 text-left relative">
                     
                     <select
-                      value={milestoneIdResponse.data[index].status ? "true" : "false"}
+                      value={milestoneId2[index].status ? "true" : "false"}
                       onChange={(e) =>
                         handleStatusChangeMilestone(
-                          milestoneIdResponse.data[index].id,
+                          milestoneId2[index].id,
                           e.target.value
                         )
                       }
                     >
-                      {milestoneIdResponse.data[index].status ? (
+                      {milestoneId2[index].status ? (
                          <>
                          <option value="false">In Progress</option>
                          <option value="true">Completed</option>
