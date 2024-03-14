@@ -92,7 +92,7 @@ function MenteeMilestones() {
     };
 
     fetchTasks();
-  }, [tasks]);
+  }, []);
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
@@ -212,13 +212,21 @@ function MenteeMilestones() {
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
                     <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                     <td className="py-2 px-3 text-left">
-                      <select
-                        value={task.status ? "true" : "false"}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
-                      >
-                        <option value="false">In Progress</option>
+                    <select
+                      value={task.status ? "true" : "false"}
+                      onChange={(e) =>
+                        handleStatusChange(task.id, e.target.value)
+                      }
+                    >
+                      {task.status ? (
                         <option value="true">Completed</option>
-                      </select>
+                      ) : (
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
+                      )}
+                    </select>
                     </td>
                     <td className="py-2 px-3 text-left">
       {getMenteeName(task.mentee_user_id)}
