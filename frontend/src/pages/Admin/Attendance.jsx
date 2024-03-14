@@ -2,15 +2,24 @@ import React, { useEffect } from 'react'
 import "@/styles/title.css";
 import { useState } from 'react';
 import TeamDropdown from '@/components/Attendance/TeamDropdown';
-import { FetchAttendanceByMentorID, FetchUsersByTeam } from '@/api/attendanceApi';
+import { FetchAttendanceByMentorID, FetchMenteesByMentor, FetchUsersByTeam } from '@/api/attendanceApi';
 import AttendanceTable from '@/components/DataTable/AttendanceTableMentee';
+import AttendanceDatatable from '@/components/DataTable/AttendanceDataTable';
 
 const Attendance = () => {
   const [selectedTeam, setSelectedTeam] = useState('');
   const [attendanceData, SetAttendanceData] = useState('');
+  const [userData, setUserData] = useState({});
+
   const handleTeamSelect = async (teamId) => {
     setSelectedTeam(teamId);
   };
+
+  useEffect(() => {
+    // Log userData whenever it changes
+    console.log(userData);
+  }, [userData]);
+
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -18,10 +27,13 @@ const Attendance = () => {
         try {
           const response = await FetchUsersByTeam({ teamID: selectedTeam });
           const mentorIds = response.data.mentors.map(mentor => mentor.User.id);
-
+          const menteeIds = response.data.mentee.map(mentee => mentee.User.id);
+          console.log(menteeIds);
           // Fetch attendance for each mentor-mentee pair
           const attendanceResponse = await FetchAttendanceByMentorID({ mentorID: mentorIds[0] });
           SetAttendanceData(attendanceResponse.data);
+          const userdata = await FetchMenteesByMentor({ mentor_id: mentorIds[0] });
+          setUserData(userdata.data);
         } catch (error) {
           console.error('Error fetching team details:', error);
         }
@@ -30,24 +42,11 @@ const Attendance = () => {
     fetchDetails();
   }, [selectedTeam]);
 
-  // const fetchAttendance = async (mentorId) => {
-  //   try {
-  //     const response = await FetchAttendanceByMentorMentee({
-  //       mentorId: mentorId,
-  //     });
-  //     console.log(response);
-  //     // Process the fetched attendance data
-  //   } catch (error) {
-  //     console.error('Error fetching attendance:', error);
-  //   }
-  // };
-
-
   return (
     <div className='container'>
       <div className="title">Attendance</div>
       <TeamDropdown onTeamSelect={handleTeamSelect} />
-      {attendanceData && < AttendanceTable attendanceData={attendanceData} />}
+      {userData && userData.users && attendanceData && < AttendanceDatatable attendanceData={attendanceData} userData={userData} />}
     </div>
   )
 }

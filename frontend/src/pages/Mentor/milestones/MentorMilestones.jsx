@@ -56,7 +56,7 @@ function MentorMilestones() {
   }, [currentMilestoneDesc]);
 
 
- 
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -88,31 +88,31 @@ function MentorMilestones() {
     try {
       console.log(milestoneId);
       console.log(newStatus);
-  
+
       const response = await axios.post(
         "http://localhost:8000/api/update-task-status-milestone",
         { milestoneId, newStatus }
       );
       console.log("Update status response:", response.data);
 
-   const updatedrid = response.data.id;
-   const updatedrstatus = response.data.status;
-      // Update the status of the task in the frontend
-      
-      const updatedMilestones = milestoneIdResponse.data.map((milestone) =>
-      milestone.id === milestoneId
-        ? { ...milestone, status: response.data.status }
-        : milestone
-    );
-    setMilestoneId2(updatedMilestones);
-      
+      const updatedrid = response.data.id;
+      //  const updatedrstatus = response.data.status;
+      //     // Update the status of the task in the frontend
+
+      //     const updatedMilestones = milestoneIdResponse.data.map((milestone) =>
+      //     milestone.id === milestoneId
+      //       ? { ...milestone, status: response.data.status }
+      //       : milestone
+      //   );
+      setMilestoneId2(updatedMilestones);
+
     } catch (error) {
       console.error("Error updating task status:", error);
     }
   };
 
 
- 
+
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       const response = await axios.post(
@@ -207,7 +207,7 @@ function MentorMilestones() {
                     {formatDate(milestone.end_date)}
                   </td>
                   <td className="py-2 px-4 text-left relative">
-                    
+
                     <select
                       value={milestoneId2[index].status ? "true" : "false"}
                       onChange={(e) =>
@@ -218,10 +218,10 @@ function MentorMilestones() {
                       }
                     >
                       {milestoneId2[index].status ? (
-                         <>
-                         <option value="false">In Progress</option>
-                         <option value="true">Completed</option>
-                       </>
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
                       ) : (
                         <>
                           <option value="false">In Progress</option>
