@@ -108,6 +108,20 @@ exports.fetchAttendance = async (req, res) => {
     }
 };
 
+exports.fetchAttendanceByMentorID = async (req, res) => {
+    mentorUid = req.body.mentorID;
+    try {
+
+        const attendance = await fetchAttendanceByMentor(mentorUid);
+        res.status(200).json(attendance);
+    }
+    catch (error) {
+        console.error('Error fetching attendance:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
 exports.getMentorName = async (req, res) => {
     try {
         const mentorUid = req.body.mentorId;

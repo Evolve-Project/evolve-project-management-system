@@ -27,3 +27,16 @@ export async function DeleteAttendance(attendanceArray) {
 export async function UpdateAttendance(attendanceArray) {
     return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/updateAttendance`, attendanceArray)
 }
+
+export async function FetchTeamDetails() {
+    return await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/project_details`);
+}
+
+export async function FetchUsersByTeam(teamID) {
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/fetchMentee-Mentor`, teamID)
+}
+
+export async function FetchAttendanceByMentorID(mentorID) {
+    return await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/getAttendanceMentor`, mentorID)
+
+}
