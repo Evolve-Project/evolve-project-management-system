@@ -27,6 +27,7 @@ import AddQuery from "./pages/Mentee/AddQuery";
 import MentorMilestones from "./pages/Mentor/milestones/MentorMilestones";
 import MenteeMilestones from "./pages/Mentee/milestones/MenteeMilestones";
 import MenteeAttendance from "./pages/Mentee/Attendance";
+import ResetPassword from "./pages/resetPassword";
 
 const App = () => {
   const { isAuth, role } = useSelector((state) => state.auth);
@@ -37,6 +38,10 @@ const App = () => {
         <Route
           path="/login"
           element={isAuth ? <Navigate to="/dashboard" /> : <Login />}
+        />
+        <Route
+          path="/reset"
+          element={isAuth ? <Navigate to="/dashboard" /> : <ResetPassword />}
         />
         <Route
           path="/register"

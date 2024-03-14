@@ -50,8 +50,11 @@ const Login = () => {
     }
   }
   return (
-    <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
-      <div className="w-full m-auto bg-white lg:max-w-lg">
+    <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden bg-jman">
+      <div className="absolute top-0 left-0 w-full h-auto p-6">
+        <img src="https://jmangroup.com/wp-content/themes/jman_v1-35/src/media/logo.svg" alt="logo" />
+      </div>
+      <div className="w-full m-auto lg:max-w-lg">
         <form onSubmit={(e) => onSubmit(e)} className='flex items-center justify-center h-full'>
           <Card className='w-[350px]'>
             <CardHeader>
@@ -95,7 +98,7 @@ const Login = () => {
             </CardContent>
             <CardFooter className="flex flex-col items-start">
               <p className='text-xs mb-1'>Forgot  Password?<Link className='text-primary' to={"/reset"}> Click here </Link>to Reset</p>
-              <Button type='submit' className="w-full" >
+              <Button type='submit' className="w-full bg-jman" >
                 Login
               </Button>
             </CardFooter>

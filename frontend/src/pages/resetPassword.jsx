@@ -62,7 +62,7 @@ const ResetPassword = (props) => {
     }
 
     return (
-        < div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden" >
+        < div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
             <div className="w-full m-auto bg-white lg:max-w-lg">
                 <form onSubmit={(e) => onSubmit(e)} className='flex items-center justify-center h-full'>
                     <Card className='w-[350px]'>
