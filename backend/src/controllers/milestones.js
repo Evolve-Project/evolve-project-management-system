@@ -49,6 +49,7 @@ async function getMenteesbyId(req, res) {
     const teamId = await fetchTeamId(req.user.id, req.user.role);
     const mentees = await  getMenteebyteamId(teamId);
     return res.json(mentees);
+    
   } catch (error) {
     console.log("Error in getMenteesbyId", error);
     return res.status(500).json({ error: "Internal server error" });

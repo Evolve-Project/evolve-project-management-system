@@ -12,6 +12,28 @@ function MenteeMilestones() {
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(6);
 
+  const [mentees, setMentees] = useState([]);
+  
+  
+
+  useEffect(() => {
+    async function fetchMentees() {
+      try {
+        console.log("Fetching mentees...");
+        const response = await axios.get("http://localhost:8000/api/get-menteesbyId");
+        console.log("Mentees response:", response.data);
+        console.log("here it  mentees...");
+        setMentees(response.data);
+      } catch (error) {
+        console.error("Error fetching mentees:", error);
+      }
+    }
+
+    fetchMentees();
+  }, [tasks]);
+
+  
+
   useEffect(() => {
     async function fetchMilestoneDesc() {
       try {
@@ -32,7 +54,7 @@ function MenteeMilestones() {
       try {
         console.log("Fetching milestonesforStatus...");
         const response = await axios.get("http://localhost:8000/api/get-milestonesForStatus");
-        console.log("Milestones response:", response.data);
+        console.log("Milestones for status response:", response.data);
         setMilestoneId(response.data);
       } catch (error) {
         console.error("Error fetching milestone for status:", error);
@@ -56,6 +78,21 @@ function MenteeMilestones() {
       console.error("Error fetching tasks:", error);
     }
   };
+
+  useEffect(() => {
+    
+    const fetchTasks = async (milestoneDescId) => {
+      try {
+        const response = await axios.post("http://localhost:8000/api/get-tasks", { milestoneDescId });
+        setTasks(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
@@ -86,7 +123,11 @@ function MenteeMilestones() {
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+ 
+  const getMenteeName = (menteeId) => {
+    const mentee = mentees.find((m) => m.user_id === menteeId);
+    return mentee ? `${mentee.first_name} ${mentee.last_name}` : "Unknown Mentee";
+  };
   return (
     <>
       {toggle ? (
@@ -171,14 +212,26 @@ function MenteeMilestones() {
                     <td className="py-2 px-3 text-left">{task.task_desc}</td>
                     <td className="py-2 px-3 text-left">{formatDate(task.task_completion_datetime)}</td>
                     <td className="py-2 px-3 text-left">
-                      <select
-                        value={task.status ? "true" : "false"}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value === "true")}
-                      >
-                        <option value="false">In Progress</option>
+                    <select
+                      value={task.status ? "true" : "false"}
+                      onChange={(e) =>
+                        handleStatusChange(task.id, e.target.value)
+                      }
+                    >
+                      {task.status ? (
                         <option value="true">Completed</option>
-                      </select>
+                      ) : (
+                        <>
+                          <option value="false">In Progress</option>
+                          <option value="true">Completed</option>
+                        </>
+                      )}
+                    </select>
                     </td>
+                    <td className="py-2 px-3 text-left">
+      {getMenteeName(task.mentee_user_id)}
+    </td>
+                    
                   </tr>
                 ))}
               </tbody>
