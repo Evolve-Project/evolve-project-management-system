@@ -63,13 +63,17 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
     }
     try{
       const successData = await dispatch(updateMetric({id: index, metric_name : name.trim(), role})).unwrap();
-      // console.log(successData);
-      setEditableId(null);
-      setEditedName("");
-      toast.update(toastId,{render: "Metric updated successfully !!", isLoading: false, type: "success", autoClose: 2000});
+      if(successData.payload.status === 409) //error at editing metric (repeated data)
+      {
+        toast.update(toastId, {render: `${successData.payload.data.message}`, isLoading: false, type: "warning", autoClose: 2000});
+      }else{
+        toast.update(toastId, {render: "Metric updated Successfully !!", isLoading: false, type: "success", autoClose: 2000});
+        setEditableId(null);
+        setEditedName("");
+      }
     }catch(err){
       console.log("After dispatch update error: ",err);
-      toast.update(toastId, {render: `${err.message}`, isLoading: false, type:"warning", autoClose: 2000});
+      toast.update(toastId, {render: `${err?.data?.message}`, isLoading: false, type:"warning", autoClose: 2000});
     }
   }
 
@@ -114,8 +118,8 @@ const CustomizedDialogs = ({ isOpen, handlePop }) => {
       }else{  //add at Mentee
         successfulData = await dispatch(addMetric({metric_name:name.trim(), role: "Mentee"}));
       }
-      console.log(successfulData);
-      if(successfulData.error) //error at adding metric
+      console.log("add successful ",successfulData);
+      if(successfulData.payload.status === 409) //error at adding metric (repeated data)
       {
         toast.update(toastId, {render: `${successfulData.payload.data.message}`, isLoading: false, type: "warning", autoClose: 2000});
       }else{

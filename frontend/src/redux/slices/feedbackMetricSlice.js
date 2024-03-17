@@ -156,7 +156,15 @@ const metricReducer = createSlice({
           .addCase(addMetric.rejected, (state, action)=>{
             state.status = "failed";
             console.log(action.payload);
-            state.error = action.payload?.data?.message;
+            // console.log("----------------------------------------------------");
+            if(action.payload.status === 409)
+            {
+              state.statusCode = 409;
+              state.message = action.payload?.data?.message;
+              // console.log("hi");
+            }else{
+              state.error = action.payload?.data?.message;
+            }
           })
 
           // DELETING METRIC
@@ -188,11 +196,16 @@ const metricReducer = createSlice({
           })
           .addCase(updateMetric.rejected, (state, action)=>{
             state.status = "failed";
-            console.log("FFFILED.....");
-            console.log(action);
             console.log(action.payload);
-            state.error = action.payload?.data?.message;
-            console.log(state.error);
+            // console.log("----------------------------------------------------");
+            if(action.payload.status === 409)
+            {
+              state.statusCode = 409;
+              state.message = action.payload?.data?.message;
+              // console.log("hi");
+            }else{
+              state.error = action.payload?.data?.message;
+            }
           })
     },
 });
