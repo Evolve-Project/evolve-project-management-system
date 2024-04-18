@@ -15,7 +15,6 @@ Happy coding!
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Here's a demo of the application:](#heres-a-demo-of-the-application)
 - [Components and APIs:](#components-and-apis)
   - [Frontend:](#frontend)
     - [Third-party Libraries:](#third-party-libraries)
@@ -35,16 +34,15 @@ Happy coding!
       - [Development:](#development)
       - [File Handling:](#file-handling)
       - [Other:](#other)
-    - [APIs:](#apis)
   - [Database](#database)
     - [Tables](#tables)
     - [Migrations](#migrations)
     - [Seeders](#seeders)
     - [Configurations](#configurations)
     - [Entity Relationship Diagram](#entity-relationship-diagram)
-    - [Contact Information](#contact-information)
-      - [Mentors:](#mentors)
-      - [Mentees:](#mentees)
+  - [Contact Information](#contact-information)
+    - [Mentors:](#mentors)
+    - [Mentees:](#mentees)
 
 # Project Structure
 The project is structured as follows:
@@ -135,8 +133,7 @@ Once the installation is complete, you can access the application by visiting th
 8. **Milestones:** The application provides a feature for mentors to set milestones for the mentees. This information is stored in the database and can be accessed through the admin panel. The admin panel also includes a visual representation of the milestone data in the form of a line chart. This helps the admin to quickly identify the progress of the mentees and mentors towards their goals.
 9. **User Profile:** The application provides a feature for users to view and update their profiles. Users can update their personal information, change their passwords.
 
-## Here's a demo of the application:
-[video of the application](video link)
+You can refer to the application demo video for more information on usage.
 
 # Components and APIs:
 ## Frontend:
@@ -288,16 +285,6 @@ The backend is a Node.js server that handles data management and business logic.
 - **xlsx**: Parser and writer for various spreadsheet formats.
 
 
-
-### APIs:
-- `POST /api/auth/signup`: Used for user registration. It accepts the user's email, password, and role, and creates a new user in the database.
-
-Determining workspace structure
-
-Deciding which workspace information to collect
-
-Gathering workspace info
-
 ## Database
 
 The database is a PostgreSQL database that stores and manages data for the application. It includes tables for users, projects, milestones, and more. The database is managed using Sequelize, a popular ORM for Node.js.
@@ -378,21 +365,19 @@ Database configurations are located in the `backend/src/config/` directory. It i
 
 ***Thank you for reading the README. We hope you enjoy using the Evolve Mentor Mentee Management System! If you encounter any issues or have any suggestions, feel free to contribute or open an issue. Happy coding!***
 
-### Contact Information
+## Contact Information
 
 If you have any questions or need further clarification, feel free to reach out to our team members:
 
-#### Mentors:
+### Mentors:
 - **Shirpi**: shirpianbarasan@jmangroup.com
 - **Akshay Kumar**: akshaykumar@jmangroup.com
 
-#### Mentees:
-- **Ashutosh Goyal**: alice.johnson@example.com
-- **Harsh Verma**: bob.williams@example.com
-- **Harsha Vardhan**: charlie.brown@example.com
-- **Purnima Kabadwal**: david.jones@example.com
-- **Subahm Pradhan**: eve.davis@example.com
-- **Monish Kumar**: frank.miller@example.com
-- **Vijay R**: grace.wilson@example.com
-
-Please replace the dummy email addresses with the actual email addresses of the team members.
+### Mentees:
+- **Ashutosh Goyal**: ashugyl75@gmail.com
+- **Harsh Verma**: rnverma2205@gmail.com
+- **Harsha Vardhan**: assadiharsha@gmail.com
+- **Purnima Kabadwal**: purnimakabadwal3@gmail.com
+- **Subahm Pradhan**:  subhamswaruppradhan2580@gmail.com
+- **Monish Kumar**: monishk2512@outlook.com
+- **Vijay R**: vijaydrravi@gmail.com
